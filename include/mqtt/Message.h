@@ -30,7 +30,7 @@ namespace mqtt
 
 typedef std::tuple<
     comms::option::BigEndian,
-    comms::option::ReadIterator<std::uint8_t*>,
+    comms::option::ReadIterator<const std::uint8_t*>,
     comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >,
     comms::option::MsgIdType<MsgId>
 > DefaultOptions;

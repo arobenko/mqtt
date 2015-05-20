@@ -28,9 +28,14 @@ namespace mqtt
 namespace cc_plugin
 {
 
-class Message : public comms_champion::MessageBase<mqtt::MessageT, mqtt::DefaultOptions>
-{
+typedef std::tuple<
+    comms::option::BigEndian,
+    comms::option::MsgIdType<MsgId>
+> PluginOptions;
 
+class Message : public comms_champion::MessageBase<mqtt::MessageT, PluginOptions>
+{
+public:
 };
 
 }  // namespace cc_plugin

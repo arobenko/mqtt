@@ -22,6 +22,10 @@ function (cc_plugin_mqtt)
     install (
         TARGETS ${name}
         DESTINATION ${PLUGIN_INSTALL_DIR})
+        
+    install (
+        TARGETS ${name}
+        DESTINATION ${CC_INSTALL_PATH}/plugin)
     
 endfunction()
 
