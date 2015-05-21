@@ -15,12 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "TransportMessage.h"
 
-#pragma once
-
-#include "comms_champion/comms_champion.h"
-#include "mqtt/Message.h"
-
+namespace cc = comms_champion;
 
 namespace mqtt
 {
@@ -28,19 +25,29 @@ namespace mqtt
 namespace cc_plugin
 {
 
-typedef std::tuple<
-    comms::option::BigEndian,
-    comms::option::MsgIdType<MsgId>
-> PluginOptions;
-
-template <typename... TOptions>
-class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
+void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
-public:
-};
+    static const char* FieldNames[] = {
+        "ID",
+        "Size",
+        "Data"
+    };
 
-typedef MessageT<PluginOptions> Message;
+    static const std::size_t NumOfFields =
+        std::tuple_size<cc_plugin::Stack::AllFields>::value;
+
+    static_assert(
+        std::extent<decltype(FieldNames)>::value == NumOfFields,
+        "FieldNames array must be updated.");
+
+    if (NumOfFields <= idx) {
+        return;
+    }
+
+    cc::Property::setNameVal(fieldWidget, FieldNames[idx]);
+}
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+

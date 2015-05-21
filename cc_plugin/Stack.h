@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/Message.h"
-
+#include "mqtt/Stack.h"
+#include "Message.h"
+#include "AllMessages.h"
 
 namespace mqtt
 {
@@ -28,19 +28,14 @@ namespace mqtt
 namespace cc_plugin
 {
 
-typedef std::tuple<
-    comms::option::BigEndian,
-    comms::option::MsgIdType<MsgId>
-> PluginOptions;
-
-template <typename... TOptions>
-class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
-{
-public:
-};
-
-typedef MessageT<PluginOptions> Message;
+typedef mqtt::Stack<
+    cc_plugin::Message,
+    cc_plugin::AllMessages
+> Stack;
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
+
+

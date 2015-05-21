@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/Message.h"
-
+#include "cc_plugin/Message.h"
+#include "cc_plugin/Stack.h"
 
 namespace mqtt
 {
@@ -28,19 +28,25 @@ namespace mqtt
 namespace cc_plugin
 {
 
-typedef std::tuple<
-    comms::option::BigEndian,
-    comms::option::MsgIdType<MsgId>
-> PluginOptions;
-
-template <typename... TOptions>
-class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
+class TransportMessage : public
+    comms_champion::TransportMessageBase<
+        cc_plugin::Stack>
 {
 public:
-};
+    TransportMessage() = default;
+    TransportMessage(const TransportMessage&) = default;
+    TransportMessage(TransportMessage&&) = default;
+    virtual ~TransportMessage() = default;
 
-typedef MessageT<PluginOptions> Message;
+    TransportMessage& operator=(const TransportMessage&) = default;
+    TransportMessage& operator=(TransportMessage&&) = default;
+
+protected:
+    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+};
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
+

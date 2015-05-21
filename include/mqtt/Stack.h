@@ -38,15 +38,18 @@ typedef comms::field::EnumValue<
 
 typedef comms::field::IntValue<
     comms::Field<comms::option::LittleEndian>,
-    unsigned,
-    comms::option::VarLength<1, 4>
+    std::uint16_t,
+    comms::option::VarLength<1, 2> // TODO: change to 4
 > RemSizeField;
 
-template <typename TMsgBase = Message, typename TMsgAllocOptions = std::tuple<> >
+template <
+    typename TMsgBase = Message,
+    typename TAllMessages = AllMessages<TMsgBase>,
+    typename TMsgAllocOptions = std::tuple<> >
 using Stack =
     comms::protocol::MsgIdLayer<
         MsgIdField,
-        AllMessages<TMsgBase>,
+        TAllMessages,
         comms::protocol::MsgSizeLayer<
             RemSizeField,
             comms::protocol::MsgDataLayer<TMsgBase>

@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/Message.h"
-
+#include <tuple>
+#include "cc_plugin/message/Connack.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
@@ -29,18 +29,13 @@ namespace cc_plugin
 {
 
 typedef std::tuple<
-    comms::option::BigEndian,
-    comms::option::MsgIdType<MsgId>
-> PluginOptions;
-
-template <typename... TOptions>
-class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
-{
-public:
-};
-
-typedef MessageT<PluginOptions> Message;
+    cc_plugin::message::Connack
+> AllMessages;
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
+
+
+
