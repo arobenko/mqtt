@@ -3,7 +3,7 @@ function (cc_plugin_mqtt)
     set (name "mqtt")
     set (src
 #        DemoPlugin.cpp
-#        Protocol.cpp
+        Protocol.cpp
         TransportMessage.cpp
         message/Connack.cpp
     )
