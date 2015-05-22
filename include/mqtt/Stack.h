@@ -32,6 +32,7 @@ namespace mqtt
 typedef comms::field::EnumValue<
     comms::Field<comms::option::BigEndian>,
     MsgId,
+    comms::option::DefaultNumValue<MsgId_CONNECT>,
     comms::option::ValidNumValueRange<MsgId_CONNECT, MsgId_NumOfValues - 1>,
     comms::option::FailOnInvalid
 > MsgIdField;

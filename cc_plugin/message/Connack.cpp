@@ -15,7 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <type_traits>
+#include <functional>
+
 #include "Connack.h"
+
+namespace cc = comms_champion;
 
 namespace mqtt
 {
@@ -26,6 +31,45 @@ namespace cc_plugin
 namespace message
 {
 
+namespace
+{
+
+void updateFlagsInfo(QWidget& fieldWidget)
+{
+    static const QString Names[] = {
+        "Session Present"
+    };
+
+    static const unsigned NamesCount = std::extent<decltype(Names)>::value;
+
+    for (auto idx = 0U; idx < NamesCount; ++idx) {
+        cc::Property::setIndexedNameVal(fieldWidget, idx, Names[idx]);
+    }
+}
+
+void updateResponseInfo(QWidget& fieldWidget)
+{
+    static const QString Names[] = {
+        "Accepted",
+        "Wrong Protocol Version",
+        "Identifier Rejected",
+        "Server Unavailable",
+        "Bad Username or Password",
+        "Not Authorized"
+    };
+
+    static const unsigned NamesCount = std::extent<decltype(Names)>::value;
+
+    static_assert(NamesCount == (unsigned)mqtt::message::ConnackResponseCode::NumOfValues,
+        "Invalid map.");
+
+    for (auto idx = 0U; idx < NamesCount; ++idx) {
+        cc::Property::setIndexedNameVal(fieldWidget, idx, Names[idx]);
+    }
+}
+
+}  // namespace
+
 const char* Connack::nameImpl() const
 {
     static const char* Str = "CONNACK";
@@ -34,8 +78,40 @@ const char* Connack::nameImpl() const
 
 void Connack::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
-    static_cast<void>(fieldWidget);
-    static_cast<void>(idx);
+    static const QString Names[] = {
+        "Flags",
+        "Response"
+    };
+
+    static const unsigned NamesCount = std::extent<decltype(Names)>::value;
+
+    static_assert(NamesCount == FieldIdx_NumOfValues,
+        "The names map is incorrect");
+
+    if (NamesCount <= idx) {
+        return;
+    }
+
+    cc::Property::setNameVal(fieldWidget, Names[idx]);
+
+    if (idx == FieldIdx_Flags) {
+        static const QString Names[] = {
+            "Session Present"
+        };
+    }
+
+    typedef std::function<void (QWidget&)> ExtraUpdateFunc;
+    static const ExtraUpdateFunc ExtraFuncs[] = {
+        &updateFlagsInfo,
+        &updateResponseInfo
+    };
+
+    static const unsigned FuncsCount = std::extent<decltype(ExtraFuncs)>::value;
+
+    static_assert(NamesCount == FuncsCount,
+        "The update map is incorrect");
+
+    ExtraFuncs[idx](fieldWidget);
 }
 
 }  // namespace message

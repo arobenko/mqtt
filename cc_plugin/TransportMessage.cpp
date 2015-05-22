@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "TransportMessage.h"
+#include "mqtt/MsgId.h"
 
 namespace cc = comms_champion;
 
@@ -24,6 +25,42 @@ namespace mqtt
 
 namespace cc_plugin
 {
+
+namespace
+{
+
+enum FieldIdx
+{
+    FieldIdx_Id,
+    FieldIdx_Size,
+    FieldIdx_Data,
+    FieldIdx_NumOfValues
+};
+
+void updateMessageNames(QWidget& fieldWidget)
+{
+    static const QString Map[] = {
+        QString(),
+        "CONNECT",
+        "CONNACK"
+    };
+
+    static const unsigned MapSize = std::extent<decltype(Map)>::value;
+
+    static_assert(MapSize == mqtt::MsgId_NumOfValues,
+        "Map is incorrect.");
+
+    for (auto idx = 0U; idx < MapSize; ++idx) {
+        auto& str = Map[idx];
+        if (str.isEmpty()) {
+            continue;
+        }
+
+        cc::Property::setIndexedNameVal(fieldWidget, idx, Map[idx]);
+    }
+}
+
+}  // namespace
 
 void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
@@ -45,6 +82,10 @@ void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx)
     }
 
     cc::Property::setNameVal(fieldWidget, FieldNames[idx]);
+
+    if (idx == FieldIdx_Id) {
+        updateMessageNames(fieldWidget);
+    }
 }
 
 }  // namespace cc_plugin
