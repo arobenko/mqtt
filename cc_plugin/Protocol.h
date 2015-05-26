@@ -35,12 +35,17 @@ class Protocol : public
         cc_plugin::TransportMessage,
         RawDataMessage >
 {
+    typedef comms_champion::ProtocolBase<
+        cc_plugin::Stack,
+        cc_plugin::TransportMessage,
+        RawDataMessage > Base;
 public:
     Protocol() = default;
     virtual ~Protocol();
 
 protected:
     virtual const std::string& nameImpl() const override;
+    virtual void updateMessageInfoImpl(comms_champion::MessageInfo& msgInfo) override;
 };
 
 }  // namespace cc_plugin

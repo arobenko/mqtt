@@ -17,6 +17,8 @@
 
 #include "Protocol.h"
 
+namespace cc = comms_champion;
+
 namespace mqtt
 {
 
@@ -29,6 +31,23 @@ const std::string& Protocol::nameImpl() const
 {
     static const std::string Str("MQTT");
     return Str;
+}
+
+void Protocol::updateMessageInfoImpl(cc::MessageInfo& msgInfo)
+{
+    auto msgPtr = msgInfo.getAppMessage();
+    if (!msgPtr) {
+        return;
+    }
+
+    auto* castedMsgPtr = dynamic_cast<Message*>(msgPtr.get());
+    if (castedMsgPtr == nullptr) {
+        return;
+    }
+
+    castedMsgPtr->updateFlags();
+
+    Base::updateMessageInfoImpl(msgInfo);
 }
 
 }  // namespace cc_plugin

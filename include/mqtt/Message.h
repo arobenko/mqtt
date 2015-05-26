@@ -67,6 +67,16 @@ public:
         m_flags = flags;
     }
 
+    void updateFlags()
+    {
+        updateFlagsImpl();
+    }
+
+protected:
+    virtual void updateFlagsImpl()
+    {
+    }
+
 private:
     FlagsField m_flags;
 };

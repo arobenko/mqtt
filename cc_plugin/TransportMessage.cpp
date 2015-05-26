@@ -18,6 +18,8 @@
 #include "TransportMessage.h"
 #include "mqtt/MsgId.h"
 
+#include <QtCore/QVariantMap>
+
 namespace cc = comms_champion;
 
 namespace mqtt
@@ -31,7 +33,7 @@ namespace
 
 enum FieldIdx
 {
-    FieldIdx_Id,
+    FieldIdx_IdAndFlags,
     FieldIdx_Size,
     FieldIdx_Data,
     FieldIdx_NumOfValues
@@ -60,6 +62,52 @@ void updateMessageNames(QWidget& fieldWidget)
     }
 }
 
+QVariantMap getMsgIdMemberData()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(QString("ID")));
+
+    static const QString Map[] = {
+        QString(),
+        "CONNECT",
+        "CONNACK"
+    };
+
+    static const unsigned MapSize = std::extent<decltype(Map)>::value;
+
+    static_assert(MapSize == mqtt::MsgId_NumOfValues,
+        "Map is incorrect.");
+
+    for (auto idx = 0U; idx < MapSize; ++idx) {
+        map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
+    }
+    return map;
+}
+
+QVariantMap getFlagsMemberData()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(QString("Flags")));
+    return map;
+}
+
+const QVariantMap& getMemberData(std::size_t idx)
+{
+    static const QVariantMap Map[] = {
+        getFlagsMemberData(),
+        getMsgIdMemberData()
+    };
+
+    static const auto DataCount = std::extent<decltype(Map)>::value;
+
+    if (DataCount <= idx) {
+        static const QVariantMap EmptyMap;
+        return EmptyMap;
+    }
+
+    return Map[idx];
+}
+
 }  // namespace
 
 void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
@@ -83,8 +131,9 @@ void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx)
 
     cc::Property::setNameVal(fieldWidget, FieldNames[idx]);
 
-    if (idx == FieldIdx_Id) {
-        updateMessageNames(fieldWidget);
+    if (idx == FieldIdx_IdAndFlags) {
+        cc::Property::setIndexedDataVal(fieldWidget, 0, getFlagsMemberData());
+        cc::Property::setIndexedDataVal(fieldWidget, 1, getMsgIdMemberData());
     }
 }
 
