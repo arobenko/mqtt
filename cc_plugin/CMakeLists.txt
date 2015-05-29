@@ -18,7 +18,9 @@ function (cc_plugin_mqtt)
         Plugin.cpp
         Protocol.cpp
         TransportMessage.cpp
+        message/Connect.cpp
         message/Connack.cpp
+        field/QoS.cpp
     )
     
     set (hdr

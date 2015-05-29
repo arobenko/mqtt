@@ -33,8 +33,8 @@ namespace mqtt
 
 typedef comms::field::IntValue<
     comms::Field<comms::option::LittleEndian>,
-    std::uint16_t,
-    comms::option::VarLength<1, 2> // TODO: change to 4
+    std::uint32_t,
+    comms::option::VarLength<1, 4>
 > RemSizeField;
 
 template <

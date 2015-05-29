@@ -18,22 +18,34 @@
 
 #pragma once
 
-#include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/message/Connect.h"
-#include "mqtt/message/Connack.h"
+#include <cstdint>
 
 namespace mqtt
 {
 
-template <typename TMsgBase = Message>
-using AllMessages = std::tuple<
-    message::Connect<TMsgBase>,
-    message::Connack<TMsgBase>
->;
+namespace field
+{
+
+enum class QosType : std::uint8_t
+{
+    AtMostOnceDelivery,
+    AtLeastOnceDelivery,
+    ExactlyOnceDelivery,
+    NumOfValues
+};
+
+template <typename TFieldBase, typename... TExtraOptions>
+using QoS = comms::field::EnumValue<
+        TFieldBase,
+        QosType,
+        comms::option::ValidNumValueRange<(int)QosType::AtMostOnceDelivery, (int)QosType::NumOfValues - 1>,
+        comms::option::FailOnInvalid,
+        TExtraOptions...
+    >;
+
+}  // namespace field
 
 }  // namespace mqtt
-
 
 
 

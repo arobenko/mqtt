@@ -91,23 +91,6 @@ QVariantMap getFlagsMemberData()
     return map;
 }
 
-const QVariantMap& getMemberData(std::size_t idx)
-{
-    static const QVariantMap Map[] = {
-        getFlagsMemberData(),
-        getMsgIdMemberData()
-    };
-
-    static const auto DataCount = std::extent<decltype(Map)>::value;
-
-    if (DataCount <= idx) {
-        static const QVariantMap EmptyMap;
-        return EmptyMap;
-    }
-
-    return Map[idx];
-}
-
 }  // namespace
 
 void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const

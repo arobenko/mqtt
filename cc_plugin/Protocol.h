@@ -45,7 +45,7 @@ public:
 
 protected:
     virtual const std::string& nameImpl() const override;
-    virtual void updateMessageInfoImpl(comms_champion::MessageInfo& msgInfo) override;
+    virtual UpdateStatus updateMessageInfoImpl(comms_champion::MessageInfo& msgInfo) override;
 };
 
 }  // namespace cc_plugin

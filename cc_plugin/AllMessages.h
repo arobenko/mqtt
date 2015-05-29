@@ -19,6 +19,7 @@
 #pragma once
 
 #include <tuple>
+#include "cc_plugin/message/Connect.h"
 #include "cc_plugin/message/Connack.h"
 #include "cc_plugin/Message.h"
 
@@ -29,6 +30,7 @@ namespace cc_plugin
 {
 
 typedef std::tuple<
+    cc_plugin::message::Connect,
     cc_plugin::message::Connack
 > AllMessages;
 

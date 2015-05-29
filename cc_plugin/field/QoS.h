@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Protocol.h"
+#pragma once
 
-namespace cc = comms_champion;
+#include <QtCore/QVariantMap>
 
 namespace mqtt
 {
@@ -25,33 +25,12 @@ namespace mqtt
 namespace cc_plugin
 {
 
-Protocol::~Protocol() = default;
-
-const std::string& Protocol::nameImpl() const
+namespace field
 {
-    static const std::string Str("MQTT");
-    return Str;
-}
 
-Protocol::UpdateStatus Protocol::updateMessageInfoImpl(cc::MessageInfo& msgInfo)
-{
-    auto msgPtr = msgInfo.getAppMessage();
-    if (!msgPtr) {
-        return UpdateStatus::NoChangeToAppMsg;
-    }
+void updateQosPropertiesMap(QVariantMap& map);
 
-    auto* castedMsgPtr = dynamic_cast<Message*>(msgPtr.get());
-    if (castedMsgPtr == nullptr) {
-        return UpdateStatus::NoChangeToAppMsg;
-    }
-
-    bool updated = castedMsgPtr->refresh();
-    auto parentStatus = Base::updateMessageInfoImpl(msgInfo);
-    if (updated) {
-        return UpdateStatus::AppMsgWasChanged;
-    }
-    return parentStatus;
-}
+}  // namespace field
 
 }  // namespace cc_plugin
 

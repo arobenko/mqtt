@@ -15,9 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Protocol.h"
 
-namespace cc = comms_champion;
+#pragma once
+
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Connect.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
@@ -25,33 +28,29 @@ namespace mqtt
 namespace cc_plugin
 {
 
-Protocol::~Protocol() = default;
-
-const std::string& Protocol::nameImpl() const
+namespace message
 {
-    static const std::string Str("MQTT");
-    return Str;
-}
 
-Protocol::UpdateStatus Protocol::updateMessageInfoImpl(cc::MessageInfo& msgInfo)
+class Connect : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Connect<mqtt::cc_plugin::Message>,
+        Connect>
 {
-    auto msgPtr = msgInfo.getAppMessage();
-    if (!msgPtr) {
-        return UpdateStatus::NoChangeToAppMsg;
-    }
+public:
+    Connect() = default;
+    Connect(const Connect&) = default;
+    Connect(Connect&&) = default;
+    virtual ~Connect() = default;
 
-    auto* castedMsgPtr = dynamic_cast<Message*>(msgPtr.get());
-    if (castedMsgPtr == nullptr) {
-        return UpdateStatus::NoChangeToAppMsg;
-    }
+    Connect& operator=(const Connect&) = default;
+    Connect& operator=(Connect&&) = default;
 
-    bool updated = castedMsgPtr->refresh();
-    auto parentStatus = Base::updateMessageInfoImpl(msgInfo);
-    if (updated) {
-        return UpdateStatus::AppMsgWasChanged;
-    }
-    return parentStatus;
-}
+protected:
+    virtual const char* nameImpl() const override;
+    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+};
+
+}  // namespace message
 
 }  // namespace cc_plugin
 

@@ -28,11 +28,14 @@
 namespace mqtt
 {
 
+class MsgHandler;
+
 typedef std::tuple<
     comms::option::BigEndian,
     comms::option::ReadIterator<const std::uint8_t*>,
     comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >,
-    comms::option::MsgIdType<MsgId>
+    comms::option::MsgIdType<MsgId>,
+    comms::option::Handler<MsgHandler>
 > DefaultOptions;
 
 template <typename... TOptions>
@@ -67,14 +70,15 @@ public:
         m_flags = flags;
     }
 
-    void updateFlags()
+    bool refresh()
     {
-        updateFlagsImpl();
+        return refreshImpl();
     }
 
 protected:
-    virtual void updateFlagsImpl()
+    virtual bool refreshImpl()
     {
+        return false;
     }
 
 private:
