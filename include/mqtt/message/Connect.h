@@ -86,9 +86,9 @@ enum ConnectFlagsLowBitIdx
 
 enum ConnectFlagsHighBitIdx
 {
-    ConnectFlagsLowBitIdx_WillRetain,
-    ConnectFlagsLowBitIdx_PasswordFlag,
-    ConnectFlagsLowBitIdx_UserNameFlag
+    ConnectFlagsHighBitIdx_WillRetain,
+    ConnectFlagsHighBitIdx_PasswordFlag,
+    ConnectFlagsHighBitIdx_UserNameFlag
 };
 
 struct ConnectFlagsExtraValidator
@@ -106,13 +106,13 @@ struct ConnectFlagsExtraValidator
                 return false;
             }
 
-            if (flagsHighField.getBitValue(ConnectFlagsLowBitIdx_WillRetain)) {
+            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_WillRetain)) {
                 return false;
             }
         }
 
-        if (!flagsHighField.getBitValue(ConnectFlagsLowBitIdx_UserNameFlag)) {
-            if (flagsHighField.getBitValue(ConnectFlagsLowBitIdx_PasswordFlag)) {
+        if (!flagsHighField.getBitValue(ConnectFlagsHighBitIdx_UserNameFlag)) {
+            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_PasswordFlag)) {
                 return false;
             }
         }
@@ -194,6 +194,34 @@ using WillMessageField =
         >
     >;
 
+template <typename TFieldBase>
+using UserNameField =
+    comms::field::Optional<
+        comms::field::String<
+            TFieldBase,
+            comms::option::SequenceSizeFieldPrefix<
+                comms::field::IntValue<
+                    TFieldBase,
+                    std::uint16_t
+                >
+            >
+        >
+    >;
+
+template <typename TFieldBase>
+using PasswordField =
+    comms::field::Optional<
+        comms::field::ArrayList<
+            TFieldBase,
+            std::uint8_t,
+            comms::option::SequenceSizeFieldPrefix<
+                comms::field::IntValue<
+                    TFieldBase,
+                    std::uint16_t
+                >
+            >
+        >
+    >;
 
 template <typename TFieldBase>
 using ConnectFields = std::tuple<
@@ -203,7 +231,9 @@ using ConnectFields = std::tuple<
     KeepAliveField<TFieldBase>,
     ClientIdField<TFieldBase>,
     WillTopicField<TFieldBase>,
-    WillMessageField<TFieldBase>
+    WillMessageField<TFieldBase>,
+    UserNameField<TFieldBase>,
+    PasswordField<TFieldBase>
 >;
 
 template <typename TMsgBase = Message>
@@ -231,6 +261,8 @@ public:
         FieldIdx_ClientId,
         FieldIdx_WillTopic,
         FieldIdx_WillMessage,
+        FieldIdx_UserName,
+        FieldIdx_Password,
         FieldIdx_NumOfValues
     };
 
@@ -274,6 +306,13 @@ protected:
         updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willTopicField);
         updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willMessageField);
 
+        auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
+
+        auto& userNameField = std::get<FieldIdx_UserName>(fields);
+        auto& passwordField = std::get<FieldIdx_Password>(fields);
+        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, userNameField);
+        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, passwordField);
+
         return Base::template readFieldsFrom<FieldIdx_WillMessage>(iter, size);
     }
 
@@ -283,9 +322,12 @@ protected:
         auto& flagsField = std::get<FieldIdx_Flags>(fields);
         auto& willTopicField = std::get<FieldIdx_WillTopic>(fields);
         auto& willMessageField = std::get<FieldIdx_WillMessage>(fields);
+        auto& userNameField = std::get<FieldIdx_UserName>(fields);
+        auto& passwordField = std::get<FieldIdx_Password>(fields);
 
         auto& flagsMembers = flagsField.members();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
+        auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
 
         bool updated = false;
         updated =
@@ -294,6 +336,12 @@ protected:
         updated =
             refreshOptionalField(
                 flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willMessageField) || updated;
+        updated =
+            refreshOptionalField(
+                flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, userNameField) || updated;
+        updated =
+            refreshOptionalField(
+                flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, passwordField) || updated;
 
         return updated;
     }

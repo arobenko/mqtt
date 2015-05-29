@@ -39,29 +39,6 @@ enum FieldIdx
     FieldIdx_NumOfValues
 };
 
-void updateMessageNames(QWidget& fieldWidget)
-{
-    static const QString Map[] = {
-        QString(),
-        "CONNECT",
-        "CONNACK"
-    };
-
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    static_assert(MapSize == mqtt::MsgId_NumOfValues,
-        "Map is incorrect.");
-
-    for (auto idx = 0U; idx < MapSize; ++idx) {
-        auto& str = Map[idx];
-        if (str.isEmpty()) {
-            continue;
-        }
-
-        cc::Property::setIndexedNameVal(fieldWidget, idx, Map[idx]);
-    }
-}
-
 QVariantMap getMsgIdMemberData()
 {
     QVariantMap map;
@@ -78,7 +55,7 @@ QVariantMap getMsgIdMemberData()
     static_assert(MapSize == mqtt::MsgId_NumOfValues,
         "Map is incorrect.");
 
-    for (auto idx = 0U; idx < MapSize; ++idx) {
+    for (auto idx = 1U; idx < MapSize; ++idx) {
         map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
     }
     return map;

@@ -48,6 +48,18 @@ const QString& getWillMessageFieldName()
     return Str;
 }
 
+const QString& getUserNameFieldName()
+{
+    static const QString& Str("User Name");
+    return Str;
+}
+
+const QString& getPasswordFieldName()
+{
+    static const QString& Str("Password");
+    return Str;
+}
+
 QVariantMap getFlagsLowMemberData()
 {
     QVariantMap map;
@@ -110,6 +122,20 @@ QVariantMap getWillMessageData()
     return map;
 }
 
+QVariantMap getUserNameData()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(getUserNameFieldName()));
+    return map;
+}
+
+QVariantMap getPasswordData()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(getPasswordFieldName()));
+    return map;
+}
+
 void updateNameProperties(QWidget& fieldWidget)
 {
     static const QString Str("Name");
@@ -160,6 +186,19 @@ void updateWillMessageProperties(QWidget& fieldWidget)
         fieldWidget, getWillMessageData());
 }
 
+void updateUserNameProperties(QWidget& fieldWidget)
+{
+    cc::Property::setNameVal(fieldWidget, getUserNameFieldName());
+    cc::Property::setDataVal(
+        fieldWidget, getUserNameData());
+}
+
+void updatePasswordProperties(QWidget& fieldWidget)
+{
+    cc::Property::setNameVal(fieldWidget, getPasswordFieldName());
+    cc::Property::setDataVal(
+        fieldWidget, getPasswordData());
+}
 
 }  // namespace
 
@@ -179,7 +218,9 @@ void Connect::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
         &updateKeepAliveProperties,
         &updateClientIdProperties,
         &updateWillTopicProperties,
-        &updateWillMessageProperties
+        &updateWillMessageProperties,
+        &updateUserNameProperties,
+        &updatePasswordProperties
     };
 
     static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;
