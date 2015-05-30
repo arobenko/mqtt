@@ -79,7 +79,7 @@ const char* Connack::nameImpl() const
 void Connack::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
     static const QString Names[] = {
-        "Flags",
+        "Connect Acknowledge Flags",
         "Response"
     };
 

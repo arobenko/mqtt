@@ -36,6 +36,12 @@ namespace message
 namespace
 {
 
+const QString& getEmptyString()
+{
+    static const QString Str;
+    return Str;
+}
+
 const QString& getWillTopicFieldName()
 {
     static const QString& Str("Will Topic");
@@ -63,7 +69,7 @@ const QString& getPasswordFieldName()
 QVariantMap getFlagsLowMemberData()
 {
     QVariantMap map;
-    static const QString Name("Flags (low)");
+    static const QString Name("Connect Flags");
     map.insert(cc::Property::name(), QVariant::fromValue(Name));
 
     static const QString Map[] = {
@@ -91,8 +97,7 @@ QVariantMap getFlagsQosMemberData()
 QVariantMap getFlagsHighMemberData()
 {
     QVariantMap map;
-    static const QString Name("Flags (high)");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::name(), QVariant::fromValue(getEmptyString()));
 
     static const QString Map[] = {
         "Will Retain",
