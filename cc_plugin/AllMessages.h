@@ -21,6 +21,7 @@
 #include <tuple>
 #include "cc_plugin/message/Connect.h"
 #include "cc_plugin/message/Connack.h"
+#include "cc_plugin/message/Publish.h"
 #include "cc_plugin/Message.h"
 
 namespace mqtt
@@ -31,7 +32,8 @@ namespace cc_plugin
 
 typedef std::tuple<
     cc_plugin::message::Connect,
-    cc_plugin::message::Connack
+    cc_plugin::message::Connack,
+    cc_plugin::message::Publish
 > AllMessages;
 
 }  // namespace cc_plugin

@@ -22,6 +22,7 @@
 #include "mqtt/Message.h"
 #include "mqtt/message/Connect.h"
 #include "mqtt/message/Connack.h"
+#include "mqtt/message/Publish.h"
 
 namespace mqtt
 {
@@ -29,7 +30,8 @@ namespace mqtt
 template <typename TMsgBase = Message>
 using AllMessages = std::tuple<
     message::Connect<TMsgBase>,
-    message::Connack<TMsgBase>
+    message::Connack<TMsgBase>,
+    message::Publish<TMsgBase>
 >;
 
 }  // namespace mqtt

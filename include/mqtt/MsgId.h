@@ -28,6 +28,7 @@ enum MsgId : std::uint8_t
     MsgId_Reserved,
     MsgId_CONNECT,
     MsgId_CONNACK,
+    MsgId_PUBLISH,
     MsgId_NumOfValues // Mast be last
 };
 

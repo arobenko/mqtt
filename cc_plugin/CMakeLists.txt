@@ -20,11 +20,13 @@ function (cc_plugin_mqtt)
         TransportMessage.cpp
         message/Connect.cpp
         message/Connack.cpp
+        message/Publish.cpp
         field/QoS.cpp
     )
     
     set (hdr
         Plugin.h
+        message/Publish.h
     )
     
     

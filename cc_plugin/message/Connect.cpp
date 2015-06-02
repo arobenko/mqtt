@@ -155,7 +155,7 @@ void updateLevelProperties(QWidget& fieldWidget)
 
 void updateFlagsProperties(QWidget& fieldWidget)
 {
-    static const QString Str("Flags");
+    static const QString Str("Connect Flags");
     cc::Property::setNameVal(fieldWidget, Str);
     cc::Property::setIndexedDataVal(
         fieldWidget, mqtt::message::ConnectFlagsMemberIdx_FlagsLow, getFlagsLowMemberData());
