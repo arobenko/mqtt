@@ -19,8 +19,11 @@
 #pragma once
 
 #include <tuple>
+#include <algorithm>
+
 #include "mqtt/Message.h"
 #include "mqtt/field/QoS.h"
+#include "mqtt/field/PacketId.h"
 
 namespace mqtt
 {
@@ -88,8 +91,15 @@ struct PublishTopicValidator
     template <typename TField>
     bool operator()(TField&& field) const
     {
-        return !field.getValue().empty();
-        // TODO: add no wildcards
+        auto& topic = field.getValue();
+        return
+            (!topic.empty()) &&
+            (std::none_of(
+                topic.begin(), topic.end(),
+                [](char ch) -> bool
+                {
+                    return (ch == '#') || (ch == '+');
+                }));
     }
 };
 
@@ -106,10 +116,25 @@ using PublishTopicField =
         >
     >;
 
+template <typename TFieldBase>
+using PublishPacketIdField =
+    comms::field::Optional<
+        mqtt::field::PacketId<TFieldBase>
+    >;
+
+template <typename TFieldBase>
+using PublishPayload =
+    comms::field::ArrayList<
+        TFieldBase,
+        std::uint8_t
+    >;
+
 
 template <typename TFieldBase>
 using PublishFields = std::tuple<
-    PublishTopicField<TFieldBase>
+    PublishTopicField<TFieldBase>,
+    PublishPacketIdField<TFieldBase>,
+    PublishPayload<TFieldBase>
 >;
 
 template <typename TMsgBase = Message>
@@ -134,13 +159,22 @@ public:
     enum FieldIdx
     {
         FieldIdx_Topic,
+        FieldIdx_PacketId,
+        FieldIdx_Payload,
         FieldIdx_NumOfValues
     };
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
         "Number of fields is incorrect");
 
-    Publish() = default;
+    Publish()
+    {
+        auto& fields = Base::getFields();
+        auto& packetIdField = std::get<FieldIdx_PacketId>(fields);
+
+        packetIdField.setMode(comms::field::OptionalMode::Missing);
+    }
+
     Publish(const Publish&) = default;
     Publish(Publish&& other)
     {
@@ -149,6 +183,36 @@ public:
 
     Publish& operator=(const Publish&) = default;
     Publish& operator=(Publish&&) = default;
+
+protected:
+
+    virtual bool refreshImpl() override
+    {
+        auto& flagsField = Base::getFlags();
+
+        ActualFlags actFlags(flagsField.getValue());
+        auto& actFlagsMembers = actFlags.members();
+        auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(actFlagsMembers);
+
+        comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
+        if (qosMemberField.getValue() == mqtt::field::QosType::AtMostOnceDelivery) {
+            packetIdMode = comms::field::OptionalMode::Missing;
+        }
+
+        auto& packetIdField = std::get<FieldIdx_PacketId>(Base::getFields());
+        bool updated = (packetIdField.getMode() != packetIdMode);
+        packetIdField.setMode(packetIdMode);
+
+        return updated;
+    }
+
+    virtual bool validImpl() const override
+    {
+        auto& flagsField = Base::getFlags();
+        ActualFlags actFlags(flagsField.getValue());
+
+        return actFlags.valid() && Base::validImpl();
+    }
 };
 
 }  // namespace message

@@ -103,6 +103,22 @@ void updateTopicProperties(QWidget& fieldWidget)
     cc::Property::setNameVal(fieldWidget, Str);
 }
 
+void updatePacketIdProperties(QWidget& fieldWidget)
+{
+    static const QString Str("Packet ID");
+    cc::Property::setNameVal(fieldWidget, Str);
+
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(Str));
+    cc::Property::setDataVal(fieldWidget, map);
+}
+
+void updatePayloadProperties(QWidget& fieldWidget)
+{
+    static const QString Str("Payload");
+    cc::Property::setNameVal(fieldWidget, Str);
+}
+
 }  // namespace
 
 Publish::Publish()
@@ -154,7 +170,9 @@ void Publish::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
     typedef std::function<void (QWidget&)> FieldUpdateFunc;
     static const FieldUpdateFunc FuncMap[] = {
-        &updateTopicProperties
+        &updateTopicProperties,
+        &updatePacketIdProperties,
+        &updatePayloadProperties
     };
 
     static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;
