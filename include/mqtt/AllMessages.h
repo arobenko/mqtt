@@ -24,6 +24,7 @@
 #include "mqtt/message/Connack.h"
 #include "mqtt/message/Publish.h"
 #include "mqtt/message/Puback.h"
+#include "mqtt/message/Pubrec.h"
 
 namespace mqtt
 {
@@ -33,7 +34,8 @@ using AllMessages = std::tuple<
     message::Connect<TMsgBase>,
     message::Connack<TMsgBase>,
     message::Publish<TMsgBase>,
-    message::Puback<TMsgBase>
+    message::Puback<TMsgBase>,
+    message::Pubrec<TMsgBase>
 >;
 
 }  // namespace mqtt

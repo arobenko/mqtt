@@ -22,6 +22,7 @@ function (cc_plugin_mqtt)
         message/Connack.cpp
         message/Publish.cpp
         message/Puback.cpp
+        message/Pubrec.cpp
         field/QoS.cpp
         field/PacketId.cpp
     )

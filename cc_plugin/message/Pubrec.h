@@ -18,14 +18,9 @@
 
 #pragma once
 
-#include <tuple>
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Pubrec.h"
 #include "cc_plugin/Message.h"
-
-#include "cc_plugin/message/Connect.h"
-#include "cc_plugin/message/Connack.h"
-#include "cc_plugin/message/Publish.h"
-#include "cc_plugin/message/Puback.h"
-#include "cc_plugin/message/Pubrec.h"
 
 namespace mqtt
 {
@@ -33,18 +28,32 @@ namespace mqtt
 namespace cc_plugin
 {
 
-typedef std::tuple<
-    cc_plugin::message::Connect,
-    cc_plugin::message::Connack,
-    cc_plugin::message::Publish,
-    cc_plugin::message::Puback,
-    cc_plugin::message::Pubrec
-> AllMessages;
+namespace message
+{
+
+class Pubrec : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Pubrec<mqtt::cc_plugin::Message>,
+        Pubrec>
+{
+public:
+    Pubrec() = default;
+    Pubrec(const Pubrec&) = default;
+    Pubrec(Pubrec&&) = default;
+    virtual ~Pubrec() = default;
+
+    Pubrec& operator=(const Pubrec&) = default;
+    Pubrec& operator=(Pubrec&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+};
+
+}  // namespace message
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
-
-
 
 

@@ -49,7 +49,8 @@ QVariantMap getMsgIdMemberData()
         "CONNECT",
         "CONNACK",
         "PUBLISH",
-        "PUBACK"
+        "PUBACK",
+        "PUBREC"
     };
 
     static const unsigned MapSize = std::extent<decltype(Map)>::value;
