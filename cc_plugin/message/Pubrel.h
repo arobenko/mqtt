@@ -18,15 +18,9 @@
 
 #pragma once
 
-#include <tuple>
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Pubrel.h"
 #include "cc_plugin/Message.h"
-
-#include "cc_plugin/message/Connect.h"
-#include "cc_plugin/message/Connack.h"
-#include "cc_plugin/message/Publish.h"
-#include "cc_plugin/message/Puback.h"
-#include "cc_plugin/message/Pubrec.h"
-#include "cc_plugin/message/Pubrel.h"
 
 namespace mqtt
 {
@@ -34,19 +28,32 @@ namespace mqtt
 namespace cc_plugin
 {
 
-typedef std::tuple<
-    cc_plugin::message::Connect,
-    cc_plugin::message::Connack,
-    cc_plugin::message::Publish,
-    cc_plugin::message::Puback,
-    cc_plugin::message::Pubrec,
-    cc_plugin::message::Pubrel
-> AllMessages;
+namespace message
+{
+
+class Pubrel : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Pubrel<mqtt::cc_plugin::Message>,
+        Pubrel>
+{
+public:
+    Pubrel() = default;
+    Pubrel(const Pubrel&) = default;
+    Pubrel(Pubrel&&) = default;
+    virtual ~Pubrel() = default;
+
+    Pubrel& operator=(const Pubrel&) = default;
+    Pubrel& operator=(Pubrel&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+};
+
+}  // namespace message
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
-
-
 
 

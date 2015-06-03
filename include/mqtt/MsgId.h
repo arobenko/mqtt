@@ -31,6 +31,7 @@ enum MsgId : std::uint8_t
     MsgId_PUBLISH,
     MsgId_PUBACK,
     MsgId_PUBREC,
+    MsgId_PUBREL,
     MsgId_NumOfValues // Mast be last
 };
 
