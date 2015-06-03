@@ -34,7 +34,7 @@ namespace message
 namespace
 {
 
-void updateFlagsInfo(QWidget& fieldWidget)
+void updateFlagsInfo(QObject& fieldWidget)
 {
     static const QString Names[] = {
         "Session Present"
@@ -47,7 +47,7 @@ void updateFlagsInfo(QWidget& fieldWidget)
     }
 }
 
-void updateResponseInfo(QWidget& fieldWidget)
+void updateResponseInfo(QObject& fieldWidget)
 {
     static const QString Names[] = {
         "Accepted",
@@ -100,7 +100,7 @@ void Connack::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
         };
     }
 
-    typedef std::function<void (QWidget&)> ExtraUpdateFunc;
+    typedef std::function<void (QObject&)> ExtraUpdateFunc;
     static const ExtraUpdateFunc ExtraFuncs[] = {
         &updateFlagsInfo,
         &updateResponseInfo

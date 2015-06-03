@@ -22,6 +22,7 @@
 #include <QtCore/QVariantMap>
 
 #include "cc_plugin/field/QoS.h"
+#include "cc_plugin/field/PacketId.h"
 #include "Publish.h"
 
 namespace cc = comms_champion;
@@ -97,23 +98,13 @@ QVariantMap getReservedMemberData()
 }
 
 
-void updateTopicProperties(QWidget& fieldWidget)
+void updateTopicProperties(QObject& fieldWidget)
 {
     static const QString Str("Topic");
     cc::Property::setNameVal(fieldWidget, Str);
 }
 
-void updatePacketIdProperties(QWidget& fieldWidget)
-{
-    static const QString Str("Packet ID");
-    cc::Property::setNameVal(fieldWidget, Str);
-
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(Str));
-    cc::Property::setDataVal(fieldWidget, map);
-}
-
-void updatePayloadProperties(QWidget& fieldWidget)
+void updatePayloadProperties(QObject& fieldWidget)
 {
     static const QString Str("Payload");
     cc::Property::setNameVal(fieldWidget, Str);
@@ -168,10 +159,10 @@ void Publish::widgetCreationEndNotificationImpl(cc::MessageWidget& widget)
 
 void Publish::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
-    typedef std::function<void (QWidget&)> FieldUpdateFunc;
+    typedef std::function<void (QObject&)> FieldUpdateFunc;
     static const FieldUpdateFunc FuncMap[] = {
         &updateTopicProperties,
-        &updatePacketIdProperties,
+        &cc_plugin::field::updateOptionalPacketIdProperties,
         &updatePayloadProperties
     };
 

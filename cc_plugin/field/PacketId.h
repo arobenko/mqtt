@@ -18,20 +18,24 @@
 
 #pragma once
 
-#include <cstdint>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_NumOfValues // Mast be last
-};
+
+namespace field
+{
+
+const QString& packetIdFieldName();
+void updatePacketIdProperties(QObject& obj);
+void updateOptionalPacketIdProperties(QObject& obj);
+
+}  // namespace field
+}  // namespace cc_plugin
 
 }  // namespace mqtt
 

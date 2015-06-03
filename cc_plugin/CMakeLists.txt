@@ -21,7 +21,9 @@ function (cc_plugin_mqtt)
         message/Connect.cpp
         message/Connack.cpp
         message/Publish.cpp
+        message/Puback.cpp
         field/QoS.cpp
+        field/PacketId.cpp
     )
     
     set (hdr

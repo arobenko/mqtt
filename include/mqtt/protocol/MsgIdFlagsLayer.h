@@ -205,6 +205,7 @@ private:
 
         MsgFlagsField msgFlagsField(flagsField.getValue());
         msgPtr->setFlags(msgFlagsField);
+        msgPtr->refresh();
 
         es = reader.read(msgPtr, iter, size - field.length(), missingSize);
         if (es != comms::ErrorStatus::Success) {

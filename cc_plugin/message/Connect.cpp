@@ -141,19 +141,19 @@ QVariantMap getPasswordData()
     return map;
 }
 
-void updateNameProperties(QWidget& fieldWidget)
+void updateNameProperties(QObject& fieldWidget)
 {
     static const QString Str("Name");
     cc::Property::setNameVal(fieldWidget, Str);
 }
 
-void updateLevelProperties(QWidget& fieldWidget)
+void updateLevelProperties(QObject& fieldWidget)
 {
     static const QString Str("Level");
     cc::Property::setNameVal(fieldWidget, Str);
 }
 
-void updateFlagsProperties(QWidget& fieldWidget)
+void updateFlagsProperties(QObject& fieldWidget)
 {
     static const QString Str("Connect Flags");
     cc::Property::setNameVal(fieldWidget, Str);
@@ -165,40 +165,40 @@ void updateFlagsProperties(QWidget& fieldWidget)
         fieldWidget, mqtt::message::ConnectFlagsMemberIdx_FlagsHigh, getFlagsHighMemberData());
 }
 
-void updateKeepAliveProperties(QWidget& fieldWidget)
+void updateKeepAliveProperties(QObject& fieldWidget)
 {
     static const QString Str("Keep Alive");
     cc::Property::setNameVal(fieldWidget, Str);
 }
 
-void updateClientIdProperties(QWidget& fieldWidget)
+void updateClientIdProperties(QObject& fieldWidget)
 {
     static const QString Str("Client ID");
     cc::Property::setNameVal(fieldWidget, Str);
 }
 
-void updateWillTopicProperties(QWidget& fieldWidget)
+void updateWillTopicProperties(QObject& fieldWidget)
 {
     cc::Property::setNameVal(fieldWidget, getWillTopicFieldName());
     cc::Property::setDataVal(
         fieldWidget, getWillTopicData());
 }
 
-void updateWillMessageProperties(QWidget& fieldWidget)
+void updateWillMessageProperties(QObject& fieldWidget)
 {
     cc::Property::setNameVal(fieldWidget, getWillMessageFieldName());
     cc::Property::setDataVal(
         fieldWidget, getWillMessageData());
 }
 
-void updateUserNameProperties(QWidget& fieldWidget)
+void updateUserNameProperties(QObject& fieldWidget)
 {
     cc::Property::setNameVal(fieldWidget, getUserNameFieldName());
     cc::Property::setDataVal(
         fieldWidget, getUserNameData());
 }
 
-void updatePasswordProperties(QWidget& fieldWidget)
+void updatePasswordProperties(QObject& fieldWidget)
 {
     cc::Property::setNameVal(fieldWidget, getPasswordFieldName());
     cc::Property::setDataVal(
@@ -215,7 +215,7 @@ const char* Connect::nameImpl() const
 
 void Connect::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
-    typedef std::function<void (QWidget&)> FieldUpdateFunc;
+    typedef std::function<void (QObject&)> FieldUpdateFunc;
     static const FieldUpdateFunc FuncMap[] = {
         &updateNameProperties,
         &updateLevelProperties,

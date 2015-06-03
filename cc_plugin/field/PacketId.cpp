@@ -15,24 +15,45 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "PacketId.h"
 
-#pragma once
+#include "comms_champion/comms_champion.h"
 
-#include <cstdint>
+namespace cc = comms_champion;
+
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_NumOfValues // Mast be last
-};
+
+namespace field
+{
+
+const QString& packetIdFieldName()
+{
+    static const QString Str("Packet ID");
+    return Str;
+}
+
+void updatePacketIdProperties(QObject& obj)
+{
+    cc::Property::setNameVal(obj, packetIdFieldName());
+}
+
+void updateOptionalPacketIdProperties(QObject& obj)
+{
+    updatePacketIdProperties(obj);
+
+    QVariantMap map;
+    map.insert(cc::Property::name(), packetIdFieldName());
+    cc::Property::setDataVal(obj, map);
+}
+
+}  // namespace field
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
-
 
