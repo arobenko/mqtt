@@ -27,6 +27,7 @@
 #include "cc_plugin/message/Puback.h"
 #include "cc_plugin/message/Pubrec.h"
 #include "cc_plugin/message/Pubrel.h"
+#include "cc_plugin/message/Pubcomp.h"
 
 namespace mqtt
 {
@@ -40,8 +41,13 @@ typedef std::tuple<
     cc_plugin::message::Publish,
     cc_plugin::message::Puback,
     cc_plugin::message::Pubrec,
-    cc_plugin::message::Pubrel
+    cc_plugin::message::Pubrel,
+    cc_plugin::message::Pubcomp
 > AllMessages;
+
+static_assert(
+    std::tuple_size<AllMessages>::value == (mqtt::MsgId_NumOfValues - 1),
+        "Some messages are missing from the bundle.");
 
 }  // namespace cc_plugin
 

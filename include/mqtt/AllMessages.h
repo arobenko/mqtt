@@ -26,6 +26,7 @@
 #include "mqtt/message/Puback.h"
 #include "mqtt/message/Pubrec.h"
 #include "mqtt/message/Pubrel.h"
+#include "mqtt/message/Pubcomp.h"
 
 namespace mqtt
 {
@@ -37,7 +38,8 @@ using AllMessages = std::tuple<
     message::Publish<TMsgBase>,
     message::Puback<TMsgBase>,
     message::Pubrec<TMsgBase>,
-    message::Pubrel<TMsgBase>
+    message::Pubrel<TMsgBase>,
+    message::Pubcomp<TMsgBase>
 >;
 
 }  // namespace mqtt

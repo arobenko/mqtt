@@ -24,6 +24,7 @@ function (cc_plugin_mqtt)
         message/Puback.cpp
         message/Pubrec.cpp
         message/Pubrel.cpp
+        message/Pubcomp.cpp
         field/QoS.cpp
         field/PacketId.cpp
     )

@@ -18,23 +18,41 @@
 
 #pragma once
 
-#include <cstdint>
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Pubcomp.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_PUBREC,
-    MsgId_PUBREL,
-    MsgId_PUBCOMP,
-    MsgId_NumOfValues // Mast be last
+
+namespace message
+{
+
+class Pubcomp : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Pubcomp<mqtt::cc_plugin::Message>,
+        Pubcomp>
+{
+public:
+    Pubcomp() = default;
+    Pubcomp(const Pubcomp&) = default;
+    Pubcomp(Pubcomp&&) = default;
+    virtual ~Pubcomp() = default;
+
+    Pubcomp& operator=(const Pubcomp&) = default;
+    Pubcomp& operator=(Pubcomp&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
 };
+
+}  // namespace message
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
 
