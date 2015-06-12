@@ -129,8 +129,7 @@ using ConnectFlagsField =
             comms::field::BitmaskValue<
                 TFieldBase,
                 comms::option::FixedBitLength<3>,
-                comms::option::BitmaskReservedBits<0x1, 0>,
-                comms::option::FailOnInvalid
+                comms::option::BitmaskReservedBits<0x1, 0>
             >,
             mqtt::field::QoS<
                 TFieldBase,

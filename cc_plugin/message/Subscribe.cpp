@@ -19,9 +19,12 @@
 #include <functional>
 #include <cassert>
 
-#include "Puback.h"
+#include <QtCore/QVariantMap>
+
+#include "Subscribe.h"
 
 #include "cc_plugin/field/PacketId.h"
+#include "cc_plugin/field/QoS.h"
 
 namespace cc = comms_champion;
 
@@ -34,17 +37,56 @@ namespace cc_plugin
 namespace message
 {
 
-const char* Puback::nameImpl() const
+namespace
 {
-    static const char* Str = "PUBACK";
+
+QVariantMap getTopicFilterMemberData()
+{
+    QVariantMap map;
+    static const QString Name("Topic");
+    map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::serialisedHidden(), true);
+    return map;
+}
+
+QVariantMap getRequestQosMemberData()
+{
+    QVariantMap map;
+    static const QString Name("Req. QoS");
+    map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::serialisedHidden(), true);
+    field::updateQosPropertiesMap(map);
+    return map;
+}
+
+QVariantMap getPayloadBundleData()
+{
+    QVariantMap map;
+    map.insert(cc::Property::indexedData(0), QVariant::fromValue(getTopicFilterMemberData()));
+    map.insert(cc::Property::indexedData(1), QVariant::fromValue(getRequestQosMemberData()));
+    return map;
+}
+
+void updatePayloadProperties(QObject& fieldWidget)
+{
+    cc::Property::setNameVal(fieldWidget, "Payload");
+    cc::Property::setDataVal(fieldWidget, getPayloadBundleData());
+}
+
+}  // namespace
+
+const char* Subscribe::nameImpl() const
+{
+    static const char* Str = "SUBSCRIBE";
     return Str;
 }
 
-void Puback::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+void Subscribe::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
     typedef std::function<void (QObject&)> FieldUpdateFunc;
     static const FieldUpdateFunc FuncMap[] = {
         &cc_plugin::field::updatePacketIdProperties,
+        &updatePayloadProperties
     };
 
     static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;

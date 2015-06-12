@@ -39,7 +39,6 @@ using QoS = comms::field::EnumValue<
         TFieldBase,
         QosType,
         comms::option::ValidNumValueRange<(int)QosType::AtMostOnceDelivery, (int)QosType::NumOfValues - 1>,
-        comms::option::FailOnInvalid,
         TExtraOptions...
     >;
 

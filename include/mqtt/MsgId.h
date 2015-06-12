@@ -33,6 +33,7 @@ enum MsgId : std::uint8_t
     MsgId_PUBREC,
     MsgId_PUBREL,
     MsgId_PUBCOMP,
+    MsgId_SUBSCRIBE,
     MsgId_NumOfValues // Mast be last
 };
 

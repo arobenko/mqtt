@@ -44,7 +44,7 @@ void Pubrel::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
 {
     typedef std::function<void (QObject&)> FieldUpdateFunc;
     static const FieldUpdateFunc FuncMap[] = {
-        &cc_plugin::field::updateOptionalPacketIdProperties,
+        &cc_plugin::field::updatePacketIdProperties,
     };
 
     static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;

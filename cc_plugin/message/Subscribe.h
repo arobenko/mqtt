@@ -18,39 +18,42 @@
 
 #pragma once
 
-#include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/message/Connect.h"
-#include "mqtt/message/Connack.h"
-#include "mqtt/message/Publish.h"
-#include "mqtt/message/Puback.h"
-#include "mqtt/message/Pubrec.h"
-#include "mqtt/message/Pubrel.h"
-#include "mqtt/message/Pubcomp.h"
+#include "comms_champion/comms_champion.h"
 #include "mqtt/message/Subscribe.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
 
-template <typename TMsgBase = Message>
-using AllMessages = std::tuple<
-    message::Connect<TMsgBase>,
-    message::Connack<TMsgBase>,
-    message::Publish<TMsgBase>,
-    message::Puback<TMsgBase>,
-    message::Pubrec<TMsgBase>,
-    message::Pubrel<TMsgBase>,
-    message::Pubcomp<TMsgBase>,
-    message::Subscribe<TMsgBase>
->;
+namespace cc_plugin
+{
 
-static_assert(
-    std::tuple_size<AllMessages<> >::value == (mqtt::MsgId_NumOfValues - 1),
-        "Some messages are missing from the bundle.");
+namespace message
+{
 
+class Subscribe : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Subscribe<mqtt::cc_plugin::Message>,
+        Subscribe>
+{
+public:
+    Subscribe() = default;
+    Subscribe(const Subscribe&) = default;
+    Subscribe(Subscribe&&) = default;
+    virtual ~Subscribe() = default;
+
+    Subscribe& operator=(const Subscribe&) = default;
+    Subscribe& operator=(Subscribe&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+};
+
+}  // namespace message
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
-
-
 
 
