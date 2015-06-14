@@ -16,9 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "TransportMessage.h"
-#include "mqtt/MsgId.h"
+
+#include <cassert>
 
 #include <QtCore/QVariantMap>
+
+#include "mqtt/MsgId.h"
 
 namespace cc = comms_champion;
 
@@ -39,7 +42,7 @@ enum FieldIdx
     FieldIdx_NumOfValues
 };
 
-QVariantMap getMsgIdMemberData()
+QVariantMap createMsgIdMemberData()
 {
     QVariantMap map;
     map.insert(cc::Property::name(), QVariant::fromValue(QString("ID")));
@@ -67,41 +70,54 @@ QVariantMap getMsgIdMemberData()
     return map;
 }
 
-QVariantMap getFlagsMemberData()
+QVariantMap createFlagsProperties()
 {
     QVariantMap map;
     map.insert(cc::Property::name(), QVariant::fromValue(QString("Flags")));
     return map;
 }
 
+QVariantMap createIdAndFlagsProperties()
+{
+    QVariantMap map;
+    map.insert(cc::Property::indexedData(0), createFlagsProperties());
+    map.insert(cc::Property::indexedData(1), createMsgIdMemberData());
+    return map;
+}
+
+QVariantMap createSizeProperties()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(QString("Size")));
+    return map;
+}
+
+QVariantMap createDataProperties()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), QVariant::fromValue(QString("Data")));
+    return map;
+}
+
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(createIdAndFlagsProperties());
+    props.append(createSizeProperties());
+    props.append(createDataProperties());
+
+    assert(props.size() == FieldIdx_NumOfValues);
+    return props;
+}
+
 }  // namespace
 
-void TransportMessage::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+const QVariantList& TransportMessage::fieldsPropertiesImpl() const
 {
-    static const char* FieldNames[] = {
-        "ID",
-        "Size",
-        "Data"
-    };
-
-    static const std::size_t NumOfFields =
-        std::tuple_size<cc_plugin::Stack::AllFields>::value;
-
-    static_assert(
-        std::extent<decltype(FieldNames)>::value == NumOfFields,
-        "FieldNames array must be updated.");
-
-    if (NumOfFields <= idx) {
-        return;
-    }
-
-    cc::Property::setNameVal(fieldWidget, FieldNames[idx]);
-
-    if (idx == FieldIdx_IdAndFlags) {
-        cc::Property::setIndexedDataVal(fieldWidget, 0, getFlagsMemberData());
-        cc::Property::setIndexedDataVal(fieldWidget, 1, getMsgIdMemberData());
-    }
+    static const auto Props = createFieldsProperties();
+    return Props;
 }
+
 
 }  // namespace cc_plugin
 

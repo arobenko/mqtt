@@ -141,68 +141,102 @@ QVariantMap getPasswordData()
     return map;
 }
 
-void updateNameProperties(QObject& fieldWidget)
+QVariantMap createNameProperties()
 {
     static const QString Str("Name");
-    cc::Property::setNameVal(fieldWidget, Str);
+    QVariantMap props;
+    props.insert(cc::Property::name(), QVariant::fromValue(Str));
+    return props;
 }
 
-void updateLevelProperties(QObject& fieldWidget)
+QVariantMap createLevelProperties()
 {
     static const QString Str("Level");
-    cc::Property::setNameVal(fieldWidget, Str);
+    QVariantMap props;
+    props.insert(cc::Property::name(), QVariant::fromValue(Str));
+    return props;
 }
 
-void updateFlagsProperties(QObject& fieldWidget)
+QVariantMap createFlagsProperties()
 {
     static const QString Str("Connect Flags");
-    cc::Property::setNameVal(fieldWidget, Str);
-    cc::Property::setIndexedDataVal(
-        fieldWidget, mqtt::message::ConnectFlagsMemberIdx_FlagsLow, getFlagsLowMemberData());
-    cc::Property::setIndexedDataVal(
-        fieldWidget, mqtt::message::ConnectFlagsMemberIdx_WillQos, getFlagsQosMemberData());
-    cc::Property::setIndexedDataVal(
-        fieldWidget, mqtt::message::ConnectFlagsMemberIdx_FlagsHigh, getFlagsHighMemberData());
+    QVariantMap props;
+    props.insert(cc::Property::name(), QVariant::fromValue(Str));
+    props.insert(
+        cc::Property::indexedData(mqtt::message::ConnectFlagsMemberIdx_FlagsLow),
+        getFlagsLowMemberData());
+    props.insert(
+        cc::Property::indexedData(mqtt::message::ConnectFlagsMemberIdx_WillQos),
+        getFlagsQosMemberData());
+    props.insert(
+        cc::Property::indexedData(mqtt::message::ConnectFlagsMemberIdx_FlagsHigh),
+        getFlagsHighMemberData());
+    return props;
 }
 
-void updateKeepAliveProperties(QObject& fieldWidget)
+QVariantMap createKeepAliveProperties()
 {
     static const QString Str("Keep Alive");
-    cc::Property::setNameVal(fieldWidget, Str);
+    QVariantMap props;
+    props.insert(cc::Property::name(), QVariant::fromValue(Str));
+    return props;
 }
 
-void updateClientIdProperties(QObject& fieldWidget)
+QVariantMap createClientIdProperties()
 {
     static const QString Str("Client ID");
-    cc::Property::setNameVal(fieldWidget, Str);
+    QVariantMap props;
+    props.insert(cc::Property::name(), QVariant::fromValue(Str));
+    return props;
 }
 
-void updateWillTopicProperties(QObject& fieldWidget)
+QVariantMap createWillTopicProperties()
 {
-    cc::Property::setNameVal(fieldWidget, getWillTopicFieldName());
-    cc::Property::setDataVal(
-        fieldWidget, getWillTopicData());
+    QVariantMap props;
+    props.insert(cc::Property::name(), getWillTopicFieldName());
+    props.insert(cc::Property::data(), getWillTopicData());
+    return props;
 }
 
-void updateWillMessageProperties(QObject& fieldWidget)
+QVariantMap createWillMessageProperties()
 {
-    cc::Property::setNameVal(fieldWidget, getWillMessageFieldName());
-    cc::Property::setDataVal(
-        fieldWidget, getWillMessageData());
+    QVariantMap props;
+    props.insert(cc::Property::name(), getWillMessageFieldName());
+    props.insert(cc::Property::data(), getWillMessageData());
+    return props;
 }
 
-void updateUserNameProperties(QObject& fieldWidget)
+QVariantMap createUserNameProperties()
 {
-    cc::Property::setNameVal(fieldWidget, getUserNameFieldName());
-    cc::Property::setDataVal(
-        fieldWidget, getUserNameData());
+    QVariantMap props;
+    props.insert(cc::Property::name(), getUserNameFieldName());
+    props.insert(cc::Property::data(), getUserNameData());
+    return props;
 }
 
-void updatePasswordProperties(QObject& fieldWidget)
+QVariantMap updatePasswordProperties()
 {
-    cc::Property::setNameVal(fieldWidget, getPasswordFieldName());
-    cc::Property::setDataVal(
-        fieldWidget, getPasswordData());
+    QVariantMap props;
+    props.insert(cc::Property::name(), getPasswordFieldName());
+    props.insert(cc::Property::data(), getPasswordData());
+    return props;
+}
+
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(createNameProperties());
+    props.append(createLevelProperties());
+    props.append(createFlagsProperties());
+    props.append(createKeepAliveProperties());
+    props.append(createClientIdProperties());
+    props.append(createWillTopicProperties());
+    props.append(createWillMessageProperties());
+    props.append(createUserNameProperties());
+    props.append(updatePasswordProperties());
+
+    assert(props.size() == Connect::FieldIdx_NumOfValues);
+    return props;
 }
 
 }  // namespace
@@ -213,32 +247,10 @@ const char* Connect::nameImpl() const
     return Str;
 }
 
-void Connect::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+const QVariantList& Connect::fieldsPropertiesImpl() const
 {
-    typedef std::function<void (QObject&)> FieldUpdateFunc;
-    static const FieldUpdateFunc FuncMap[] = {
-        &updateNameProperties,
-        &updateLevelProperties,
-        &updateFlagsProperties,
-        &updateKeepAliveProperties,
-        &updateClientIdProperties,
-        &updateWillTopicProperties,
-        &updateWillMessageProperties,
-        &updateUserNameProperties,
-        &updatePasswordProperties
-    };
-
-    static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;
-
-    static_assert(FuncsCount == FieldIdx_NumOfValues,
-        "The funcs map is incorrect");
-
-    if (FuncsCount <= idx) {
-        return;
-    }
-
-    assert(FuncMap[idx]);
-    FuncMap[idx](fieldWidget);
+    static const auto Props = createFieldsProperties();
+    return Props;
 }
 
 }  // namespace message

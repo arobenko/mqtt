@@ -31,8 +31,8 @@ namespace field
 {
 
 const QString& packetIdFieldName();
-void updatePacketIdProperties(QObject& obj);
-void updateOptionalPacketIdProperties(QObject& obj);
+const QVariantMap& packetIdProperties();
+const QVariantMap& optionalPacketIdProperties();
 
 }  // namespace field
 }  // namespace cc_plugin

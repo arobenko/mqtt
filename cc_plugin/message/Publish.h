@@ -49,7 +49,7 @@ public:
 protected:
     virtual const char* nameImpl() const override;
     virtual void widgetCreationEndNotificationImpl(comms_champion::MessageWidget& widget) override;
-    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 
 private slots:
     void flagsUpdated();

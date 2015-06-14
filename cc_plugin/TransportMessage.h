@@ -42,7 +42,7 @@ public:
     TransportMessage& operator=(TransportMessage&&) = default;
 
 protected:
-    virtual void updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
 }  // namespace cc_plugin

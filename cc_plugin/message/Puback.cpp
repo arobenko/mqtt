@@ -34,30 +34,30 @@ namespace cc_plugin
 namespace message
 {
 
+namespace
+{
+
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(cc_plugin::field::packetIdProperties());
+
+    assert(props.size() == Puback::FieldIdx_NumOfValues);
+    return props;
+}
+
+}  // namespace
+
 const char* Puback::nameImpl() const
 {
     static const char* Str = "PUBACK";
     return Str;
 }
 
-void Puback::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+const QVariantList& Puback::fieldsPropertiesImpl() const
 {
-    typedef std::function<void (QObject&)> FieldUpdateFunc;
-    static const FieldUpdateFunc FuncMap[] = {
-        &cc_plugin::field::updatePacketIdProperties,
-    };
-
-    static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;
-
-    static_assert(FuncsCount == FieldIdx_NumOfValues,
-        "The funcs map is incorrect");
-
-    if (FuncsCount <= idx) {
-        return;
-    }
-
-    assert(FuncMap[idx]);
-    FuncMap[idx](fieldWidget);
+    static const auto Props = createFieldsProperties();
+    return Props;
 }
 
 

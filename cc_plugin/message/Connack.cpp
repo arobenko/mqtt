@@ -17,6 +17,7 @@
 
 #include <type_traits>
 #include <functional>
+#include <cassert>
 
 #include "Connack.h"
 
@@ -34,22 +35,30 @@ namespace message
 namespace
 {
 
-void updateFlagsInfo(QObject& fieldWidget)
+QVariantMap createConnectAcknowledgeFlagsProperties()
 {
-    static const QString Names[] = {
+    QVariantMap props;
+    props.insert(cc::Property::name(), "Connect Acknowledge Flags");
+
+    static const QString BitNames[] = {
         "Session Present"
     };
 
-    static const unsigned NamesCount = std::extent<decltype(Names)>::value;
+    static const unsigned BitNamesCount = std::extent<decltype(BitNames)>::value;
 
-    for (auto idx = 0U; idx < NamesCount; ++idx) {
-        cc::Property::setIndexedNameVal(fieldWidget, idx, Names[idx]);
+    for (auto idx = 0U; idx < BitNamesCount; ++idx) {
+        props.insert(cc::Property::indexedName(idx), BitNames[idx]);
     }
+
+    return props;
 }
 
-void updateResponseInfo(QObject& fieldWidget)
+QVariantMap createResponseProperties()
 {
-    static const QString Names[] = {
+    QVariantMap props;
+    props.insert(cc::Property::name(), "Response");
+
+    static const QString ValueNames[] = {
         "Accepted",
         "Wrong Protocol Version",
         "Identifier Rejected",
@@ -58,14 +67,25 @@ void updateResponseInfo(QObject& fieldWidget)
         "Not Authorized"
     };
 
-    static const unsigned NamesCount = std::extent<decltype(Names)>::value;
+    static const unsigned ValueNamesCount = std::extent<decltype(ValueNames)>::value;
 
-    static_assert(NamesCount == (unsigned)mqtt::message::ConnackResponseCode::NumOfValues,
+    static_assert(ValueNamesCount == (unsigned)mqtt::message::ConnackResponseCode::NumOfValues,
         "Invalid map.");
 
-    for (auto idx = 0U; idx < NamesCount; ++idx) {
-        cc::Property::setIndexedNameVal(fieldWidget, idx, Names[idx]);
+    for (auto idx = 0U; idx < ValueNamesCount; ++idx) {
+        props.insert(cc::Property::indexedName(idx), ValueNames[idx]);
     }
+    return props;
+}
+
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(createConnectAcknowledgeFlagsProperties());
+    props.append(createResponseProperties());
+
+    assert(props.size() == Connack::FieldIdx_NumOfValues);
+    return props;
 }
 
 }  // namespace
@@ -76,42 +96,10 @@ const char* Connack::nameImpl() const
     return Str;
 }
 
-void Connack::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+const QVariantList& Connack::fieldsPropertiesImpl() const
 {
-    static const QString Names[] = {
-        "Connect Acknowledge Flags",
-        "Response"
-    };
-
-    static const unsigned NamesCount = std::extent<decltype(Names)>::value;
-
-    static_assert(NamesCount == FieldIdx_NumOfValues,
-        "The names map is incorrect");
-
-    if (NamesCount <= idx) {
-        return;
-    }
-
-    cc::Property::setNameVal(fieldWidget, Names[idx]);
-
-    if (idx == FieldIdx_Flags) {
-        static const QString Names[] = {
-            "Session Present"
-        };
-    }
-
-    typedef std::function<void (QObject&)> ExtraUpdateFunc;
-    static const ExtraUpdateFunc ExtraFuncs[] = {
-        &updateFlagsInfo,
-        &updateResponseInfo
-    };
-
-    static const unsigned FuncsCount = std::extent<decltype(ExtraFuncs)>::value;
-
-    static_assert(NamesCount == FuncsCount,
-        "The update map is incorrect");
-
-    ExtraFuncs[idx](fieldWidget);
+    static const auto Props = createFieldsProperties();
+    return Props;
 }
 
 }  // namespace message

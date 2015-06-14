@@ -40,7 +40,7 @@ namespace message
 namespace
 {
 
-QVariantMap getTopicFilterMemberData()
+QVariantMap createTopicFilterMemberData()
 {
     QVariantMap map;
     static const QString Name("Topic");
@@ -49,7 +49,7 @@ QVariantMap getTopicFilterMemberData()
     return map;
 }
 
-QVariantMap getRequestQosMemberData()
+QVariantMap createRequestQosMemberData()
 {
     QVariantMap map;
     static const QString Name("Req. QoS");
@@ -59,18 +59,31 @@ QVariantMap getRequestQosMemberData()
     return map;
 }
 
-QVariantMap getPayloadBundleData()
+QVariantMap createPayloadBundleData()
 {
     QVariantMap map;
-    map.insert(cc::Property::indexedData(0), QVariant::fromValue(getTopicFilterMemberData()));
-    map.insert(cc::Property::indexedData(1), QVariant::fromValue(getRequestQosMemberData()));
+    map.insert(cc::Property::indexedData(0), QVariant::fromValue(createTopicFilterMemberData()));
+    map.insert(cc::Property::indexedData(1), QVariant::fromValue(createRequestQosMemberData()));
     return map;
 }
 
-void updatePayloadProperties(QObject& fieldWidget)
+QVariantMap createPayloadProperties()
 {
-    cc::Property::setNameVal(fieldWidget, "Payload");
-    cc::Property::setDataVal(fieldWidget, getPayloadBundleData());
+    static const QString Name("Payload");
+    QVariantMap props;
+    props.insert(cc::Property::name(), Name);
+    props.insert(cc::Property::data(), createPayloadBundleData());
+    return props;
+}
+
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(cc_plugin::field::packetIdProperties());
+    props.append(createPayloadProperties());
+
+    assert(props.size() == Subscribe::FieldIdx_NumOfValues);
+    return props;
 }
 
 }  // namespace
@@ -81,27 +94,11 @@ const char* Subscribe::nameImpl() const
     return Str;
 }
 
-void Subscribe::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+const QVariantList& Subscribe::fieldsPropertiesImpl() const
 {
-    typedef std::function<void (QObject&)> FieldUpdateFunc;
-    static const FieldUpdateFunc FuncMap[] = {
-        &cc_plugin::field::updatePacketIdProperties,
-        &updatePayloadProperties
-    };
-
-    static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;
-
-    static_assert(FuncsCount == FieldIdx_NumOfValues,
-        "The funcs map is incorrect");
-
-    if (FuncsCount <= idx) {
-        return;
-    }
-
-    assert(FuncMap[idx]);
-    FuncMap[idx](fieldWidget);
+    static const auto Props = createFieldsProperties();
+    return Props;
 }
-
 
 }  // namespace message
 

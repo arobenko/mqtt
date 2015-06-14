@@ -31,24 +31,42 @@ namespace cc_plugin
 namespace field
 {
 
+namespace
+{
+
+QVariantMap createPacketIdProperties()
+{
+    QVariantMap props;
+    props.insert(cc::Property::name(), packetIdFieldName());
+    return props;
+}
+
+QVariantMap createOptionalPacketIdProperties()
+{
+    QVariantMap map;
+    map.insert(cc::Property::name(), packetIdFieldName());
+    map.insert(cc::Property::data(), packetIdProperties());
+    return map;
+}
+
+}  // namespace
+
 const QString& packetIdFieldName()
 {
     static const QString Str("Packet ID");
     return Str;
 }
 
-void updatePacketIdProperties(QObject& obj)
+const QVariantMap& packetIdProperties()
 {
-    cc::Property::setNameVal(obj, packetIdFieldName());
+    static const auto Props = createPacketIdProperties();
+    return Props;
 }
 
-void updateOptionalPacketIdProperties(QObject& obj)
+const QVariantMap& optionalPacketIdProperties()
 {
-    updatePacketIdProperties(obj);
-
-    QVariantMap map;
-    map.insert(cc::Property::name(), packetIdFieldName());
-    cc::Property::setDataVal(obj, map);
+    static const auto Props = createOptionalPacketIdProperties();
+    return Props;
 }
 
 }  // namespace field

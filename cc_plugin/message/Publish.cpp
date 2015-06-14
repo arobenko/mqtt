@@ -45,11 +45,12 @@ const QString& getEmptyString()
     return Str;
 }
 
-QVariantMap getRetainMemberData()
+QVariantMap createRetainMemberData()
 {
     QVariantMap map;
     static const QString Name("Flags");
     map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::serialisedHidden(), QVariant::fromValue(true));
 
     static const QString Map[] = {
         "RETAIN"
@@ -63,19 +64,21 @@ QVariantMap getRetainMemberData()
     return map;
 }
 
-QVariantMap getQosMemberData()
+QVariantMap createQosMemberData()
 {
     QVariantMap map;
     static const QString Name("QoS");
     map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::serialisedHidden(), QVariant::fromValue(true));
     field::updateQosPropertiesMap(map);
     return map;
 }
 
-QVariantMap getDupMemberData()
+QVariantMap createDupMemberData()
 {
     QVariantMap map;
     map.insert(cc::Property::name(), QVariant::fromValue(getEmptyString()));
+    map.insert(cc::Property::serialisedHidden(), QVariant::fromValue(true));
 
     static const QString Map[] = {
         "DUP"
@@ -97,17 +100,52 @@ QVariantMap getReservedMemberData()
     return map;
 }
 
-
-void updateTopicProperties(QObject& fieldWidget)
+QVariantMap createFlagsProperties()
 {
-    static const QString Str("Topic");
-    cc::Property::setNameVal(fieldWidget, Str);
+    static const QString Str("Flags");
+    QVariantMap props;
+    props.insert(cc::Property::name(), Str);
+    props.insert(cc::Property::serialisedHidden(), true);
+    props.insert(
+        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_Retain),
+        createRetainMemberData());
+    props.insert(
+        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_QoS),
+        createQosMemberData());
+    props.insert(
+        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_Dup),
+        createDupMemberData());
+    props.insert(
+        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_Reserved),
+        getReservedMemberData());
+    return props;
 }
 
-void updatePayloadProperties(QObject& fieldWidget)
+QVariantMap createTopicProperties()
+{
+    static const QString Str("Topic");
+    QVariantMap props;
+    props.insert(cc::Property::name(), Str);
+    return props;
+}
+
+QVariantMap createPayloadProperties()
 {
     static const QString Str("Payload");
-    cc::Property::setNameVal(fieldWidget, Str);
+    QVariantMap props;
+    props.insert(cc::Property::name(), Str);
+    return props;
+}
+
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(createTopicProperties());
+    props.append(cc_plugin::field::optionalPacketIdProperties());
+    props.append(createPayloadProperties());
+
+    assert(props.size() == Publish::FieldIdx_NumOfValues);
+    return props;
 }
 
 }  // namespace
@@ -136,19 +174,7 @@ void Publish::widgetCreationEndNotificationImpl(cc::MessageWidget& widget)
     assert(actFlagsWidget);
     m_actFlagsWidget = actFlagsWidget.get();
 
-    static const QString Str("Flags");
-    cc::Property::setNameVal(*m_actFlagsWidget, Str);
-    cc::Property::setSerialisedHiddenVal(*m_actFlagsWidget, true);
-    cc::Property::setIndexedDataVal(
-        *actFlagsWidget, mqtt::message::PublishActualFlagIdx_Retain, getRetainMemberData());
-    cc::Property::setIndexedDataVal(
-        *actFlagsWidget, mqtt::message::PublishActualFlagIdx_QoS, getQosMemberData());
-    cc::Property::setIndexedDataVal(
-        *actFlagsWidget, mqtt::message::PublishActualFlagIdx_Dup, getDupMemberData());
-    cc::Property::setIndexedDataVal(
-        *actFlagsWidget, mqtt::message::PublishActualFlagIdx_Reserved, getReservedMemberData());
-
-    actFlagsWidget->propertiesUpdated();
+    m_actFlagsWidget->updateProperties(createFlagsProperties());
 
     connect(
         m_actFlagsWidget, SIGNAL(sigFieldUpdated()),
@@ -157,33 +183,16 @@ void Publish::widgetCreationEndNotificationImpl(cc::MessageWidget& widget)
     castedWidget->insertFieldWidget(0, actFlagsWidget.release());
 }
 
-void Publish::updateFieldPropertiesImpl(QWidget& fieldWidget, uint idx) const
+const QVariantList& Publish::fieldsPropertiesImpl() const
 {
-    typedef std::function<void (QObject&)> FieldUpdateFunc;
-    static const FieldUpdateFunc FuncMap[] = {
-        &updateTopicProperties,
-        &cc_plugin::field::updateOptionalPacketIdProperties,
-        &updatePayloadProperties
-    };
-
-    static const unsigned FuncsCount = std::extent<decltype(FuncMap)>::value;
-
-    static_assert(FuncsCount == FieldIdx_NumOfValues,
-        "The funcs map is incorrect");
-
-    if (FuncsCount <= idx) {
-        return;
-    }
-
-    assert(FuncMap[idx]);
-    FuncMap[idx](fieldWidget);
+    static const auto Props = createFieldsProperties();
+    return Props;
 }
 
 void Publish::flagsUpdated()
 {
     setFlags(FlagsField(m_actFlags.getValue()));
 }
-
 
 }  // namespace message
 
