@@ -32,7 +32,6 @@ function (cc_plugin_mqtt)
     
     set (hdr
         Plugin.h
-        message/Publish.h
     )
     
     

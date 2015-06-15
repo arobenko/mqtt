@@ -61,7 +61,7 @@ struct PublishActualFlagsValidator
 
 
 template <typename TFieldBase>
-using PublshFlags =
+using PublishFlags =
     comms::field::Bitfield<
         TFieldBase,
         std::tuple<
@@ -132,6 +132,7 @@ using PublishPayload =
 
 template <typename TFieldBase>
 using PublishFields = std::tuple<
+    PublishFlags<TFieldBase>,
     PublishTopicField<TFieldBase>,
     PublishPacketIdField<TFieldBase>,
     PublishPayload<TFieldBase>
@@ -154,10 +155,9 @@ class Publish : public
     > Base;
 public:
 
-    typedef PublshFlags<typename TMsgBase::Field> ActualFlags;
-
     enum FieldIdx
     {
+        FieldIdx_PublishFlags,
         FieldIdx_Topic,
         FieldIdx_PacketId,
         FieldIdx_Payload,
@@ -188,11 +188,41 @@ protected:
 
     virtual bool refreshImpl() override
     {
-        auto& flagsField = Base::getFlags();
+        auto flagsField = Base::getFlags();
+        auto& fields = Base::getFields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
+        flagsField.setValue(publishFlagsField.getValue());
+        Base::setFlags(flagsField);
 
-        ActualFlags actFlags(flagsField.getValue());
-        auto& actFlagsMembers = actFlags.members();
-        auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(actFlagsMembers);
+        return refreshInternal();
+    }
+
+    virtual comms::ErrorStatus readImpl(
+        typename Base::ReadIterator& iter,
+        std::size_t size) override
+    {
+        auto& flagsField = Base::getFlags();
+        auto& fields = Base::getFields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
+        publishFlagsField.setValue(flagsField.getValue());
+        refreshInternal();
+        return Base::template readFieldsFrom<FieldIdx_Topic>(iter, size);
+    }
+
+    virtual comms::ErrorStatus writeImpl(
+        typename Base::WriteIterator& iter,
+        std::size_t size) const override
+    {
+        return Base::template writeFieldsFrom<FieldIdx_Topic>(iter, size);
+    }
+
+private:
+    bool refreshInternal()
+    {
+        auto& fields = Base::getFields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
+        auto& publishFlagsMembers = publishFlagsField.members();
+        auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
 
         comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
         if (qosMemberField.getValue() == mqtt::field::QosType::AtMostOnceDelivery) {
@@ -202,16 +232,7 @@ protected:
         auto& packetIdField = std::get<FieldIdx_PacketId>(Base::getFields());
         bool updated = (packetIdField.getMode() != packetIdMode);
         packetIdField.setMode(packetIdMode);
-
         return updated;
-    }
-
-    virtual bool validImpl() const override
-    {
-        auto& flagsField = Base::getFlags();
-        ActualFlags actFlags(flagsField.getValue());
-
-        return actFlags.valid() && Base::validImpl();
     }
 };
 

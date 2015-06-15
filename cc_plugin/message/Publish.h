@@ -36,7 +36,6 @@ class Publish : public
         mqtt::message::Publish<mqtt::cc_plugin::Message>,
         Publish>
 {
-    Q_OBJECT
 public:
     Publish();
     Publish(const Publish&) = default;
@@ -48,15 +47,7 @@ public:
 
 protected:
     virtual const char* nameImpl() const override;
-    virtual void widgetCreationEndNotificationImpl(comms_champion::MessageWidget& widget) override;
     virtual const QVariantList& fieldsPropertiesImpl() const override;
-
-private slots:
-    void flagsUpdated();
-
-private:
-    ActualFlags m_actFlags;
-    comms_champion::FieldWidget* m_actFlagsWidget = nullptr;
 };
 
 }  // namespace message

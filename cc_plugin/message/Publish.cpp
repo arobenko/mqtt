@@ -140,6 +140,7 @@ QVariantMap createPayloadProperties()
 QVariantList createFieldsProperties()
 {
     QVariantList props;
+    props.append(createFlagsProperties());
     props.append(createTopicProperties());
     props.append(cc_plugin::field::optionalPacketIdProperties());
     props.append(createPayloadProperties());
@@ -151,7 +152,6 @@ QVariantList createFieldsProperties()
 }  // namespace
 
 Publish::Publish()
-  : m_actFlags(getFlags().getValue())
 {
 }
 
@@ -162,36 +162,10 @@ const char* Publish::nameImpl() const
     return Str;
 }
 
-void Publish::widgetCreationEndNotificationImpl(cc::MessageWidget& widget)
-{
-    auto* castedWidget = qobject_cast<cc::DefaultMessageWidget*>(&widget);
-    if (castedWidget == nullptr) {
-        assert(!"Something is wrong");
-        return;
-    }
-
-    auto actFlagsWidget = cc::FieldWidgetCreator::createWidget(m_actFlags);
-    assert(actFlagsWidget);
-    m_actFlagsWidget = actFlagsWidget.get();
-
-    m_actFlagsWidget->updateProperties(createFlagsProperties());
-
-    connect(
-        m_actFlagsWidget, SIGNAL(sigFieldUpdated()),
-        this, SLOT(flagsUpdated()));
-
-    castedWidget->insertFieldWidget(0, actFlagsWidget.release());
-}
-
 const QVariantList& Publish::fieldsPropertiesImpl() const
 {
     static const auto Props = createFieldsProperties();
     return Props;
-}
-
-void Publish::flagsUpdated()
-{
-    setFlags(FlagsField(m_actFlags.getValue()));
 }
 
 }  // namespace message
