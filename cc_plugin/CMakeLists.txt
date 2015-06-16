@@ -31,6 +31,7 @@ function (cc_plugin_mqtt)
         message/Unsuback.cpp
         message/Pingreq.cpp
         message/Pingresp.cpp
+        message/Disconnect.cpp
         field/QoS.cpp
         field/PacketId.cpp
     )

@@ -62,6 +62,7 @@ QVariantMap createMsgIdMemberData()
         "UNSUBACK",
         "PINGREQ",
         "PINGRESP",
+        "DISCONNECT",
     };
 
     static const unsigned MapSize = std::extent<decltype(Map)>::value;
