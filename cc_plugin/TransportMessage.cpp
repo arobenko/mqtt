@@ -57,7 +57,8 @@ QVariantMap createMsgIdMemberData()
         "PUBREL",
         "PUBCOMP",
         "SUBSCRIBE",
-        "SUBACK"
+        "SUBACK",
+        "UNSUBSCRIBE",
     };
 
     static const unsigned MapSize = std::extent<decltype(Map)>::value;

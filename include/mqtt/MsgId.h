@@ -35,6 +35,7 @@ enum MsgId : std::uint8_t
     MsgId_PUBCOMP,
     MsgId_SUBSCRIBE,
     MsgId_SUBACK,
+    MsgId_UNSUBSCRIBE,
     MsgId_NumOfValues // Mast be last
 };
 
