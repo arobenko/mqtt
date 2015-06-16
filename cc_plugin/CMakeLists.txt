@@ -26,6 +26,7 @@ function (cc_plugin_mqtt)
         message/Pubrel.cpp
         message/Pubcomp.cpp
         message/Subscribe.cpp
+        message/Suback.cpp
         field/QoS.cpp
         field/PacketId.cpp
     )
@@ -41,7 +42,7 @@ function (cc_plugin_mqtt)
     )
     
     add_library (${name} SHARED ${src} ${moc})
-    target_link_libraries(${name} Qt5::Widgets Qt5::Core)
+    #target_link_libraries(${name} Qt5::Core)
     
     install (
         TARGETS ${name}
@@ -55,7 +56,6 @@ endfunction()
 
 ######################################################################
 
-find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
 
 include_directories(

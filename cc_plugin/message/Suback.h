@@ -18,25 +18,41 @@
 
 #pragma once
 
-#include <cstdint>
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Suback.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_PUBREC,
-    MsgId_PUBREL,
-    MsgId_PUBCOMP,
-    MsgId_SUBSCRIBE,
-    MsgId_SUBACK,
-    MsgId_NumOfValues // Mast be last
+
+namespace message
+{
+
+class Suback : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Suback<mqtt::cc_plugin::Message>,
+        Suback>
+{
+public:
+    Suback() = default;
+    Suback(const Suback&) = default;
+    Suback(Suback&&) = default;
+    virtual ~Suback() = default;
+
+    Suback& operator=(const Suback&) = default;
+    Suback& operator=(Suback&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
+
+}  // namespace message
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
 

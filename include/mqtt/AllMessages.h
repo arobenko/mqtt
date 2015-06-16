@@ -28,6 +28,7 @@
 #include "mqtt/message/Pubrel.h"
 #include "mqtt/message/Pubcomp.h"
 #include "mqtt/message/Subscribe.h"
+#include "mqtt/message/Suback.h"
 
 namespace mqtt
 {
@@ -41,7 +42,8 @@ using AllMessages = std::tuple<
     message::Pubrec<TMsgBase>,
     message::Pubrel<TMsgBase>,
     message::Pubcomp<TMsgBase>,
-    message::Subscribe<TMsgBase>
+    message::Subscribe<TMsgBase>,
+    message::Suback<TMsgBase>
 >;
 
 static_assert(

@@ -29,6 +29,7 @@
 #include "cc_plugin/message/Pubrel.h"
 #include "cc_plugin/message/Pubcomp.h"
 #include "cc_plugin/message/Subscribe.h"
+#include "cc_plugin/message/Suback.h"
 
 namespace mqtt
 {
@@ -44,7 +45,8 @@ typedef std::tuple<
     cc_plugin::message::Pubrec,
     cc_plugin::message::Pubrel,
     cc_plugin::message::Pubcomp,
-    cc_plugin::message::Subscribe
+    cc_plugin::message::Subscribe,
+    cc_plugin::message::Suback
 > AllMessages;
 
 static_assert(
