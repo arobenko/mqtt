@@ -28,6 +28,7 @@ function (cc_plugin_mqtt)
         message/Subscribe.cpp
         message/Suback.cpp
         message/Unsubscribe.cpp
+        message/Unsuback.cpp
         field/QoS.cpp
         field/PacketId.cpp
     )

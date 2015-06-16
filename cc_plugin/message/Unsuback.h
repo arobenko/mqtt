@@ -18,27 +18,41 @@
 
 #pragma once
 
-#include <cstdint>
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Unsuback.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_PUBREC,
-    MsgId_PUBREL,
-    MsgId_PUBCOMP,
-    MsgId_SUBSCRIBE,
-    MsgId_SUBACK,
-    MsgId_UNSUBSCRIBE,
-    MsgId_UNSUBACK,
-    MsgId_NumOfValues // Mast be last
+
+namespace message
+{
+
+class Unsuback : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Unsuback<mqtt::cc_plugin::Message>,
+        Unsuback>
+{
+public:
+    Unsuback() = default;
+    Unsuback(const Unsuback&) = default;
+    Unsuback(Unsuback&&) = default;
+    virtual ~Unsuback() = default;
+
+    Unsuback& operator=(const Unsuback&) = default;
+    Unsuback& operator=(Unsuback&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
+
+}  // namespace message
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
 

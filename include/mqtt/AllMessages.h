@@ -30,6 +30,7 @@
 #include "mqtt/message/Subscribe.h"
 #include "mqtt/message/Suback.h"
 #include "mqtt/message/Unsubscribe.h"
+#include "mqtt/message/Unsuback.h"
 
 namespace mqtt
 {
@@ -45,7 +46,8 @@ using AllMessages = std::tuple<
     message::Pubcomp<TMsgBase>,
     message::Subscribe<TMsgBase>,
     message::Suback<TMsgBase>,
-    message::Unsubscribe<TMsgBase>
+    message::Unsubscribe<TMsgBase>,
+    message::Unsuback<TMsgBase>
 >;
 
 static_assert(
