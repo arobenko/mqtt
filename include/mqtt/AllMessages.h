@@ -32,6 +32,7 @@
 #include "mqtt/message/Unsubscribe.h"
 #include "mqtt/message/Unsuback.h"
 #include "mqtt/message/Pingreq.h"
+#include "mqtt/message/Pingresp.h"
 
 namespace mqtt
 {
@@ -49,7 +50,8 @@ using AllMessages = std::tuple<
     message::Suback<TMsgBase>,
     message::Unsubscribe<TMsgBase>,
     message::Unsuback<TMsgBase>,
-    message::Pingreq<TMsgBase>
+    message::Pingreq<TMsgBase>,
+    message::Pingresp<TMsgBase>
 >;
 
 static_assert(

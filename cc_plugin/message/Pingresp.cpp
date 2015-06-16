@@ -15,33 +15,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <type_traits>
+#include <functional>
+#include <cassert>
 
-#pragma once
+#include "Pingresp.h"
 
-#include <cstdint>
+#include "cc_plugin/field/PacketId.h"
+
+namespace cc = comms_champion;
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_PUBREC,
-    MsgId_PUBREL,
-    MsgId_PUBCOMP,
-    MsgId_SUBSCRIBE,
-    MsgId_SUBACK,
-    MsgId_UNSUBSCRIBE,
-    MsgId_UNSUBACK,
-    MsgId_PINGREQ,
-    MsgId_PINGRESP,
-    MsgId_NumOfValues // Mast be last
-};
+
+namespace message
+{
+
+const char* Pingresp::nameImpl() const
+{
+    static const char* Str = "PINGRESP";
+    return Str;
+}
+
+const QVariantList& Pingresp::fieldsPropertiesImpl() const
+{
+    static const QVariantList Props;
+    return Props;
+}
+
+
+}  // namespace message
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
-
 
