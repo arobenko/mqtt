@@ -32,6 +32,7 @@
 #include "cc_plugin/message/Suback.h"
 #include "cc_plugin/message/Unsubscribe.h"
 #include "cc_plugin/message/Unsuback.h"
+#include "cc_plugin/message/Pingreq.h"
 
 namespace mqtt
 {
@@ -50,7 +51,8 @@ typedef std::tuple<
     cc_plugin::message::Subscribe,
     cc_plugin::message::Suback,
     cc_plugin::message::Unsubscribe,
-    cc_plugin::message::Unsuback
+    cc_plugin::message::Unsuback,
+    cc_plugin::message::Pingreq
 > AllMessages;
 
 static_assert(

@@ -60,6 +60,7 @@ QVariantMap createMsgIdMemberData()
         "SUBACK",
         "UNSUBSCRIBE",
         "UNSUBACK",
+        "PINGREQ",
     };
 
     static const unsigned MapSize = std::extent<decltype(Map)>::value;
@@ -70,6 +71,7 @@ QVariantMap createMsgIdMemberData()
     for (auto idx = 1U; idx < MapSize; ++idx) {
         map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
     }
+    map.insert(cc::Property::serialisedHidden(), true);
     return map;
 }
 
@@ -77,6 +79,7 @@ QVariantMap createFlagsProperties()
 {
     QVariantMap map;
     map.insert(cc::Property::name(), QVariant::fromValue(QString("Flags")));
+    map.insert(cc::Property::serialisedHidden(), true);
     return map;
 }
 

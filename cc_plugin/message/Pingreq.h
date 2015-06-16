@@ -18,28 +18,41 @@
 
 #pragma once
 
-#include <cstdint>
+#include "comms_champion/comms_champion.h"
+#include "mqtt/message/Pingreq.h"
+#include "cc_plugin/Message.h"
 
 namespace mqtt
 {
 
-enum MsgId : std::uint8_t
+namespace cc_plugin
 {
-    MsgId_Reserved,
-    MsgId_CONNECT,
-    MsgId_CONNACK,
-    MsgId_PUBLISH,
-    MsgId_PUBACK,
-    MsgId_PUBREC,
-    MsgId_PUBREL,
-    MsgId_PUBCOMP,
-    MsgId_SUBSCRIBE,
-    MsgId_SUBACK,
-    MsgId_UNSUBSCRIBE,
-    MsgId_UNSUBACK,
-    MsgId_PINGREQ,
-    MsgId_NumOfValues // Mast be last
+
+namespace message
+{
+
+class Pingreq : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::message::Pingreq<mqtt::cc_plugin::Message>,
+        Pingreq>
+{
+public:
+    Pingreq() = default;
+    Pingreq(const Pingreq&) = default;
+    Pingreq(Pingreq&&) = default;
+    virtual ~Pingreq() = default;
+
+    Pingreq& operator=(const Pingreq&) = default;
+    Pingreq& operator=(Pingreq&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
+
+}  // namespace message
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
 
