@@ -45,9 +45,9 @@ struct PublishActualFlagsValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        auto& members = field.members();
+        auto& members = field.value();
         auto& qosField = std::get<PublishActualFlagIdx_QoS>(members);
-        if (qosField.getValue() != mqtt::field::QosType::AtMostOnceDelivery) {
+        if (qosField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
             return true;
         }
 
@@ -91,7 +91,7 @@ struct PublishTopicValidator
     template <typename TField>
     bool operator()(TField&& field) const
     {
-        auto& topic = field.getValue();
+        auto& topic = field.value();
         return
             (!topic.empty()) &&
             (std::none_of(
@@ -188,11 +188,9 @@ protected:
 
     virtual bool refreshImpl() override
     {
-        auto flagsField = Base::getFlags();
         auto& fields = Base::getFields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
-        flagsField.setValue(publishFlagsField.getValue());
-        Base::setFlags(flagsField);
+        Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
 
         return refreshInternal();
     }
@@ -204,7 +202,7 @@ protected:
         auto& flagsField = Base::getFlags();
         auto& fields = Base::getFields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
-        publishFlagsField.setValue(flagsField.getValue());
+        publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
         refreshInternal();
         return Base::template readFieldsFrom<FieldIdx_Topic>(iter, size);
     }
@@ -221,11 +219,11 @@ private:
     {
         auto& fields = Base::getFields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
-        auto& publishFlagsMembers = publishFlagsField.members();
+        auto& publishFlagsMembers = publishFlagsField.value();
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
 
         comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
-        if (qosMemberField.getValue() == mqtt::field::QosType::AtMostOnceDelivery) {
+        if (qosMemberField.value() == mqtt::field::QosType::AtMostOnceDelivery) {
             packetIdMode = comms::field::OptionalMode::Missing;
         }
 

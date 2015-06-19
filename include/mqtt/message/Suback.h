@@ -39,7 +39,7 @@ struct SubackPayloadValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        return 0U < field.getValue().size();
+        return 0U < field.value().size();
     }
 };
 
@@ -56,7 +56,7 @@ struct SubackReturnCodeValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        auto value = field.getValue();
+        auto value = field.value();
         return
             (value == SubackReturnCode::SuccessQos0) ||
             (value == SubackReturnCode::SuccessQos1) ||

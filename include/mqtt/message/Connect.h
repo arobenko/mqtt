@@ -34,7 +34,7 @@ struct ProtNameInitialiser
     template <typename TField>
     void operator()(TField&& field)
     {
-        field.setValue("MQTT");
+        field.value() = "MQTT";
     }
 };
 
@@ -43,7 +43,7 @@ struct ProtNameValidator
     template <typename TField>
     bool operator()(TField&& field)
     {
-        return field.getValue() == "MQTT";
+        return field.value() == "MQTT";
     }
 };
 
@@ -96,13 +96,13 @@ struct ConnectFlagsExtraValidator
     template <typename TField>
     bool operator()(TField&& field) const
     {
-        auto& members = field.members();
+        auto& members = field.value();
         auto& flagsLowField = std::get<ConnectFlagsMemberIdx_FlagsLow>(members);
         auto& willQosField = std::get<ConnectFlagsMemberIdx_WillQos>(members);
         auto& flagsHighField = std::get<ConnectFlagsMemberIdx_FlagsHigh>(members);
 
         if (!flagsLowField.getBitValue(ConnectFlagsLowBitIdx_WillFlag)) {
-            if (willQosField.getValue() != mqtt::field::QosType::AtMostOnceDelivery) {
+            if (willQosField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
                 return false;
             }
 
@@ -300,7 +300,7 @@ protected:
         auto& willTopicField = std::get<FieldIdx_WillTopic>(fields);
         auto& willMessageField = std::get<FieldIdx_WillMessage>(fields);
 
-        auto& flagsMembers = flagsField.members();
+        auto& flagsMembers = flagsField.value();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
         updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willTopicField);
         updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willMessageField);
@@ -324,7 +324,7 @@ protected:
         auto& userNameField = std::get<FieldIdx_UserName>(fields);
         auto& passwordField = std::get<FieldIdx_Password>(fields);
 
-        auto& flagsMembers = flagsField.members();
+        auto& flagsMembers = flagsField.value();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
         auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
 

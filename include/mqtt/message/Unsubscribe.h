@@ -37,7 +37,7 @@ struct UnsubscribeTopicValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        auto& topic = field.getValue();
+        auto& topic = field.value();
         return (!topic.empty());
     }
 };
@@ -64,7 +64,7 @@ struct UnsubscribePayloadValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        return 0U < field.getValue().size();
+        return 0U < field.value().size();
     }
 };
 
@@ -122,7 +122,7 @@ public:
 
     Unsubscribe()
     {
-        FlagsField newFlags(UnsubscribeFlagsField().getValue());
+        FlagsField newFlags(UnsubscribeFlagsField().value());
         Base::setFlags(newFlags);
     }
 
@@ -140,7 +140,7 @@ protected:
     virtual bool validImpl() const override
     {
         auto& flagsField = Base::getFlags();
-        UnsubscribeFlagsField actFlags(flagsField.getValue());
+        UnsubscribeFlagsField actFlags(flagsField.value());
 
         return actFlags.valid() && Base::validImpl();
     }

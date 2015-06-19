@@ -71,6 +71,7 @@ QVariantMap getFlagsLowMemberData()
     QVariantMap map;
     static const QString Name("Connect Flags");
     map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::serialisedHidden(), true);
 
     static const QString Map[] = {
         "Clean Session",
@@ -90,6 +91,7 @@ QVariantMap getFlagsQosMemberData()
     QVariantMap map;
     static const QString Name("Will QoS");
     map.insert(cc::Property::name(), QVariant::fromValue(Name));
+    map.insert(cc::Property::serialisedHidden(), true);
     field::updateQosPropertiesMap(map);
     return map;
 }
@@ -98,6 +100,7 @@ QVariantMap getFlagsHighMemberData()
 {
     QVariantMap map;
     map.insert(cc::Property::name(), QVariant::fromValue(getEmptyString()));
+    map.insert(cc::Property::serialisedHidden(), true);
 
     static const QString Map[] = {
         "Will Retain",

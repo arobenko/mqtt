@@ -186,9 +186,9 @@ private:
             return es;
         }
 
-        auto& members = field.members();
+        auto& members = field.value();
         auto& idField = std::get<FieldIdx_MsgId>(members);
-        auto id = idField.getValue();
+        auto id = idField.value();
 
         msgPtr = createMsg(id);
 
@@ -203,7 +203,7 @@ private:
         auto& flagsField = std::get<FieldIdx_Flags>(members);
         typedef typename Message::FlagsField MsgFlagsField;
 
-        MsgFlagsField msgFlagsField(flagsField.getValue());
+        MsgFlagsField msgFlagsField(flagsField.value());
         msgPtr->setFlags(msgFlagsField);
         msgPtr->refresh();
 
@@ -234,13 +234,13 @@ private:
 
     static void updateField(const Message& msg, Field& field)
     {
-        auto& members = field.members();
+        auto& members = field.value();
 
         auto& flagsField = std::get<FieldIdx_Flags>(members);
-        flagsField.setValue(msg.getFlags().getValue());
+        flagsField.value() = msg.getFlags().value();
 
         auto& msgIdField = std::get<FieldIdx_MsgId>(members);
-        msgIdField.setValue(msg.getId());
+        msgIdField.value() = msg.getId();
     }
 
     Factory factory_;

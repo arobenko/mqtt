@@ -37,7 +37,7 @@ struct SubscribeTopicValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        auto& topic = field.getValue();
+        auto& topic = field.value();
         return (!topic.empty());
     }
 };
@@ -64,7 +64,7 @@ struct SubscribePayloadValidator
     template <typename TField>
     bool operator()(const TField& field) const
     {
-        return 0U < field.getValue().size();
+        return 0U < field.value().size();
     }
 };
 
@@ -127,7 +127,7 @@ public:
 
     Subscribe()
     {
-        FlagsField newFlags(SubscribeFlagsField().getValue());
+        FlagsField newFlags(SubscribeFlagsField().value());
         Base::setFlags(newFlags);
     }
 
@@ -145,7 +145,7 @@ protected:
     virtual bool validImpl() const override
     {
         auto& flagsField = Base::getFlags();
-        SubscribeFlagsField actFlags(flagsField.getValue());
+        SubscribeFlagsField actFlags(flagsField.value());
 
         return actFlags.valid() && Base::validImpl();
     }
