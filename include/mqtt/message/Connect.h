@@ -270,7 +270,7 @@ public:
 
     Connect()
     {
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& willMsgField = std::get<FieldIdx_WillMessage>(fields);
 
         willMsgField.setMode(comms::field::OptionalMode::Missing);
@@ -295,7 +295,7 @@ protected:
             return status;
         }
 
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& flagsField = std::get<FieldIdx_Flags>(fields);
         auto& willTopicField = std::get<FieldIdx_WillTopic>(fields);
         auto& willMessageField = std::get<FieldIdx_WillMessage>(fields);
@@ -317,7 +317,7 @@ protected:
 
     virtual bool refreshImpl() override
     {
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& flagsField = std::get<FieldIdx_Flags>(fields);
         auto& willTopicField = std::get<FieldIdx_WillTopic>(fields);
         auto& willMessageField = std::get<FieldIdx_WillMessage>(fields);

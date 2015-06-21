@@ -169,7 +169,7 @@ public:
 
     Publish()
     {
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& packetIdField = std::get<FieldIdx_PacketId>(fields);
 
         packetIdField.setMode(comms::field::OptionalMode::Missing);
@@ -188,7 +188,7 @@ protected:
 
     virtual bool refreshImpl() override
     {
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
         Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
 
@@ -200,7 +200,7 @@ protected:
         std::size_t size) override
     {
         auto& flagsField = Base::getFlags();
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
         refreshInternal();
@@ -217,7 +217,7 @@ protected:
 private:
     bool refreshInternal()
     {
-        auto& fields = Base::getFields();
+        auto& fields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
         auto& publishFlagsMembers = publishFlagsField.value();
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
@@ -227,7 +227,7 @@ private:
             packetIdMode = comms::field::OptionalMode::Missing;
         }
 
-        auto& packetIdField = std::get<FieldIdx_PacketId>(Base::getFields());
+        auto& packetIdField = std::get<FieldIdx_PacketId>(Base::fields());
         bool updated = (packetIdField.getMode() != packetIdMode);
         packetIdField.setMode(packetIdMode);
         return updated;
