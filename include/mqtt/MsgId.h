@@ -40,7 +40,7 @@ enum MsgId : std::uint8_t
     MsgId_PINGREQ,
     MsgId_PINGRESP,
     MsgId_DISCONNECT,
-    MsgId_NumOfValues // Mast be last
+    MsgId_NumOfValues // Must be last
 };
 
 }  // namespace mqtt

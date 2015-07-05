@@ -30,7 +30,7 @@ namespace cc_plugin
 
 class TransportMessage : public
     comms_champion::TransportMessageBase<
-        cc_plugin::Stack>
+        cc_plugin::Stack::Message, cc_plugin::Stack::AllFields>
 {
 public:
     TransportMessage() = default;

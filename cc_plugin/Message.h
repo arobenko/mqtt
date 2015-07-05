@@ -36,7 +36,19 @@ typedef std::tuple<
 template <typename... TOptions>
 class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
 {
+    typedef comms_champion::MessageBase<mqtt::MessageT, TOptions...> Base;
 public:
+    MessageT() = default;
+    MessageT(const MessageT&) = default;
+    MessageT(MessageT&&) = default;
+    virtual ~MessageT() = default;
+    MessageT& operator=(const MessageT&) = default;
+    MessageT& operator=(MessageT&&) = default;
+protected:
+    virtual QString idAsStringImpl() const override
+    {
+        return QString("%1").arg(Base::getId(), 1, 10, QChar('0'));
+    }
 };
 
 typedef MessageT<PluginOptions> Message;
