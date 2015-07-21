@@ -22,6 +22,7 @@
 #include <QtCore/QVariantMap>
 
 #include "mqtt/MsgId.h"
+#include "comms/Assert.h"
 
 namespace cc = comms_champion;
 
@@ -44,67 +45,55 @@ enum FieldIdx
 
 QVariantMap createMsgIdMemberData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(QString("ID")));
+    QVariantList enumProps;
+    cc::Property::appendEnumValue(enumProps, "CONNECT", mqtt::MsgId_CONNECT);
+    cc::Property::appendEnumValue(enumProps, "CONNACK", mqtt::MsgId_CONNACK);
+    cc::Property::appendEnumValue(enumProps, "PUBLISH", mqtt::MsgId_PUBLISH);
+    cc::Property::appendEnumValue(enumProps, "PUBACK", mqtt::MsgId_PUBACK);
+    cc::Property::appendEnumValue(enumProps, "PUBREC", mqtt::MsgId_PUBREC);
+    cc::Property::appendEnumValue(enumProps, "PUBREL", mqtt::MsgId_PUBREL);
+    cc::Property::appendEnumValue(enumProps, "PUBCOMP", mqtt::MsgId_PUBCOMP);
+    cc::Property::appendEnumValue(enumProps, "SUBSCRIBE", mqtt::MsgId_SUBSCRIBE);
+    cc::Property::appendEnumValue(enumProps, "SUBACK", mqtt::MsgId_SUBACK);
+    cc::Property::appendEnumValue(enumProps, "UNSUBSCRIBE", mqtt::MsgId_UNSUBSCRIBE);
+    cc::Property::appendEnumValue(enumProps, "UNSUBACK", mqtt::MsgId_UNSUBACK);
+    cc::Property::appendEnumValue(enumProps, "PINGREQ", mqtt::MsgId_PINGREQ);
+    cc::Property::appendEnumValue(enumProps, "PINGRESP", mqtt::MsgId_PINGRESP);
+    cc::Property::appendEnumValue(enumProps, "DISCONNECT", mqtt::MsgId_DISCONNECT);
 
-    static const QString Map[] = {
-        QString(),
-        "CONNECT",
-        "CONNACK",
-        "PUBLISH",
-        "PUBACK",
-        "PUBREC",
-        "PUBREL",
-        "PUBCOMP",
-        "SUBSCRIBE",
-        "SUBACK",
-        "UNSUBSCRIBE",
-        "UNSUBACK",
-        "PINGREQ",
-        "PINGRESP",
-        "DISCONNECT",
-    };
+    GASSERT(enumProps.size() == (mqtt::MsgId_NumOfValues - 1));
 
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    static_assert(MapSize == mqtt::MsgId_NumOfValues,
-        "Map is incorrect.");
-
-    for (auto idx = 1U; idx < MapSize; ++idx) {
-        map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
-    }
-    map.insert(cc::Property::serialisedHidden(), true);
-    return map;
+    auto props = cc::Property::createPropertiesMap("ID", std::move(enumProps));
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap createFlagsProperties()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(QString("Flags")));
-    map.insert(cc::Property::serialisedHidden(), true);
-    return map;
+    auto props = cc::Property::createPropertiesMap("Flags");
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap createIdAndFlagsProperties()
 {
-    QVariantMap map;
-    map.insert(cc::Property::indexedData(0), createFlagsProperties());
-    map.insert(cc::Property::indexedData(1), createMsgIdMemberData());
-    return map;
+    QVariantList membersProps;
+    membersProps.append(createFlagsProperties());
+    membersProps.append(createMsgIdMemberData());
+
+    QVariantMap props;
+    cc::Property::setData(props, std::move(membersProps));
+    return props;
 }
 
 QVariantMap createSizeProperties()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(QString("Size")));
-    return map;
+    return cc::Property::createPropertiesMap("Size");
 }
 
 QVariantMap createDataProperties()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(QString("Data")));
-    return map;
+    return cc::Property::createPropertiesMap("Data");
 }
 
 QVariantList createFieldsProperties()

@@ -37,45 +37,22 @@ namespace
 
 QVariantMap createConnectAcknowledgeFlagsProperties()
 {
-    QVariantMap props;
-    props.insert(cc::Property::name(), "Connect Acknowledge Flags");
-
-    static const QString BitNames[] = {
-        "Session Present"
-    };
-
-    static const unsigned BitNamesCount = std::extent<decltype(BitNames)>::value;
-
-    for (auto idx = 0U; idx < BitNamesCount; ++idx) {
-        props.insert(cc::Property::indexedName(idx), BitNames[idx]);
-    }
-
-    return props;
+    QVariantList bitNames;
+    bitNames.append("Session Present");
+    return cc::Property::createPropertiesMap("Connect Acknowledge Flags", std::move(bitNames));
 }
 
 QVariantMap createResponseProperties()
 {
-    QVariantMap props;
-    props.insert(cc::Property::name(), "Response");
+    QVariantList enumValues;
+    cc::Property::appendEnumValue(enumValues, "Accepted");
+    cc::Property::appendEnumValue(enumValues, "Wrong Protocol Version");
+    cc::Property::appendEnumValue(enumValues, "Identifier Rejected");
+    cc::Property::appendEnumValue(enumValues, "Server Unavailable");
+    cc::Property::appendEnumValue(enumValues, "Bad Username or Password");
+    cc::Property::appendEnumValue(enumValues, "Not Authorized");
 
-    static const QString ValueNames[] = {
-        "Accepted",
-        "Wrong Protocol Version",
-        "Identifier Rejected",
-        "Server Unavailable",
-        "Bad Username or Password",
-        "Not Authorized"
-    };
-
-    static const unsigned ValueNamesCount = std::extent<decltype(ValueNames)>::value;
-
-    static_assert(ValueNamesCount == (unsigned)mqtt::message::ConnackResponseCode::NumOfValues,
-        "Invalid map.");
-
-    for (auto idx = 0U; idx < ValueNamesCount; ++idx) {
-        props.insert(cc::Property::indexedName(idx), ValueNames[idx]);
-    }
-    return props;
+    return cc::Property::createPropertiesMap("Response", std::move(enumValues));
 }
 
 QVariantList createFieldsProperties()

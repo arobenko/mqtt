@@ -42,30 +42,19 @@ namespace
 
 QVariantMap createReturnCodeProperties()
 {
-    static const QString Name("Return Code");
-    QVariantMap map;
-    map.insert(cc::Property::name(), Name);
-    for (auto idx = 0U; idx <= static_cast<decltype(idx)>(mqtt::message::SubackReturnCode::SuccessQos2); ++idx) {
+    QVariantList enumValues;
+    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::message::SubackReturnCode::SuccessQos2); ++idx) {
         static const QString Prefix("Success QoS ");
         auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
-        map.insert(cc::Property::indexedName(idx), str);
+        cc::Property::appendEnumValue(enumValues, str, idx);
     }
-
-    static const QString FailureStr("Failure");
-    map.insert(
-        cc::Property::indexedName(static_cast<uint>(mqtt::message::SubackReturnCode::Failure)),
-            FailureStr);
-    map.insert(cc::Property::serialisedHidden(), true);
-    return map;
+    cc::Property::appendEnumValue(enumValues, "Failure", (int)mqtt::message::SubackReturnCode::Failure);
+    return cc::Property::createPropertiesMap("Return Code", std::move(enumValues));
 }
 
 QVariantMap createPayloadProperties()
 {
-    static const QString Name("Payload");
-    QVariantMap props;
-    props.insert(cc::Property::name(), Name);
-    props.insert(cc::Property::data(), createReturnCodeProperties());
-    return props;
+    return cc::Property::createPropertiesMap("Payload", createReturnCodeProperties());
 }
 
 QVariantList createFieldsProperties()

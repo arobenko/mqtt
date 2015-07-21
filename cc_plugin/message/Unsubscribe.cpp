@@ -42,20 +42,14 @@ namespace
 
 QVariantMap createTopicFilterMemberData()
 {
-    QVariantMap map;
-    static const QString Name("Topic");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), true);
-    return map;
+    auto props = cc::Property::createPropertiesMap("Topic");
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap createPayloadProperties()
 {
-    static const QString Name("Payload");
-    QVariantMap props;
-    props.insert(cc::Property::name(), Name);
-    props.insert(cc::Property::data(), createTopicFilterMemberData());
-    return props;
+    return cc::Property::createPropertiesMap("Payload", createTopicFilterMemberData());
 }
 
 QVariantList createFieldsProperties()

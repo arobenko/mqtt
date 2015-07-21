@@ -29,19 +29,14 @@ namespace cc_plugin
 namespace field
 {
 
-void updateQosPropertiesMap(QVariantMap& map)
+void updateQosPropertiesMap(QVariantMap& props)
 {
-    static const QString Map[] = {
-        "At most once delivery",
-        "At least once delivery",
-        "Exactly once delivery"
-    };
+    QVariantList enumValues;
+    cc::Property::appendEnumValue(enumValues, "At most once delivery");
+    cc::Property::appendEnumValue(enumValues, "At least once delivery");
+    cc::Property::appendEnumValue(enumValues, "Exactly once delivery");
 
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    for (auto idx = 0U; idx < MapSize; ++idx) {
-        map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
-    }
+    cc::Property::setData(props, std::move(enumValues));
 }
 
 }  // namespace field

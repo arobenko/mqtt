@@ -47,94 +47,61 @@ const QString& getEmptyString()
 
 QVariantMap createRetainMemberData()
 {
-    QVariantMap map;
-    static const QString Name("Flags");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), QVariant::fromValue(true));
+    QVariantList bitNames;
+    bitNames.append("RETAIN");
 
-    static const QString Map[] = {
-        "RETAIN"
-    };
-
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    for (auto idx = 0U; idx < MapSize; ++idx) {
-        map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
-    }
-    return map;
+    auto props = cc::Property::createPropertiesMap("Flags", std::move(bitNames));
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap createQosMemberData()
 {
-    QVariantMap map;
     static const QString Name("QoS");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), QVariant::fromValue(true));
-    field::updateQosPropertiesMap(map);
-    return map;
+    auto props = cc::Property::createPropertiesMap(Name);
+    cc::Property::setSerialisedHidden(props);
+    field::updateQosPropertiesMap(props);
+    return props;
 }
 
 QVariantMap createDupMemberData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getEmptyString()));
-    map.insert(cc::Property::serialisedHidden(), QVariant::fromValue(true));
+    QVariantList bitNames;
+    bitNames.append("DUP");
 
-    static const QString Map[] = {
-        "DUP"
-    };
-
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    for (auto idx = 0U; idx < MapSize; ++idx) {
-        map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
-    }
-    return map;
+    auto props = cc::Property::createPropertiesMap(getEmptyString(), std::move(bitNames));
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap getReservedMemberData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getEmptyString()));
-    map.insert(cc::Property::fieldHidden(), QVariant::fromValue(true));
-    return map;
+    auto props = cc::Property::createPropertiesMap(getEmptyString());
+    cc::Property::setFieldHidden(props);
+    return props;
 }
 
 QVariantMap createFlagsProperties()
 {
-    static const QString Str("Flags");
-    QVariantMap props;
-    props.insert(cc::Property::name(), Str);
-    props.insert(cc::Property::serialisedHidden(), true);
-    props.insert(
-        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_Retain),
-        createRetainMemberData());
-    props.insert(
-        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_QoS),
-        createQosMemberData());
-    props.insert(
-        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_Dup),
-        createDupMemberData());
-    props.insert(
-        cc::Property::indexedData(mqtt::message::PublishActualFlagIdx_Reserved),
-        getReservedMemberData());
+    QVariantList memberData;
+    memberData.append(createRetainMemberData());
+    memberData.append(createQosMemberData());
+    memberData.append(createDupMemberData());
+    memberData.append(getReservedMemberData());
+
+    auto props = cc::Property::createPropertiesMap("Flags", std::move(memberData));
+    cc::Property::setSerialisedHidden(props);
     return props;
 }
 
 QVariantMap createTopicProperties()
 {
-    static const QString Str("Topic");
-    QVariantMap props;
-    props.insert(cc::Property::name(), Str);
-    return props;
+    return cc::Property::createPropertiesMap("Topic");
 }
 
 QVariantMap createPayloadProperties()
 {
-    static const QString Str("Payload");
-    QVariantMap props;
-    props.insert(cc::Property::name(), Str);
-    return props;
+    return cc::Property::createPropertiesMap("Payload");
 }
 
 QVariantList createFieldsProperties()

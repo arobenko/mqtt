@@ -68,161 +68,103 @@ const QString& getPasswordFieldName()
 
 QVariantMap getFlagsLowMemberData()
 {
-    QVariantMap map;
-    static const QString Name("Connect Flags");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), true);
+    QVariantList bitNames;
+    bitNames.append(QVariant());
+    bitNames.append("Clean Session");
+    bitNames.append("Will Flag");
 
-    static const QString Map[] = {
-        "Clean Session",
-        "Will Flag"
-    };
-
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    for (auto idx = 0U; idx < MapSize; ++idx) {
-        map.insert(cc::Property::indexedName(idx + 1), QVariant::fromValue(Map[idx]));
-    }
-    return map;
+    auto props = cc::Property::createPropertiesMap("Connect Flags", std::move(bitNames));
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap getFlagsQosMemberData()
 {
-    QVariantMap map;
-    static const QString Name("Will QoS");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), true);
-    field::updateQosPropertiesMap(map);
-    return map;
+    auto props = cc::Property::createPropertiesMap("Will QoS");
+    cc::Property::setSerialisedHidden(props);
+    field::updateQosPropertiesMap(props);
+    return props;
 }
 
 QVariantMap getFlagsHighMemberData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getEmptyString()));
-    map.insert(cc::Property::serialisedHidden(), true);
+    QVariantList bitNames;
+    bitNames.append("Will Retain");
+    bitNames.append("Password Flag");
+    bitNames.append("User Name Flag");
 
-    static const QString Map[] = {
-        "Will Retain",
-        "Password Flag",
-        "User Name Flag"
-    };
-
-    static const unsigned MapSize = std::extent<decltype(Map)>::value;
-
-    for (auto idx = 0U; idx < MapSize; ++idx) {
-        map.insert(cc::Property::indexedName(idx), QVariant::fromValue(Map[idx]));
-    }
-    return map;
+    auto props = cc::Property::createPropertiesMap(getEmptyString(), std::move(bitNames));
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap getWillTopicData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getWillTopicFieldName()));
-    return map;
+    return cc::Property::createPropertiesMap(getWillTopicFieldName());
 }
 
 QVariantMap getWillMessageData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getWillMessageFieldName()));
-    return map;
+    return cc::Property::createPropertiesMap(getWillMessageFieldName());
 }
 
 QVariantMap getUserNameData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getUserNameFieldName()));
-    return map;
+    return cc::Property::createPropertiesMap(getUserNameFieldName());
 }
 
 QVariantMap getPasswordData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::name(), QVariant::fromValue(getPasswordFieldName()));
-    return map;
+    return cc::Property::createPropertiesMap(getPasswordFieldName());
 }
 
 QVariantMap createNameProperties()
 {
-    static const QString Str("Name");
-    QVariantMap props;
-    props.insert(cc::Property::name(), QVariant::fromValue(Str));
-    return props;
+    return cc::Property::createPropertiesMap("Name");
 }
 
 QVariantMap createLevelProperties()
 {
-    static const QString Str("Level");
-    QVariantMap props;
-    props.insert(cc::Property::name(), QVariant::fromValue(Str));
-    return props;
+    return cc::Property::createPropertiesMap("Level");
 }
 
 QVariantMap createFlagsProperties()
 {
-    static const QString Str("Connect Flags");
-    QVariantMap props;
-    props.insert(cc::Property::name(), QVariant::fromValue(Str));
-    props.insert(
-        cc::Property::indexedData(mqtt::message::ConnectFlagsMemberIdx_FlagsLow),
-        getFlagsLowMemberData());
-    props.insert(
-        cc::Property::indexedData(mqtt::message::ConnectFlagsMemberIdx_WillQos),
-        getFlagsQosMemberData());
-    props.insert(
-        cc::Property::indexedData(mqtt::message::ConnectFlagsMemberIdx_FlagsHigh),
-        getFlagsHighMemberData());
-    return props;
+    QVariantList memberData;
+    memberData.append(getFlagsLowMemberData());
+    memberData.append(getFlagsQosMemberData());
+    memberData.append(getFlagsHighMemberData());
+    return cc::Property::createPropertiesMap("Connect Flags", std::move(memberData));
 }
 
 QVariantMap createKeepAliveProperties()
 {
-    static const QString Str("Keep Alive");
-    QVariantMap props;
-    props.insert(cc::Property::name(), QVariant::fromValue(Str));
-    return props;
+    return cc::Property::createPropertiesMap("Keep Alive");
 }
 
 QVariantMap createClientIdProperties()
 {
-    static const QString Str("Client ID");
-    QVariantMap props;
-    props.insert(cc::Property::name(), QVariant::fromValue(Str));
-    return props;
+    return cc::Property::createPropertiesMap("Client ID");
 }
 
 QVariantMap createWillTopicProperties()
 {
-    QVariantMap props;
-    props.insert(cc::Property::name(), getWillTopicFieldName());
-    props.insert(cc::Property::data(), getWillTopicData());
-    return props;
+    return cc::Property::createPropertiesMap(getWillTopicFieldName(), getWillTopicData());
 }
 
 QVariantMap createWillMessageProperties()
 {
-    QVariantMap props;
-    props.insert(cc::Property::name(), getWillMessageFieldName());
-    props.insert(cc::Property::data(), getWillMessageData());
-    return props;
+    return cc::Property::createPropertiesMap(getWillMessageFieldName(), getWillMessageData());
 }
 
 QVariantMap createUserNameProperties()
 {
-    QVariantMap props;
-    props.insert(cc::Property::name(), getUserNameFieldName());
-    props.insert(cc::Property::data(), getUserNameData());
-    return props;
+    return cc::Property::createPropertiesMap(getUserNameFieldName(), getUserNameData());
 }
 
 QVariantMap updatePasswordProperties()
 {
-    QVariantMap props;
-    props.insert(cc::Property::name(), getPasswordFieldName());
-    props.insert(cc::Property::data(), getPasswordData());
-    return props;
+    return cc::Property::createPropertiesMap(getPasswordFieldName(), getPasswordData());
 }
 
 QVariantList createFieldsProperties()

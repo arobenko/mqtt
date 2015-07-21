@@ -42,38 +42,33 @@ namespace
 
 QVariantMap createTopicFilterMemberData()
 {
-    QVariantMap map;
-    static const QString Name("Topic");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), true);
-    return map;
+    auto props = cc::Property::createPropertiesMap("Topic");
+    cc::Property::setSerialisedHidden(props);
+    return props;
 }
 
 QVariantMap createRequestQosMemberData()
 {
-    QVariantMap map;
-    static const QString Name("Req. QoS");
-    map.insert(cc::Property::name(), QVariant::fromValue(Name));
-    map.insert(cc::Property::serialisedHidden(), true);
-    field::updateQosPropertiesMap(map);
-    return map;
+    auto props = cc::Property::createPropertiesMap("Req. QoS");
+    cc::Property::setSerialisedHidden(props);
+    field::updateQosPropertiesMap(props);
+    return props;
 }
 
 QVariantMap createPayloadBundleData()
 {
-    QVariantMap map;
-    map.insert(cc::Property::indexedData(0), QVariant::fromValue(createTopicFilterMemberData()));
-    map.insert(cc::Property::indexedData(1), QVariant::fromValue(createRequestQosMemberData()));
-    return map;
+    QVariantList memberData;
+    memberData.append(createTopicFilterMemberData());
+    memberData.append(createRequestQosMemberData());
+
+    QVariantMap props;
+    cc::Property::setData(props, std::move(memberData));
+    return props;
 }
 
 QVariantMap createPayloadProperties()
 {
-    static const QString Name("Payload");
-    QVariantMap props;
-    props.insert(cc::Property::name(), Name);
-    props.insert(cc::Property::data(), createPayloadBundleData());
-    return props;
+    return cc::Property::createPropertiesMap("Payload", createPayloadBundleData());
 }
 
 QVariantList createFieldsProperties()
