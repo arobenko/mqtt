@@ -149,22 +149,30 @@ QVariantMap createClientIdProperties()
 
 QVariantMap createWillTopicProperties()
 {
-    return cc::Property::createPropertiesMap(getWillTopicFieldName(), getWillTopicData());
+    auto props = cc::Property::createPropertiesMap(getWillTopicFieldName(), getWillTopicData());
+    cc::Property::setUncheckable(props);
+    return props;
 }
 
 QVariantMap createWillMessageProperties()
 {
-    return cc::Property::createPropertiesMap(getWillMessageFieldName(), getWillMessageData());
+    auto props = cc::Property::createPropertiesMap(getWillMessageFieldName(), getWillMessageData());
+    cc::Property::setUncheckable(props);
+    return props;
 }
 
 QVariantMap createUserNameProperties()
 {
-    return cc::Property::createPropertiesMap(getUserNameFieldName(), getUserNameData());
+    auto props = cc::Property::createPropertiesMap(getUserNameFieldName(), getUserNameData());
+    cc::Property::setUncheckable(props);
+    return props;
 }
 
 QVariantMap updatePasswordProperties()
 {
-    return cc::Property::createPropertiesMap(getPasswordFieldName(), getPasswordData());
+    auto props = cc::Property::createPropertiesMap(getPasswordFieldName(), getPasswordData());
+    cc::Property::setUncheckable(props);
+    return props;
 }
 
 QVariantList createFieldsProperties()

@@ -41,8 +41,10 @@ QVariantMap createPacketIdProperties()
 
 QVariantMap createOptionalPacketIdProperties()
 {
-    return cc::Property::createPropertiesMap(
+    auto props = cc::Property::createPropertiesMap(
         packetIdFieldName(), QVariant::fromValue(packetIdProperties()));
+    cc::Property::setUncheckable(props);
+    return props;
 }
 
 }  // namespace
