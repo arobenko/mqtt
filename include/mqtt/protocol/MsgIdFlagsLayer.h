@@ -160,9 +160,9 @@ public:
                 Base::template createNextLayerCachedFieldsWriter<TIdx>(allFields));
     }
 
-    MsgPtr createMsg(MsgIdParamType id)
+    MsgPtr createMsg(MsgIdParamType id, unsigned idx = 0)
     {
-        return factory_.createMsg(id);
+        return factory_.createMsg(id, idx);
     }
 
 private:
@@ -193,7 +193,7 @@ private:
         msgPtr = createMsg(id);
 
         if (!msgPtr) {
-            if (!factory_.msgRegistered(id)) {
+            if (factory_.msgCount(id) == 0U) {
                 return comms::ErrorStatus::InvalidMsgId;
             }
 
