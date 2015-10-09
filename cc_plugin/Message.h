@@ -30,7 +30,8 @@ namespace cc_plugin
 
 typedef std::tuple<
     comms::option::BigEndian,
-    comms::option::MsgIdType<MsgId>
+    comms::option::MsgIdType<MsgId>,
+    comms::option::ValidCheckInterface
 > PluginOptions;
 
 template <typename... TOptions>
