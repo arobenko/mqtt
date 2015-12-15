@@ -55,9 +55,9 @@ template <typename TAllMessages,
           typename TNextLayer,
           typename TMsgAllocOptions = std::tuple<> >
 class MsgIdFlagsLayer :
-    public comms::protocol::ProtocolLayerBase<MsgIdFlagsBundle, TNextLayer, MsgIdFlagsLayer<TAllMessages, TNextLayer, TMsgAllocOptions> >
+    public comms::protocol::ProtocolLayerBase<MsgIdFlagsBundle, TNextLayer>
 {
-    typedef comms::protocol::ProtocolLayerBase<MsgIdFlagsBundle, TNextLayer, MsgIdFlagsLayer<TAllMessages, TNextLayer> > Base;
+    typedef comms::protocol::ProtocolLayerBase<MsgIdFlagsBundle, TNextLayer> Base;
 
     typedef comms::MsgFactory<typename Base::Message, TAllMessages, TMsgAllocOptions> Factory;
 
@@ -197,7 +197,7 @@ private:
                 return comms::ErrorStatus::InvalidMsgId;
             }
 
-            return comms::ErrorStatus::MsgAllocFaulure;
+            return comms::ErrorStatus::MsgAllocFailure;
         }
 
         auto& flagsField = std::get<FieldIdx_Flags>(members);
