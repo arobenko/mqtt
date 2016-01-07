@@ -1,4 +1,6 @@
 
+######################################################################
+
 function (cc_plugin_mqtt)
     set (name "mqtt")
     
@@ -47,7 +49,7 @@ function (cc_plugin_mqtt)
     )
     
     add_library (${name} SHARED ${src} ${moc})
-    #target_link_libraries(${name} Qt5::Core)
+    qt5_use_modules(${name} Core)
     
     install (
         TARGETS ${name}
@@ -62,9 +64,6 @@ endfunction()
 ######################################################################
 
 find_package(Qt5Core REQUIRED)
-
-include_directories(
-    ${Qt5Core_INCLUDE_DIRS})
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
 cc_plugin_mqtt ()
