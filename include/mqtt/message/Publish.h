@@ -169,8 +169,8 @@ public:
 
     Publish()
     {
-        auto& fields = Base::fields();
-        auto& packetIdField = std::get<FieldIdx_PacketId>(fields);
+        auto& allFields = Base::fields();
+        auto& packetIdField = std::get<FieldIdx_PacketId>(allFields);
 
         packetIdField.setMode(comms::field::OptionalMode::Missing);
     }
@@ -188,8 +188,8 @@ protected:
 
     virtual bool refreshImpl() override
     {
-        auto& fields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
+        auto& allFields = Base::fields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
         Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
 
         return refreshInternal();
@@ -200,8 +200,8 @@ protected:
         std::size_t size) override
     {
         auto& flagsField = Base::getFlags();
-        auto& fields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
+        auto& allFields = Base::fields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
         refreshInternal();
         return Base::template readFieldsFrom<FieldIdx_Topic>(iter, size);
@@ -217,8 +217,8 @@ protected:
 private:
     bool refreshInternal()
     {
-        auto& fields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(fields);
+        auto& allFields = Base::fields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
         auto& publishFlagsMembers = publishFlagsField.value();
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
 

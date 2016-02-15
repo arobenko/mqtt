@@ -270,8 +270,8 @@ public:
 
     Connect()
     {
-        auto& fields = Base::fields();
-        auto& willMsgField = std::get<FieldIdx_WillMessage>(fields);
+        auto& allFields = Base::fields();
+        auto& willMsgField = std::get<FieldIdx_WillMessage>(allFields);
 
         willMsgField.setMode(comms::field::OptionalMode::Missing);
     }
@@ -295,10 +295,10 @@ protected:
             return status;
         }
 
-        auto& fields = Base::fields();
-        auto& flagsField = std::get<FieldIdx_Flags>(fields);
-        auto& willTopicField = std::get<FieldIdx_WillTopic>(fields);
-        auto& willMessageField = std::get<FieldIdx_WillMessage>(fields);
+        auto& allFields = Base::fields();
+        auto& flagsField = std::get<FieldIdx_Flags>(allFields);
+        auto& willTopicField = std::get<FieldIdx_WillTopic>(allFields);
+        auto& willMessageField = std::get<FieldIdx_WillMessage>(allFields);
 
         auto& flagsMembers = flagsField.value();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
@@ -307,8 +307,8 @@ protected:
 
         auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
 
-        auto& userNameField = std::get<FieldIdx_UserName>(fields);
-        auto& passwordField = std::get<FieldIdx_Password>(fields);
+        auto& userNameField = std::get<FieldIdx_UserName>(allFields);
+        auto& passwordField = std::get<FieldIdx_Password>(allFields);
         updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, userNameField);
         updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, passwordField);
 
@@ -317,12 +317,12 @@ protected:
 
     virtual bool refreshImpl() override
     {
-        auto& fields = Base::fields();
-        auto& flagsField = std::get<FieldIdx_Flags>(fields);
-        auto& willTopicField = std::get<FieldIdx_WillTopic>(fields);
-        auto& willMessageField = std::get<FieldIdx_WillMessage>(fields);
-        auto& userNameField = std::get<FieldIdx_UserName>(fields);
-        auto& passwordField = std::get<FieldIdx_Password>(fields);
+        auto& allFields = Base::fields();
+        auto& flagsField = std::get<FieldIdx_Flags>(allFields);
+        auto& willTopicField = std::get<FieldIdx_WillTopic>(allFields);
+        auto& willMessageField = std::get<FieldIdx_WillMessage>(allFields);
+        auto& userNameField = std::get<FieldIdx_UserName>(allFields);
+        auto& passwordField = std::get<FieldIdx_Password>(allFields);
 
         auto& flagsMembers = flagsField.value();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);

@@ -19,8 +19,6 @@
 #include <functional>
 #include <cassert>
 
-#include <QtCore/QVariantMap>
-
 #include "Subscribe.h"
 
 #include "cc_plugin/field/PacketId.h"
