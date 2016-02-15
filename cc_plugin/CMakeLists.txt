@@ -1,4 +1,6 @@
-
+if (NOT MQTT_CC_PLUGIN)
+    return ()
+endif ()
 ######################################################################
 
 function (cc_plugin_mqtt)
@@ -54,10 +56,12 @@ function (cc_plugin_mqtt)
     install (
         TARGETS ${name}
         DESTINATION ${PLUGIN_INSTALL_DIR})
-        
-    install (
-        TARGETS ${name}
-        DESTINATION ${CC_INSTALL_PATH}/plugin)
+
+    if (MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH)        
+        install (
+            TARGETS ${name}
+            DESTINATION ${CC_INSTALL_PATH}/plugin)
+     endif ()
     
 endfunction()
 
