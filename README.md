@@ -38,7 +38,7 @@ generate required build files native to the platform.
 
 - Generate Makefiles (or any other build environment) choosing the same build type
 as when building the [comms_champion](https://github.com/arobenko/comms_champion)
-sources, and providing path to the install directory of the latter using **CC_INSTALL_PATH**
+sources, and providing path to the install directory of the latter using **MQTT_CC_INSTALL_PATH**
 variable.
 
 >$> cmake -DCMAKE_BUILD_TYPE=Release -DCC_INSTALL_PATH=/path/to/comms_champion/build/install /path/to/mqtt/sources
@@ -60,7 +60,7 @@ In addition to built-in options/variables of CMake, such as **CMAKE_BUILD_TYPE**
 Default value is **ON**
 
 - **MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH**=ON/OFF - Install plugin for 
-CommsChampion into **CC_INSTALL_PATH** as well as local installation path. 
+CommsChampion into **MQTT_CC_INSTALL_PATH** as well as local installation path. 
 Default value is **ON**.
 
 For example, discard all other tools, just install the **MQTT** library:
@@ -69,7 +69,7 @@ For example, discard all other tools, just install the **MQTT** library:
 
 >$> mkdir build && cd build
 
->$> cmake -DCMAKE_BUILD_TYPE=Release CC_INSTALL_PATH=/path/to/comms_champioin/sources -DMQTT_LIB_ONLY=ON ..
+>$> cmake -DCMAKE_BUILD_TYPE=Release MQTT_CC_INSTALL_PATH=/path/to/comms_champioin/sources -DMQTT_LIB_ONLY=ON ..
 
 >$> make install 
 

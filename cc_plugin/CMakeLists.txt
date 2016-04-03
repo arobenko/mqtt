@@ -60,7 +60,7 @@ function (cc_plugin_mqtt)
     if (MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH)        
         install (
             TARGETS ${name}
-            DESTINATION ${CC_INSTALL_PATH}/plugin)
+            DESTINATION ${CC_PLUGIN_DIR})
      endif ()
     
 endfunction()
