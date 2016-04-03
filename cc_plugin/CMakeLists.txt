@@ -67,7 +67,33 @@ endfunction()
 
 ######################################################################
 
+if (NOT "${MQTT_QT_DIR}" STREQUAL "")
+    list (APPEND CMAKE_PREFIX_PATH ${MQTT_QT_DIR})
+endif ()
+
 find_package(Qt5Core REQUIRED)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
+include_directories(
+    ${Qt5Core_INCLUDE_DIRS})
+    
+link_directories(
+    ${Qt5Core_LIBRARY_DIRS})
+
+if (NOT "${MQTT_CC_INSTALL_PATH}" STREQUAL "")
+    list (APPEND CMAKE_PREFIX_PATH "${MQTT_CC_INSTALL_PATH}/cmake")
+endif ()
+
+find_package(CommsChampion)
+
+if (NOT CC_COMMS_CHAMPION_FOUND)
+    message (FATAL_ERROR "CommsChampion wasn't found!. Please set MQTT_CC_INSTALL_PATH to its installation path.")
+endif ()
+
+include_directories("${CC_INCLUDE_DIRS}")
+link_directories("${CC_PLUGIN_LIBRARY_DIRS}")
+
+if (CMAKE_COMPILER_IS_GNUCC)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
+endif ()
+
 cc_plugin_mqtt ()

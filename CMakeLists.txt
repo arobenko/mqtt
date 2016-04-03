@@ -5,8 +5,6 @@ option (MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications
 option (MQTT_CC_PLUGIN "Build and install protocol plugin for CommsChampion." ON)
 option (MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH "Copy protocol plugin for CommsChampion to the install path of the latter." ON)
 
-include_directories("${CC_INSTALL_PATH}/include")
-
 if (CMAKE_COMPILER_IS_GNUCC)
     set (extra_flags_list
         "--std=c++11"
@@ -37,10 +35,6 @@ endif ()
 
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
-
-if ("${CC_INSTALL_PATH}" STREQUAL "")
-    message (FATAL_ERROR "Please set CC_INSTALL_PATH with \"comms_champion\" installation path.")
-endif ()
 
 add_subdirectory(cc_plugin)
 
