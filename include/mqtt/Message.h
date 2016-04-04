@@ -58,7 +58,7 @@ public:
     virtual ~MessageT() = default;
 
     MessageT& operator=(const MessageT&) = default;
-    MessageT& operator=(MessageT&) = default;
+    MessageT& operator=(MessageT&&) = default;
 
     const FlagsField& getFlags() const
     {
