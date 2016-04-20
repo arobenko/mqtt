@@ -27,9 +27,9 @@ namespace cc_plugin
 
 Protocol::~Protocol() = default;
 
-const std::string& Protocol::nameImpl() const
+const QString& Protocol::nameImpl() const
 {
-    static const std::string Str("MQTT");
+    static const QString Str("MQTT");
     return Str;
 }
 
