@@ -45,55 +45,56 @@ enum FieldIdx
 
 QVariantMap createMsgIdMemberData()
 {
-    QVariantList enumProps;
-    cc::Property::appendEnumValue(enumProps, "CONNECT", mqtt::MsgId_CONNECT);
-    cc::Property::appendEnumValue(enumProps, "CONNACK", mqtt::MsgId_CONNACK);
-    cc::Property::appendEnumValue(enumProps, "PUBLISH", mqtt::MsgId_PUBLISH);
-    cc::Property::appendEnumValue(enumProps, "PUBACK", mqtt::MsgId_PUBACK);
-    cc::Property::appendEnumValue(enumProps, "PUBREC", mqtt::MsgId_PUBREC);
-    cc::Property::appendEnumValue(enumProps, "PUBREL", mqtt::MsgId_PUBREL);
-    cc::Property::appendEnumValue(enumProps, "PUBCOMP", mqtt::MsgId_PUBCOMP);
-    cc::Property::appendEnumValue(enumProps, "SUBSCRIBE", mqtt::MsgId_SUBSCRIBE);
-    cc::Property::appendEnumValue(enumProps, "SUBACK", mqtt::MsgId_SUBACK);
-    cc::Property::appendEnumValue(enumProps, "UNSUBSCRIBE", mqtt::MsgId_UNSUBSCRIBE);
-    cc::Property::appendEnumValue(enumProps, "UNSUBACK", mqtt::MsgId_UNSUBACK);
-    cc::Property::appendEnumValue(enumProps, "PINGREQ", mqtt::MsgId_PINGREQ);
-    cc::Property::appendEnumValue(enumProps, "PINGRESP", mqtt::MsgId_PINGRESP);
-    cc::Property::appendEnumValue(enumProps, "DISCONNECT", mqtt::MsgId_DISCONNECT);
-
-    GASSERT(enumProps.size() == (mqtt::MsgId_NumOfValues - 1));
-
-    auto props = cc::Property::createPropertiesMap("ID", std::move(enumProps));
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::ForField<mqtt::protocol::MsgIdField>()
+            .name("ID")
+            .add("CONNECT", mqtt::MsgId_CONNECT)
+            .add("CONNACK", mqtt::MsgId_CONNACK)
+            .add("PUBLISH", mqtt::MsgId_PUBLISH)
+            .add("PUBACK", mqtt::MsgId_PUBACK)
+            .add("PUBREC", mqtt::MsgId_PUBREC)
+            .add("PUBREL", mqtt::MsgId_PUBREL)
+            .add("PUBCOMP", mqtt::MsgId_PUBCOMP)
+            .add("SUBSCRIBE", mqtt::MsgId_SUBSCRIBE)
+            .add("SUBACK", mqtt::MsgId_SUBACK)
+            .add("UNSUBSCRIBE", mqtt::MsgId_UNSUBSCRIBE)
+            .add("UNSUBACK", mqtt::MsgId_UNSUBACK)
+            .add("PINGREQ", mqtt::MsgId_PINGREQ)
+            .add("PINGRESP", mqtt::MsgId_PINGRESP)
+            .add("DISCONNECT", mqtt::MsgId_DISCONNECT)
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap createFlagsProperties()
 {
-    auto props = cc::Property::createPropertiesMap("Flags");
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::ForField<mqtt::protocol::FlagsField>()
+            .name("Flags")
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap createIdAndFlagsProperties()
 {
-    QVariantList membersProps;
-    membersProps.append(createFlagsProperties());
-    membersProps.append(createMsgIdMemberData());
-
-    QVariantMap props;
-    cc::Property::setData(props, std::move(membersProps));
-    return props;
+    return
+        cc::property::field::ForField<mqtt::protocol::MsgIdFlagsBundle>()
+            .add(createFlagsProperties())
+            .add(createMsgIdMemberData())
+            .asMap();
 }
 
 QVariantMap createSizeProperties()
 {
-    return cc::Property::createPropertiesMap("Size");
+    return
+        cc::property::field::ForField<mqtt::RemSizeField>()
+            .name("Size")
+            .asMap();
 }
 
 QVariantMap createDataProperties()
 {
-    return cc::Property::createPropertiesMap("Data");
+    return cc::property::field::ArrayList().name("Data").asMap();
 }
 
 QVariantList createFieldsProperties()

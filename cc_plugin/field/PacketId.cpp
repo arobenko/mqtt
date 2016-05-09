@@ -36,15 +36,16 @@ namespace
 
 QVariantMap createPacketIdProperties()
 {
-    return cc::Property::createPropertiesMap(packetIdFieldName());
+    return cc::property::field::IntValue().name(packetIdFieldName()).asMap();
 }
 
 QVariantMap createOptionalPacketIdProperties()
 {
-    auto props = cc::Property::createPropertiesMap(
-        packetIdFieldName(), QVariant::fromValue(packetIdProperties()));
-    cc::Property::setUncheckable(props);
-    return props;
+    return cc::property::field::Optional()
+        .name(packetIdFieldName())
+        .field(createPacketIdProperties())
+        .uncheckable()
+        .asMap();
 }
 
 }  // namespace

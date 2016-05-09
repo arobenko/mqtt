@@ -40,33 +40,34 @@ namespace
 
 QVariantMap createTopicFilterMemberData()
 {
-    auto props = cc::Property::createPropertiesMap("Topic");
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return cc::property::field::String().name("Topic").serialisedHidden().asMap();
 }
 
 QVariantMap createRequestQosMemberData()
 {
-    auto props = cc::Property::createPropertiesMap("Req. QoS");
-    cc::Property::setSerialisedHidden(props);
+    cc::property::field::EnumValue props;
+    props.name("Req. QoS").serialisedHidden();
     field::updateQosPropertiesMap(props);
-    return props;
+    return props.asMap();
 }
 
 QVariantMap createPayloadBundleData()
 {
-    QVariantList memberData;
-    memberData.append(createTopicFilterMemberData());
-    memberData.append(createRequestQosMemberData());
+    return
+        cc::property::field::Bundle()
+            .add(createTopicFilterMemberData())
+            .add(createRequestQosMemberData())
+            .asMap();
 
-    QVariantMap props;
-    cc::Property::setData(props, std::move(memberData));
-    return props;
 }
 
 QVariantMap createPayloadProperties()
 {
-    return cc::Property::createPropertiesMap("Payload", createPayloadBundleData());
+    return
+        cc::property::field::ArrayList()
+            .name("Payload")
+            .add(createPayloadBundleData())
+            .asMap();
 }
 
 QVariantList createFieldsProperties()
