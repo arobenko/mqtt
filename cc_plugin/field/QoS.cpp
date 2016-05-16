@@ -29,14 +29,12 @@ namespace cc_plugin
 namespace field
 {
 
-void updateQosPropertiesMap(QVariantMap& props)
+void updateQosPropertiesMap(comms_champion::property::field::EnumValue& props)
 {
-    QVariantList enumValues;
-    cc::Property::appendEnumValue(enumValues, "At most once delivery");
-    cc::Property::appendEnumValue(enumValues, "At least once delivery");
-    cc::Property::appendEnumValue(enumValues, "Exactly once delivery");
-
-    cc::Property::setData(props, std::move(enumValues));
+    props
+        .add("At most once delivery")
+        .add("At least once delivery")
+        .add("Exactly once delivery");
 }
 
 }  // namespace field

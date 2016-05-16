@@ -23,6 +23,8 @@ CC_DISABLE_WARNINGS()
 #include <QtCore/QVariantMap>
 CC_ENABLE_WARNINGS()
 
+#include "comms_champion/comms_champion.h"
+
 namespace mqtt
 {
 
@@ -32,7 +34,7 @@ namespace cc_plugin
 namespace field
 {
 
-void updateQosPropertiesMap(QVariantMap& map);
+void updateQosPropertiesMap(comms_champion::property::field::EnumValue& props);
 
 }  // namespace field
 

@@ -45,61 +45,57 @@ const QString& getEmptyString()
 
 QVariantMap createRetainMemberData()
 {
-    QVariantList bitNames;
-    bitNames.append("RETAIN");
-
-    auto props = cc::Property::createPropertiesMap("Flags", std::move(bitNames));
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::BitmaskValue()
+            .name("Flags")
+            .add("RETAIN")
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap createQosMemberData()
 {
-    static const QString Name("QoS");
-    auto props = cc::Property::createPropertiesMap(Name);
-    cc::Property::setSerialisedHidden(props);
+    cc::property::field::EnumValue props;
+    props.name("QoS").serialisedHidden();
     field::updateQosPropertiesMap(props);
-    return props;
+    return props.asMap();
 }
 
 QVariantMap createDupMemberData()
 {
-    QVariantList bitNames;
-    bitNames.append("DUP");
-
-    auto props = cc::Property::createPropertiesMap(getEmptyString(), std::move(bitNames));
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::BitmaskValue()
+            .add("DUP")
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap getReservedMemberData()
 {
-    auto props = cc::Property::createPropertiesMap(getEmptyString());
-    cc::Property::setFieldHidden(props);
-    return props;
+    return cc::property::field::IntValue().hidden().asMap();
 }
 
 QVariantMap createFlagsProperties()
 {
-    QVariantList memberData;
-    memberData.append(createRetainMemberData());
-    memberData.append(createQosMemberData());
-    memberData.append(createDupMemberData());
-    memberData.append(getReservedMemberData());
-
-    auto props = cc::Property::createPropertiesMap("Flags", std::move(memberData));
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::Bitfield()
+            .name("Flags")
+            .add(createRetainMemberData())
+            .add(createQosMemberData())
+            .add(createDupMemberData())
+            .add(getReservedMemberData())
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap createTopicProperties()
 {
-    return cc::Property::createPropertiesMap("Topic");
+    return cc::property::field::String().name("Topic").asMap();
 }
 
 QVariantMap createPayloadProperties()
 {
-    return cc::Property::createPropertiesMap("Payload");
+    return cc::property::field::ArrayList().name("Payload").asMap();
 }
 
 QVariantList createFieldsProperties()

@@ -40,19 +40,25 @@ namespace
 
 QVariantMap createReturnCodeProperties()
 {
-    QVariantList enumValues;
+    cc::property::field::EnumValue props;
+
+    props.name("Return Code");
     for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::message::SubackReturnCode::SuccessQos2); ++idx) {
         static const QString Prefix("Success QoS ");
         auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
-        cc::Property::appendEnumValue(enumValues, str, idx);
+        props.add(str, idx);
     }
-    cc::Property::appendEnumValue(enumValues, "Failure", (int)mqtt::message::SubackReturnCode::Failure);
-    return cc::Property::createPropertiesMap("Return Code", std::move(enumValues));
+    props.add("Failure", (int)mqtt::message::SubackReturnCode::Failure);
+    return props.asMap();
 }
 
 QVariantMap createPayloadProperties()
 {
-    return cc::Property::createPropertiesMap("Payload", createReturnCodeProperties());
+    return
+        cc::property::field::ArrayList()
+            .name("Payload")
+            .add(createReturnCodeProperties())
+            .asMap();
 }
 
 QVariantList createFieldsProperties()

@@ -37,22 +37,25 @@ namespace
 
 QVariantMap createConnectAcknowledgeFlagsProperties()
 {
-    QVariantList bitNames;
-    bitNames.append("Session Present");
-    return cc::Property::createPropertiesMap("Connect Acknowledge Flags", std::move(bitNames));
+    return
+        cc::property::field::BitmaskValue()
+            .name("Connect Acknowledge Flags")
+            .add("Session Present")
+            .asMap();
 }
 
 QVariantMap createResponseProperties()
 {
-    QVariantList enumValues;
-    cc::Property::appendEnumValue(enumValues, "Accepted");
-    cc::Property::appendEnumValue(enumValues, "Wrong Protocol Version");
-    cc::Property::appendEnumValue(enumValues, "Identifier Rejected");
-    cc::Property::appendEnumValue(enumValues, "Server Unavailable");
-    cc::Property::appendEnumValue(enumValues, "Bad Username or Password");
-    cc::Property::appendEnumValue(enumValues, "Not Authorized");
-
-    return cc::Property::createPropertiesMap("Response", std::move(enumValues));
+    return
+        cc::property::field::EnumValue()
+            .name("Response")
+            .add("Accepted")
+            .add("Wrong Protocol Version")
+            .add("Identifier Rejected")
+            .add("Server Unavailable")
+            .add("Bad Username or Password")
+            .add("Not Authorized")
+            .asMap();
 }
 
 QVariantList createFieldsProperties()

@@ -68,111 +68,123 @@ const QString& getPasswordFieldName()
 
 QVariantMap getFlagsLowMemberData()
 {
-    QVariantList bitNames;
-    bitNames.append(QVariant());
-    bitNames.append("Clean Session");
-    bitNames.append("Will Flag");
-
-    auto props = cc::Property::createPropertiesMap("Connect Flags", std::move(bitNames));
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::BitmaskValue()
+            .name("Connect Flags")
+            .add(1, "Clean Session")
+            .add("Will Flag")
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap getFlagsQosMemberData()
 {
-    auto props = cc::Property::createPropertiesMap("Will QoS");
-    cc::Property::setSerialisedHidden(props);
+    cc::property::field::EnumValue props;
+    props.name("Will QoS").serialisedHidden();
     field::updateQosPropertiesMap(props);
-    return props;
+    return props.asMap();
 }
 
 QVariantMap getFlagsHighMemberData()
 {
-    QVariantList bitNames;
-    bitNames.append("Will Retain");
-    bitNames.append("Password Flag");
-    bitNames.append("User Name Flag");
-
-    auto props = cc::Property::createPropertiesMap(getEmptyString(), std::move(bitNames));
-    cc::Property::setSerialisedHidden(props);
-    return props;
+    return
+        cc::property::field::BitmaskValue()
+            .add("Will Retain")
+            .add("Password Flag")
+            .add("User Name Flag")
+            .serialisedHidden()
+            .asMap();
 }
 
 QVariantMap getWillTopicData()
 {
-    return cc::Property::createPropertiesMap(getWillTopicFieldName());
+    return cc::property::field::String().name(getWillTopicFieldName()).asMap();
 }
 
 QVariantMap getWillMessageData()
 {
-    return cc::Property::createPropertiesMap(getWillMessageFieldName());
+    return cc::property::field::String().name(getWillMessageFieldName()).asMap();
 }
 
 QVariantMap getUserNameData()
 {
-    return cc::Property::createPropertiesMap(getUserNameFieldName());
+    return cc::property::field::String().name(getUserNameFieldName()).asMap();
 }
 
 QVariantMap getPasswordData()
 {
-    return cc::Property::createPropertiesMap(getPasswordFieldName());
+    return cc::property::field::String().name(getPasswordFieldName()).asMap();
 }
 
 QVariantMap createNameProperties()
 {
-    return cc::Property::createPropertiesMap("Name");
+    return cc::property::field::String().name("Name").asMap();
 }
 
 QVariantMap createLevelProperties()
 {
-    return cc::Property::createPropertiesMap("Level");
+    return cc::property::field::IntValue().name("Level").asMap();
 }
 
 QVariantMap createFlagsProperties()
 {
-    QVariantList memberData;
-    memberData.append(getFlagsLowMemberData());
-    memberData.append(getFlagsQosMemberData());
-    memberData.append(getFlagsHighMemberData());
-    return cc::Property::createPropertiesMap("Connect Flags", std::move(memberData));
+    return
+        cc::property::field::Bitfield()
+            .name("Connect Flags")
+            .add(getFlagsLowMemberData())
+            .add(getFlagsQosMemberData())
+            .add(getFlagsHighMemberData())
+            .asMap();
 }
 
 QVariantMap createKeepAliveProperties()
 {
-    return cc::Property::createPropertiesMap("Keep Alive");
+    return cc::property::field::IntValue().name("Keep Alive").asMap();
 }
 
 QVariantMap createClientIdProperties()
 {
-    return cc::Property::createPropertiesMap("Client ID");
+    return cc::property::field::String().name("Client ID").asMap();
 }
 
 QVariantMap createWillTopicProperties()
 {
-    auto props = cc::Property::createPropertiesMap(getWillTopicFieldName(), getWillTopicData());
-    cc::Property::setUncheckable(props);
-    return props;
+    return
+        cc::property::field::Optional()
+            .name(getWillTopicFieldName())
+            .field(getWillTopicData())
+            .uncheckable()
+            .asMap();
 }
 
 QVariantMap createWillMessageProperties()
 {
-    auto props = cc::Property::createPropertiesMap(getWillMessageFieldName(), getWillMessageData());
-    cc::Property::setUncheckable(props);
-    return props;
+    return
+        cc::property::field::Optional()
+            .name(getWillMessageFieldName())
+            .field(getWillMessageData())
+            .uncheckable()
+            .asMap();
 }
 
 QVariantMap createUserNameProperties()
 {
-    auto props = cc::Property::createPropertiesMap(getUserNameFieldName(), getUserNameData());
-    cc::Property::setUncheckable(props);
-    return props;
+    return
+        cc::property::field::Optional()
+            .name(getUserNameFieldName())
+            .field(getUserNameData())
+            .uncheckable()
+            .asMap();
 }
 
 QVariantMap updatePasswordProperties()
 {
-    auto props = cc::Property::createPropertiesMap(getPasswordFieldName(), getPasswordData());
-    cc::Property::setUncheckable(props);
-    return props;
+    return
+        cc::property::field::Optional()
+            .name(getPasswordFieldName())
+            .field(getPasswordData())
+            .uncheckable()
+            .asMap();
 }
 
 QVariantList createFieldsProperties()
