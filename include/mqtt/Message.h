@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -35,7 +35,8 @@ typedef std::tuple<
     comms::option::ReadIterator<const std::uint8_t*>,
     comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >,
     comms::option::MsgIdType<MsgId>,
-    comms::option::Handler<MsgHandler>
+    comms::option::Handler<MsgHandler>,
+    comms::option::RefreshInterface
 > DefaultOptions;
 
 template <typename... TOptions>
@@ -70,16 +71,6 @@ public:
         m_flags = flags;
     }
 
-    bool refresh()
-    {
-        return refreshImpl();
-    }
-
-protected:
-    virtual bool refreshImpl()
-    {
-        return false;
-    }
 
 private:
     FlagsField m_flags;
