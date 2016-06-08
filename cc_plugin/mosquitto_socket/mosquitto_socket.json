@@ -1,0 +1,7 @@
+{
+    "name" : "MQTT (Mosquitto) Socket",
+    "desc" : [
+        "This socket uses mosquitto library to receive and send MQTT messages."
+    ],
+    "type" : "socket"
+}

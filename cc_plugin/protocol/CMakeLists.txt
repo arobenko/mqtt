@@ -1,4 +1,4 @@
-if (NOT MQTT_CC_PLUGIN)
+if (NOT MQTT_CC_PROTOCOL_PLUGIN)
     return ()
 endif ()
 ######################################################################
