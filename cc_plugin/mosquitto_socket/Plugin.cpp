@@ -36,6 +36,7 @@ namespace
 const QString MainConfigKey("mqtt_mosquitto_socket");
 const QString HostSubKey("host");
 const QString PortSubKey("port");
+const QString AutoConnectKey("auto_connect");
 const QString ClientIdKey("client_id");
 const QString CleanSessionKey("clean");
 const QString KeepAliveKey("keep_alive");
@@ -48,6 +49,7 @@ const QString PublishQosKey("pub_qos");
 
 Plugin::Plugin()
 {
+    ::mosquitto_lib_init();
     pluginProperties()
         .setSocketCreateFunc(
             [this]() -> cc::SocketPtr
@@ -76,7 +78,10 @@ Plugin::Plugin()
             });
 }
 
-Plugin::~Plugin() = default;
+Plugin::~Plugin()
+{
+    ::mosquitto_lib_cleanup();
+}
 
 void Plugin::getCurrentConfigImpl(QVariantMap& config)
 {
@@ -86,6 +91,7 @@ void Plugin::getCurrentConfigImpl(QVariantMap& config)
     QVariantMap subConfig;
     subConfig.insert(HostSubKey, m_socket->getHost());
     subConfig.insert(PortSubKey, m_socket->getPort());
+    subConfig.insert(AutoConnectKey, m_socket->getAutoConnect());
     subConfig.insert(ClientIdKey, m_socket->getId());
     subConfig.insert(CleanSessionKey, m_socket->getCleanSession());
     subConfig.insert(KeepAliveKey, m_socket->getKeepAlivePeriod());
@@ -122,6 +128,13 @@ void Plugin::reconfigureImpl(const QVariantMap& config)
         if (portVar.isValid() && portVar.canConvert<PortType>()) {
             auto port = portVar.value<PortType>();
             m_socket->setPort(port);
+        }
+    }
+
+    {
+        auto autoConnectVar = subConfig.value(AutoConnectKey);
+        if (autoConnectVar.isValid() && autoConnectVar.canConvert<bool>()) {
+            m_socket->setAutoConnect(autoConnectVar.value<bool>());
         }
     }
 

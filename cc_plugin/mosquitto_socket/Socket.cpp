@@ -43,45 +43,14 @@ namespace
 {
 
 const QChar SubTopicsSep(';');
-
-class MosquittoInitialiser
-{
-public:
-    static const MosquittoInitialiser& instance()
-    {
-        static const MosquittoInitialiser Obj;
-        return Obj;
-    }
-
-    ~MosquittoInitialiser()
-    {
-        ::mosquitto_lib_cleanup();
-    }
-
-private:
-
-    MosquittoInitialiser()
-    {
-        ::mosquitto_lib_init();
-    }
-
-    MosquittoInitialiser(const MosquittoInitialiser&) = delete;
-    MosquittoInitialiser& operator=(const MosquittoInitialiser&) = delete;
-};
-
 const QString TopicPropName("mqtt.topic");
 const QString QosPropName("mqtt.qos");
-
-//const QString FromPropName("mqtt.from");
-//const QString ToPropName("mqtt.to");
 
 }  // namespace
 
 
 Socket::Socket()
 {
-    static_cast<void>(MosquittoInitialiser::instance());
-
     connect(
         this, SIGNAL(sigConnectionStatusInternal(bool)),
         this, SIGNAL(sigConnectionStatus(bool)),
@@ -103,10 +72,7 @@ Socket::Socket()
         Qt::BlockingQueuedConnection);
 }
 
-Socket::~Socket()
-{
-    blockSignals(true);
-}
+Socket::~Socket() = default;
 
 void Socket::setSubTopics(const QString& value)
 {
@@ -223,12 +189,22 @@ bool Socket::startImpl()
     ::mosquitto_message_callback_set(m_mosq.get(), &Socket::onMessage);
 
     exitGuard.release();
+
+    if (m_autoConnect) {
+        connectToServer();
+    }
     return true;
 }
 
 void Socket::stopImpl()
 {
-    disconnectFromServer();
+    if (isConnected()) {
+        assert(m_mosq);
+        m_connected = false;
+        ::mosquitto_loop_stop(m_mosq.get(), true);
+        ::mosquitto_disconnect(m_mosq.get());
+    }
+
     m_mosq.reset();
 }
 
@@ -335,6 +311,10 @@ void Socket::onConnectInternal(int rc)
 
 void Socket::onDisconnectInternal(int rc)
 {
+    if (!m_connected) {
+        return;
+    }
+
     m_tryingToConnect = false;
     m_connected = false;
 
