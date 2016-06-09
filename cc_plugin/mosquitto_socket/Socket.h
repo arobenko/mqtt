@@ -152,10 +152,11 @@ public:
 
 signals:
     void sigConnectionStatus(bool connected);
+
     void sigOnConnect(int rc);
     void sigOnDisconnect(int rc);
     void sigOnMessage(const struct mosquitto_message* msg);
-
+    void sigConnectionStatusInternal(bool connected);
 protected:
     virtual bool startImpl() override;
     virtual void stopImpl() override;
@@ -182,6 +183,10 @@ private:
     static void onMessage(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg);
     static Socket* checkCallcack(struct mosquitto* mosq, void* obj);
 
+    void reportConnectFromThread(int rc);
+    void reportDisconnectFromThread(int rc);
+    void reportMessageFromThread(const struct mosquitto_message* msg);
+
     static const PortType DefaultPort = 1883;
     MosqPtr m_mosq;
     QString m_id;
@@ -196,7 +201,6 @@ private:
 
     bool m_connected = false;
     bool m_tryingToConnect = false;
-    bool m_forcedDisconnection = false;
 };
 
 }  // namespace mosquitto_socket

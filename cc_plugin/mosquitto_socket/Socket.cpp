@@ -83,6 +83,11 @@ Socket::Socket()
     static_cast<void>(MosquittoInitialiser::instance());
 
     connect(
+        this, SIGNAL(sigConnectionStatusInternal(bool)),
+        this, SIGNAL(sigConnectionStatus(bool)),
+        Qt::QueuedConnection);
+
+    connect(
         this, SIGNAL(sigOnConnect(int)),
         this, SLOT(onConnectInternal(int)),
         Qt::QueuedConnection);
@@ -171,30 +176,18 @@ bool Socket::connectToServer()
     }
 
     m_tryingToConnect = true;
-    m_forcedDisconnection = false;
-
-    //m_socket.connectToHost(m_host, m_port);
     return true;
 }
 
 bool Socket::disconnectFromServer()
 {
     m_tryingToConnect = false;
-    m_forcedDisconnection = true;
     assert(m_mosq);
     bool result = true;
     int es = ::mosquitto_disconnect(m_mosq.get());
     if (es != MOSQ_ERR_SUCCESS) {
         static const QString Error(
             tr("Mosquitto library error, failed to disconnect from broker."));
-        reportError(Error);
-        result = false;
-    }
-
-    es = ::mosquitto_loop_stop(m_mosq.get(), true);
-    if (es != MOSQ_ERR_SUCCESS) {
-        static const QString Error(
-            tr("Mosquitto library error, failed to stop processing loop."));
         reportError(Error);
         result = false;
     }
@@ -318,12 +311,12 @@ void Socket::onConnectInternal(int rc)
             error.append(SuffixMap[rc]);
         }
         reportError(error);
-        emit sigConnectionStatus(false);
+        emit sigConnectionStatusInternal(false);
         return;
     }
 
     m_connected = true;
-    emit sigConnectionStatus(true);
+    emit sigConnectionStatusInternal(true);
 
     for (auto& sub : m_subTopics) {
         if (sub.isEmpty()) {
@@ -345,20 +338,28 @@ void Socket::onDisconnectInternal(int rc)
     m_tryingToConnect = false;
     m_connected = false;
 
-    emit sigConnectionStatus(false);
-
-    if ((m_forcedDisconnection) || (rc == 0)) {
-        return;
+    int es = ::mosquitto_loop_stop(m_mosq.get(), true);
+    if (es != MOSQ_ERR_SUCCESS) {
+        static const QString Error(
+            tr("Mosquitto library error, failed to stop processing loop."));
+        reportError(Error);
     }
 
-    static const QString ErrorPrefix("Disconnected from MQTT broker: ");
-    QString error(ErrorPrefix);
-    error.append(::mosquitto_connack_string(rc));
-    reportError(error);
+    if (rc != 0) {
+        static const QString ErrorPrefix("Disconnected from MQTT broker: ");
+        QString error(ErrorPrefix);
+        error.append(::mosquitto_connack_string(rc));
+        reportError(error);
+    }
+
+    emit sigConnectionStatusInternal(false);
 }
 
 void Socket::onMessageInternal(const struct mosquitto_message* msg)
 {
+    assert(m_connected);
+    assert(!m_tryingToConnect);
+
     if (msg == nullptr) {
         return;
     }
@@ -379,7 +380,7 @@ void Socket::onConnect(struct mosquitto* mosq, void* obj, int rc)
 {
     auto* thisPtr = checkCallcack(mosq, obj);
     if (thisPtr != nullptr) {
-        thisPtr->onConnectInternal(rc);
+        thisPtr->reportConnectFromThread(rc);
     }
 }
 
@@ -387,7 +388,7 @@ void Socket::onDisconnect(struct mosquitto* mosq, void* obj, int rc)
 {
     auto* thisPtr = checkCallcack(mosq, obj);
     if (thisPtr != nullptr) {
-        thisPtr->onDisconnectInternal(rc);
+        thisPtr->reportDisconnectFromThread(rc);
     }
 }
 
@@ -398,7 +399,7 @@ void Socket::onMessage(
 {
     auto* thisPtr = checkCallcack(mosq, obj);
     if (thisPtr != nullptr) {
-        thisPtr->onMessageInternal(msg);
+        thisPtr->reportMessageFromThread(msg);
     }
 }
 
@@ -416,6 +417,21 @@ Socket* Socket::checkCallcack(struct mosquitto* mosq, void* obj)
     }
 
     return thisPtr;
+}
+
+void Socket::reportConnectFromThread(int rc)
+{
+    emit sigOnConnect(rc);
+}
+
+void Socket::reportDisconnectFromThread(int rc)
+{
+    emit sigOnDisconnect(rc);
+}
+
+void Socket::reportMessageFromThread(const struct mosquitto_message* msg)
+{
+    emit sigOnMessage(msg);
 }
 
 }  // namespace mosquitto_socket
