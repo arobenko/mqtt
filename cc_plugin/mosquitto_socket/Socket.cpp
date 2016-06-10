@@ -249,7 +249,7 @@ void Socket::sendDataImpl(cc::DataInfoPtr dataPtr)
             qos,
             false);
 
-    if (!pubResult) {
+    if (pubResult != MOSQ_ERR_SUCCESS) {
         static const QString Error(
             tr("Failed to publish message."));
         return;
