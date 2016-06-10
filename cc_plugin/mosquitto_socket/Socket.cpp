@@ -354,6 +354,7 @@ void Socket::onMessageInternal(const struct mosquitto_message* msg)
 
     dataPtr->m_extraProperties.insert(TopicPropName, msg->topic);
     dataPtr->m_extraProperties.insert(QosPropName, msg->qos);
+    reportDataReceived(std::move(dataPtr));
 }
 
 void Socket::onConnect(struct mosquitto* mosq, void* obj, int rc)
