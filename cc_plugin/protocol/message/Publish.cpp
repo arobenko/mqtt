@@ -40,12 +40,6 @@ namespace message
 namespace
 {
 
-const QString& getEmptyString()
-{
-    static const QString Str;
-    return Str;
-}
-
 QVariantMap createRetainMemberData()
 {
     return

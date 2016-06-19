@@ -39,12 +39,6 @@ namespace message
 namespace
 {
 
-const QString& getEmptyString()
-{
-    static const QString Str;
-    return Str;
-}
-
 const QString& getWillTopicFieldName()
 {
     static const QString& Str("Will Topic");
