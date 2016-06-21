@@ -18,64 +18,47 @@
 
 #pragma once
 
-#include <cstdint>
-#include <tuple>
-#include <vector>
-#include "comms/comms.h"
+#include "comms_champion/comms_champion.h"
+#include "mqtt/Message.h"
 
-#include "MsgId.h"
 
 namespace mqtt
 {
 
-class MsgHandler;
+namespace cc_plugin
+{
+
+namespace protocol
+{
 
 typedef std::tuple<
     comms::option::BigEndian,
-    comms::option::ReadIterator<const std::uint8_t*>,
-    comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >,
     comms::option::MsgIdType<MsgId>,
-    comms::option::Handler<MsgHandler>,
-    comms::option::RefreshInterface
-> DefaultOptions;
+    comms::option::ValidCheckInterface
+> PluginOptions;
 
 template <typename... TOptions>
-class MessageT : public comms::Message<TOptions...>
+class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
 {
-    typedef comms::Message<TOptions...> Base;
+    typedef comms_champion::MessageBase<mqtt::MessageT, TOptions...> Base;
 public:
-
-    typedef typename Base::Field Field;
-    typedef comms::field::IntValue<
-        Field,
-        std::uint8_t,
-        comms::option::ValidNumValueRange<0x0, 0xf>,
-        comms::option::FailOnInvalid
-    > FlagsField;
-
     MessageT() = default;
     MessageT(const MessageT&) = default;
     MessageT(MessageT&&) = default;
     virtual ~MessageT() = default;
-
     MessageT& operator=(const MessageT&) = default;
     MessageT& operator=(MessageT&&) = default;
-
-    const FlagsField& getFlags() const
+protected:
+    virtual QString idAsStringImpl() const override
     {
-        return m_flags;
+        return QString("%1").arg(Base::getId(), 1, 10, QChar('0'));
     }
-
-    void setFlags(const FlagsField& flags)
-    {
-        m_flags = flags;
-    }
-
-
-private:
-    FlagsField m_flags;
 };
 
-typedef MessageT<DefaultOptions> Message;
+typedef MessageT<PluginOptions> Message;
+
+}  // namespace protocol
+
+}  // namespace cc_plugin
 
 }  // namespace mqtt
