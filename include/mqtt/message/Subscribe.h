@@ -73,6 +73,7 @@ using SubscribePayload =
     comms::field::ArrayList<
         TFieldBase,
         comms::field::Bundle<
+            TFieldBase,
             std::tuple<
                 SubscribeTopicField<TFieldBase>,
                 mqtt::field::QoS<TFieldBase>
