@@ -32,6 +32,8 @@ install (
     DESTINATION ${INC_INSTALL_DIR}
 )
 
+install (DIRECTORY cmake DESTINATION ${INSTALL_DIR})
+
 if (MQTT_LIB_ONLY)
     return ()
 endif ()   
