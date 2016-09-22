@@ -290,7 +290,7 @@ protected:
         typename Base::ReadIterator& iter,
         std::size_t size) override
     {
-        auto status = Base::template readFieldsUntil<FieldIdx_WillMessage>(iter, size);
+        auto status = Base::template readFieldsUntil<FieldIdx_WillTopic>(iter, size);
         if (status != comms::ErrorStatus::Success) {
             return status;
         }
@@ -312,7 +312,7 @@ protected:
         updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, userNameField);
         updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, passwordField);
 
-        return Base::template readFieldsFrom<FieldIdx_WillMessage>(iter, size);
+        return Base::template readFieldsFrom<FieldIdx_WillTopic>(iter, size);
     }
 
     virtual bool refreshImpl() override
