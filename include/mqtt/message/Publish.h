@@ -188,11 +188,13 @@ protected:
 
     virtual bool refreshImpl() override
     {
+        bool result = updatePacketId() && updateDup();
+
         auto& allFields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
         Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
 
-        return refreshInternal();
+        return result;
     }
 
     virtual comms::ErrorStatus readImpl(
@@ -203,7 +205,7 @@ protected:
         auto& allFields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
-        refreshInternal();
+        updatePacketId();
         return Base::template readFieldsFrom<FieldIdx_Topic>(iter, size);
     }
 
@@ -214,8 +216,13 @@ protected:
         return Base::template writeFieldsFrom<FieldIdx_Topic>(iter, size);
     }
 
+    virtual std::size_t lengthImpl() const override
+    {
+        return Base::lengthImpl() - PublishFlags<typename Base::Field>::minLength();
+    }
+
 private:
-    bool refreshInternal()
+    bool updatePacketId()
     {
         auto& allFields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
@@ -231,6 +238,26 @@ private:
         bool updated = (packetIdField.getMode() != packetIdMode);
         packetIdField.setMode(packetIdMode);
         return updated;
+    }
+
+    bool updateDup()
+    {
+        auto& allFields = Base::fields();
+        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
+        auto& publishFlagsMembers = publishFlagsField.value();
+        auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
+        auto& dupFlagsField = std::get<PublishActualFlagIdx_Dup>(publishFlagsMembers);
+
+        if (qosMemberField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
+            return false;
+        }
+
+        if (dupFlagsField.value() != 0) {
+            dupFlagsField.value() = 0;
+            return true;
+        }
+
+        return false;
     }
 };
 
