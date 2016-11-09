@@ -158,7 +158,7 @@ using ClientIdField =
             comms::field::IntValue<
                 TFieldBase,
                 std::uint16_t,
-                comms::option::ValidNumValueRange<1, 23>
+                comms::option::ValidNumValueRange<0, 23>
             >
         >
     >;
