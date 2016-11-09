@@ -58,7 +58,13 @@ public:
     static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
         "Number of fields is incorrect");
 
-    Pubrel() = default;
+    Pubrel()
+    {
+        typename Base::FlagsField flags;
+        flags.value() = 2;
+        Base::setFlags(flags);
+    }
+
     Pubrel(const Pubrel&) = default;
     Pubrel(Pubrel&& other)
     {
