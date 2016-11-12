@@ -38,6 +38,14 @@ if (MQTT_LIB_ONLY)
     return ()
 endif ()   
 
+if ((UNIX) AND (NOT CC_NO_CCACHE))
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+    endif(CCACHE_FOUND)
+endif ()    
+
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
