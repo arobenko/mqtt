@@ -47,10 +47,10 @@ generate required build files native to the platform.
 as when building the [comms_champion](https://github.com/arobenko/comms_champion)
 sources. The build depends on the installed contents of the 
 [comms_champion](https://github.com/arobenko/comms_champion) project
-and required knowledge about the location of the latter. It is recommended to
+and requires knowledge about the location of the latter. It is recommended to
 install the produced headers/binaries of this project into the same directory
-as [comms_champion](https://github.com/arobenko/comms_champion), it will cause
-all the required dependencies to be installed automatically. The installation
+as with [comms_champion](https://github.com/arobenko/comms_champion), it will cause
+all the required dependencies to be found automatically. The installation
 directory can be specified using **CC_MQTT_INSTALL_DIR** variable.
 
 >$> cmake -DCMAKE_BUILD_TYPE=Release -DCC_MQTT_INSTALL_DIR=/path/to/comms_champion/build/install /path/to/mqtt/sources
@@ -86,6 +86,14 @@ found in standard system directories.
 
 - **CC_MQTT_MOSQUITTO_DIR**=dir - Path to custom build of **mosquitto**
 library if it cannot be found in standard system directories.
+
+- **CC_MQTT_FULL_SOLUTION**=ON/OFF - This option allows to build both
+[comms_champion](https://github.com/arobenko/comms_champion) and this projects
+in one go. When enabled it will checkout and build the 
+[comms_champion](https://github.com/arobenko/comms_champion) prior to building
+anything from this repository. All the headers, binaries, and libraries will
+be installed in the directory specified with **CC_MQTT_INSTALL_DIR** variable. 
+Default value of this option is **OFF**.
 
 For example, discard all other tools, just install the **MQTT** library:
 

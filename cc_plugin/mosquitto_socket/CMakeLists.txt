@@ -1,6 +1,9 @@
+set (THIS_PLUGIN_NAME "mosquitto_socket")
+
+######################################################################
 
 function (cc_plugin_mosquitto_socket)
-    set (name "mosquitto_socket")
+    set (name "${THIS_PLUGIN_NAME}")
     
     set (meta_file "${CMAKE_CURRENT_SOURCE_DIR}/mosquitto_socket.json")
     set (stamp_file "${CMAKE_CURRENT_BINARY_DIR}/refresh_stamp.txt")
@@ -82,35 +85,38 @@ if (NOT MOSQUITTO_FOUND)
     return()
 endif ()
 
-if ((NOT "${CC_MQTT_INSTALL_DIR}" STREQUAL "") AND (EXISTS "${CC_MQTT_INSTALL_DIR}/cmake/CommsChampionConfig.cmake"))
-    list (APPEND CMAKE_PREFIX_PATH "${CC_MQTT_INSTALL_DIR}/cmake")
-endif ()
-
-if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
-    list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
-endif ()
-
-
-find_package(CommsChampion)
-
-if (NOT CC_COMMS_CHAMPION_FOUND)
-    message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
-    return ()
-endif ()
-
 include_directories (
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CC_INCLUDE_DIRS}
     ${MOSQUITTO_INCLUDE_DIRS}
 )
 
 link_directories(
-    ${CC_PLUGIN_LIBRARY_DIRS}
     ${MOSQUITTO_LIBRARY_DIRS}
 )
 
-if (NOT "${CC_MQTT_QT_DIR}" STREQUAL "")
-    list (APPEND CMAKE_PREFIX_PATH ${CC_MQTT_QT_DIR})
-endif ()
+if (NOT CC_MQTT_FULL_SOLUTION)
+    if (EXISTS "${INSTALL_DIR}/cmake/CommsChampionConfig.cmake")
+        list (APPEND CMAKE_PREFIX_PATH "${INSTALL_DIR}/cmake")
+    endif ()
+    
+    if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
+        list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
+    endif ()
+    
+    
+    find_package(CommsChampion)
+    
+    if (NOT CC_COMMS_CHAMPION_FOUND)
+        message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
+        return ()
+    endif ()
+    
+    include_directories(${CC_INCLUDE_DIRS})
+    link_directories(${CC_PLUGIN_LIBRARY_DIRS})
+endif ()   
 
 cc_plugin_mosquitto_socket ()
+
+if (CC_MQTT_FULL_SOLUTION)
+    add_dependencies(${THIS_PLUGIN_NAME} ${CC_EXTERNAL_TGT})
+endif ()

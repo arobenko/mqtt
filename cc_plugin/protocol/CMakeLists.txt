@@ -1,5 +1,9 @@
+set (THIS_PLUGIN_NAME "mqtt")
+
+######################################################################
+
 function (cc_plugin_mqtt)
-    set (name "mqtt")
+    set (name "${THIS_PLUGIN_NAME}")
     
     set (meta_file "${CMAKE_CURRENT_SOURCE_DIR}/mqtt.json")
     set (stamp_file "${CMAKE_CURRENT_BINARY_DIR}/mqtt_refresh_stamp.txt")
@@ -68,27 +72,33 @@ if (NOT Qt5Core_FOUND)
     return ()
 endif ()
 
-if ((NOT "${CC_MQTT_INSTALL_DIR}" STREQUAL "") AND (EXISTS "${CC_MQTT_INSTALL_DIR}/cmake/CommsChampionConfig.cmake"))
-    list (APPEND CMAKE_PREFIX_PATH "${CC_MQTT_INSTALL_DIR}/cmake")
-endif ()
-
-if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
-    list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
-endif ()
-
-
-find_package(CommsChampion)
-
-if (NOT CC_COMMS_CHAMPION_FOUND)
-    message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
-    return ()
-endif ()
-
-include_directories(${CC_INCLUDE_DIRS})
-link_directories(${CC_PLUGIN_LIBRARY_DIRS})
+if (NOT CC_MQTT_FULL_SOLUTION)
+    if (EXISTS "${INSTALL_DIR}/cmake/CommsChampionConfig.cmake")
+        list (APPEND CMAKE_PREFIX_PATH "${INSTALL_DIR}/cmake")
+    endif ()
+    
+    if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
+        list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
+    endif ()
+    
+    
+    find_package(CommsChampion)
+    
+    if (NOT CC_COMMS_CHAMPION_FOUND)
+        message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
+        return ()
+    endif ()
+    
+    include_directories(${CC_INCLUDE_DIRS})
+    link_directories(${CC_PLUGIN_LIBRARY_DIRS})
+endif ()    
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
 endif ()
 
 cc_plugin_mqtt ()
+
+if (CC_MQTT_FULL_SOLUTION)
+    add_dependencies(${THIS_PLUGIN_NAME} ${CC_EXTERNAL_TGT})
+endif ()

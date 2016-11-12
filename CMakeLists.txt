@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8.11)
 project ("mqtt")
 
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
+option (CC_MQTT_FULL_SOLUTION "Install only MQTT protocol library, no other applications/plugings are built." OFF)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set (extra_flags_list
@@ -38,6 +39,23 @@ install (DIRECTORY cmake DESTINATION ${INSTALL_DIR})
 if (CC_MQTT_LIB_ONLY)
     return ()
 endif ()   
+
+set (CC_EXTERNAL_TGT "comms_champion_external")
+if (CC_MQTT_FULL_SOLUTION)
+    include(ExternalProject)
+    ExternalProject_Add(
+        "${CC_EXTERNAL_TGT}"
+        GIT_REPOSITORY https://github.com/arobenko/comms_champion.git
+        GIT_TAG master
+        CMAKE_ARGS -DCC_INSTALL_DIR=${INSTALL_DIR}
+        BINARY_DIR ${CMAKE_BINARY_DIR}/comms_champion/build
+        BUILD_COMMAND make install
+    )
+    
+    include_directories("${INSTALL_DIR}/include")
+    link_directories("${INSTALL_DIR}/lib")
+    set (CC_PLUGIN_LIBRARIES "comms_champion")
+endif ()
 
 if ((UNIX) AND (NOT CC_NO_CCACHE))
     find_program(CCACHE_FOUND ccache)
