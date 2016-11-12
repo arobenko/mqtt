@@ -2,7 +2,7 @@
 # Find the mosquitto library includes and libraries
 #
 # Input variables
-#  MQTT_MOSQUITTO_DIR - Directory with mosquitto installation.
+#  CC_MQTT_MOSQUITTO_DIR - Directory with mosquitto installation.
 # 
 # Output is provided using the following variables
 #  MOSQUITTO_FOUND - Found mosquitto library
@@ -10,7 +10,7 @@
 #  MOSQUITTO_INCLUDE_DIRS - Directories that contain header files.
 #  MOSQUITTO_LIBRARY_DIRS - Directories that contain libraries.
 
-if ("${MQTT_MOSQUITTO_DIR}" STREQUAL "")
+if ("${CC_MQTT_MOSQUITTO_DIR}" STREQUAL "")
     find_path(MOSQUITTO_INCLUDE_DIR NAMES mosquitto.h)
     find_library(MOSQUITTO_LIBRARY NAMES mosquitto)
 else ()

@@ -1,10 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 project ("mqtt")
 
-option (MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
-option (MQTT_CC_PROTOCOL_PLUGIN "Build and install protocol plugin for CommsChampion." ON)
-option (MQTT_CC_MOSQUITTO_SOCKET_PLUGIN "Build and install socket plugin for CommsChampion, that uses mosquitto library." ON)
-option (MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH "Copy pluginS for CommsChampion to the install path of the latter." ON)
+option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set (extra_flags_list
@@ -22,6 +19,10 @@ elseif (MSVC)
 endif ()
 
 set (INSTALL_DIR ${CMAKE_BINARY_DIR}/install)
+if (NOT "${CC_MQTT_INSTALL_DIR}" STREQUAL "")
+    set (INSTALL_DIR "${CC_MQTT_INSTALL_DIR}")
+endif ()
+
 set (LIB_INSTALL_DIR ${INSTALL_DIR}/lib)
 set (BIN_INSTALL_DIR ${INSTALL_DIR}/bin)
 set (INC_INSTALL_DIR ${INSTALL_DIR}/include)
@@ -34,7 +35,7 @@ install (
 
 install (DIRECTORY cmake DESTINATION ${INSTALL_DIR})
 
-if (MQTT_LIB_ONLY)
+if (CC_MQTT_LIB_ONLY)
     return ()
 endif ()   
 

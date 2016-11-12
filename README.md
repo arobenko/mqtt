@@ -45,38 +45,46 @@ generate required build files native to the platform.
 
 - Generate Makefiles (or any other build environment) choosing the same build type
 as when building the [comms_champion](https://github.com/arobenko/comms_champion)
-sources, and providing path to the install directory of the latter using **MQTT_CC_INSTALL_PATH**
-variable.
+sources. The build depends on the installed contents of the 
+[comms_champion](https://github.com/arobenko/comms_champion) project
+and required knowledge about the location of the latter. It is recommended to
+install the produced headers/binaries of this project into the same directory
+as [comms_champion](https://github.com/arobenko/comms_champion), it will cause
+all the required dependencies to be installed automatically. The installation
+directory can be specified using **CC_MQTT_INSTALL_DIR** variable.
 
->$> cmake -DCMAKE_BUILD_TYPE=Release -DCC_INSTALL_PATH=/path/to/comms_champion/build/install /path/to/mqtt/sources
+>$> cmake -DCMAKE_BUILD_TYPE=Release -DCC_MQTT_INSTALL_DIR=/path/to/comms_champion/build/install /path/to/mqtt/sources
+
+If the produced headers/finaries are not desired to be mixed, the location
+of the [comms_champion](https://github.com/arobenko/comms_champion)
+installation path can be provided using **CC_MAIN_INSTALL_DIR** variable.
+
+>$> cmake -DCMAKE_BUILD_TYPE=Release -DCC_MAIN_INSTALL_DIR=/path/to/comms_champion/build/install /path/to/mqtt/sources
 
 - Build and install.
 
 >$> make install
 
 After the build is complete, all the binaries, headers, libraries will reside
-in **install** subdirectory of the directory chosen for build (/some/build/dir) .
+in the chosen install directory (See description of **CC_MQTT_INTALL_DIR** variable below) .
 
 In addition to built-in options/variables of CMake, such as **CMAKE_BUILD_TYPE** or
 **CMAKE_TOOLCHAIN_FILE**, the following ones can be used:
 
-- **MQTT_LIB_ONLY**=ON/OFF - Exclude compilation of all the sources, install only
-**MQTT** Library. Default value is **OFF**, i.e. the plugin to CommsChampion gets built.
+- **CC_MQTT_LIB_ONLY**=ON/OFF - Exclude compilation of all the sources, install only
+**MQTT** Library. Default value is **OFF**, i.e. the pluginS to CommsChampion get built.
 
-- **MQTT_CC_PROTOCOL_PLUGIN**=ON/OFF - Include/Exclude **protocol** plugin for 
-CommsChampion tools. Default value is **ON**
+- **CC_MQTT_INSTALL_DIR**=dir - Custom installation directory. If not provided defaults to
+**install** subdirectory of the directory chosen for build (**${CMAKE_BINARY_DIR}/install**). 
 
-- **MQTT_CC_MOSQUITTO_SOCKET_PLUGIN**=ON/OFF -Include/Exclude **socket** plugin
-for CommsChampion tools. Default value is **ON**.
+- **CC_MAIN_INSTALL_DIR**=dir - Directory where headers and libraries of 
+[comms_champion](https://github.com/arobenko/comms_champion) project. It must
+be used if value of **CC_MQTT_INSTALL_DIR** doesn't specify the same location.
 
-- **MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH**=ON/OFF - Install plugins for 
-CommsChampion into **MQTT_CC_INSTALL_PATH** as well as local installation path. 
-Default value is **ON**.
-
-- **MQTT_QT_DIR**=/path/to/qt - Path to custom build of **QT5** if it cannot be
+- **CC_MQTT_QT_DIR**=dir - Path to custom build of **QT5** if it cannot be
 found in standard system directories.
 
-- **MQTT_MOSQUITTO_DIR**=/path/to/mosquitto - Path to custom build of **mosquitto**
+- **CC_MQTT_MOSQUITTO_DIR**=dir - Path to custom build of **mosquitto**
 library if it cannot be found in standard system directories.
 
 For example, discard all other tools, just install the **MQTT** library:
@@ -85,7 +93,7 @@ For example, discard all other tools, just install the **MQTT** library:
 
 >$> mkdir build && cd build
 
->$> cmake -DCMAKE_BUILD_TYPE=Release MQTT_CC_INSTALL_PATH=/path/to/comms_champioin/sources -DMQTT_LIB_ONLY=ON ..
+>$> cmake -DCMAKE_BUILD_TYPE=Release -DCC_MQTT_LIB_ONLY=ON ..
 
 >$> make install 
 

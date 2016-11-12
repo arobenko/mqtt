@@ -1,25 +1,6 @@
-if (NOT MQTT_CC_MOSQUITTO_SOCKET_PLUGIN)
-    return ()
-endif ()
-######################################################################
 
 function (cc_plugin_mosquitto_socket)
     set (name "mosquitto_socket")
-    
-    if (NOT Qt5Core_FOUND)
-        message(WARNING "Can NOT build ${name} due to missing Qt5Core library")
-        return()
-    endif ()
-    
-    if (NOT Qt5Widgets_FOUND)
-        message(WARNING "Can NOT build ${name} due to missing Qt5Widgets library")
-        return()
-    endif ()
-    
-    if (NOT Qt5Network_FOUND)
-        message(WARNING "Can NOT build ${name} due to missing Qt5Network library")
-        return()
-    endif ()
     
     set (meta_file "${CMAKE_CURRENT_SOURCE_DIR}/mosquitto_socket.json")
     set (stamp_file "${CMAKE_CURRENT_BINARY_DIR}/refresh_stamp.txt")
@@ -66,20 +47,33 @@ function (cc_plugin_mosquitto_socket)
     install (
         TARGETS ${name}
         DESTINATION ${PLUGIN_INSTALL_DIR})
-
-    if (MQTT_CC_PLUGIN_COPY_TO_CC_INSTALL_PATH)        
-        install (
-            TARGETS ${name}
-            DESTINATION ${CC_PLUGIN_DIR})
-     endif ()
     
 endfunction()
 
 ######################################################################
 
-include_directories (
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+if (NOT "${CC_MQTT_QT_DIR}" STREQUAL "")
+    list (APPEND CMAKE_PREFIX_PATH ${CC_MQTT_QT_DIR})
+endif ()
+
+find_package(Qt5Core)
+find_package(Qt5Widgets)
+find_package(Qt5Network)
+
+if (NOT Qt5Core_FOUND)
+    message (WARNING "Can NOT compile mosquitto socket plugin due to missing QT5 Core library")
+    return ()
+endif ()
+
+if (NOT Qt5Widgets_FOUND)
+    message (WARNING "Can NOT compile mosquitto socket plugin due to missing QT5 Widgets library")
+    return ()
+endif ()
+
+if (NOT Qt5Network_FOUND)
+    message (WARNING "Can NOT compile mosquitto socket plugin due to missing QT5 Network library")
+    return ()
+endif ()
 
 list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Mosquitto)
@@ -88,32 +82,35 @@ if (NOT MOSQUITTO_FOUND)
     return()
 endif ()
 
-include_directories(${MOSQUITTO_INCLUDE_DIRS})
-link_directories(${MOSQUITTO_LIBRARY_DIRS})
-
-if (NOT "${MQTT_QT_DIR}" STREQUAL "")
-    list (APPEND CMAKE_PREFIX_PATH ${MQTT_QT_DIR})
+if ((NOT "${CC_MQTT_INSTALL_DIR}" STREQUAL "") AND (EXISTS "${CC_MQTT_INSTALL_DIR}/cmake/CommsChampionConfig.cmake"))
+    list (APPEND CMAKE_PREFIX_PATH "${CC_MQTT_INSTALL_DIR}/cmake")
 endif ()
 
-find_package(Qt5Core)
-find_package(Qt5Widgets)
-find_package(Qt5Network)
-
-if (NOT "${MQTT_CC_INSTALL_PATH}" STREQUAL "")
-    list (APPEND CMAKE_PREFIX_PATH "${MQTT_CC_INSTALL_PATH}/cmake")
+if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
+    list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
 endif ()
+
 
 find_package(CommsChampion)
 
 if (NOT CC_COMMS_CHAMPION_FOUND)
-    message (FATAL_ERROR "CommsChampion wasn't found!. Please set MQTT_CC_INSTALL_PATH to its installation path.")
+    message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
+    return ()
 endif ()
 
-include_directories("${CC_INCLUDE_DIRS}")
-link_directories("${CC_PLUGIN_LIBRARY_DIRS}")
+include_directories (
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CC_INCLUDE_DIRS}
+    ${MOSQUITTO_INCLUDE_DIRS}
+)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
+link_directories(
+    ${CC_PLUGIN_LIBRARY_DIRS}
+    ${MOSQUITTO_LIBRARY_DIRS}
+)
+
+if (NOT "${CC_MQTT_QT_DIR}" STREQUAL "")
+    list (APPEND CMAKE_PREFIX_PATH ${CC_MQTT_QT_DIR})
 endif ()
 
 cc_plugin_mosquitto_socket ()
