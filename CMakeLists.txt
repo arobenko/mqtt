@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8.11)
 project ("mqtt")
 
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
-option (CC_MQTT_FULL_SOLUTION "Install only MQTT protocol library, no other applications/plugings are built." OFF)
+option (CC_MQTT_FULL_SOLUTION "Build and install full solution, including CommsChampion sources." OFF)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set (extra_flags_list
