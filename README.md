@@ -89,7 +89,7 @@ library if it cannot be found in standard system directories.
 
 - **CC_MQTT_FULL_SOLUTION**=ON/OFF - This option allows to build both
 [comms_champion](https://github.com/arobenko/comms_champion) and this projects
-in one go. When enabled it will checkout and build the 
+in one go. When enabled, it will checkout and build the 
 [comms_champion](https://github.com/arobenko/comms_champion) prior to building
 anything from this repository. All the headers, binaries, and libraries will
 be installed in the directory specified with **CC_MQTT_INSTALL_DIR** variable. 
