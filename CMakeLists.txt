@@ -43,14 +43,33 @@ endif ()
 set (CC_EXTERNAL_TGT "comms_champion_external")
 if (CC_MQTT_FULL_SOLUTION)
     include(ExternalProject)
-    ExternalProject_Add(
-        "${CC_EXTERNAL_TGT}"
-        GIT_REPOSITORY https://github.com/arobenko/comms_champion.git
-        GIT_TAG master
-        CMAKE_ARGS -DCC_INSTALL_DIR=${INSTALL_DIR}
-        BINARY_DIR ${CMAKE_BINARY_DIR}/comms_champion/build
-        BUILD_COMMAND make install
-    )
+    
+    set (cc_branch "master")
+    if (WIN32)
+        ExternalProject_Add(
+            "${CC_EXTERNAL_TGT}"
+            GIT_REPOSITORY https://github.com/arobenko/comms_champion.git
+            GIT_TAG ${cc_branch}
+            CMAKE_GENERATOR "NMake Makefiles"
+            CMAKE_ARGS -DCC_INSTALL_DIR=${INSTALL_DIR}
+            BINARY_DIR ${CMAKE_BINARY_DIR}/comms_champion_build
+            BUILD_COMMAND nmake install
+        )
+    elseif (UNIX)
+        include(ProcessorCount)
+        ProcessorCount(cpu_count)
+        if(NOT cpu_count EQUAL 0)
+            set (COMPILE_THREADS "-j${cpu_count}")
+        endif ()
+        ExternalProject_Add(
+            "${CC_EXTERNAL_TGT}"
+            GIT_REPOSITORY https://github.com/arobenko/comms_champion.git
+            GIT_TAG ${cc_branch}
+            CMAKE_ARGS -DCC_INSTALL_DIR=${INSTALL_DIR}
+            BINARY_DIR ${CMAKE_BINARY_DIR}/comms_champion_build
+            BUILD_COMMAND make ${COMPILE_THREADS} install
+        )
+    endif ()
     
     include_directories("${INSTALL_DIR}/include")
     link_directories("${INSTALL_DIR}/lib")
