@@ -57,7 +57,7 @@ if (CC_MQTT_FULL_SOLUTION)
     set (CC_PLUGIN_LIBRARIES "comms_champion")
 endif ()
 
-if ((UNIX) AND (NOT CC_NO_CCACHE))
+if ((UNIX) AND (NOT CC_MQTT_NO_CCACHE))
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
