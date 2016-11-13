@@ -53,7 +53,7 @@ if (CC_MQTT_FULL_SOLUTION)
             CMAKE_GENERATOR "NMake Makefiles"
             CMAKE_ARGS -DCC_INSTALL_DIR=${INSTALL_DIR}
             BINARY_DIR ${CMAKE_BINARY_DIR}/comms_champion_build
-            BUILD_COMMAND nmake install
+            BUILD_COMMAND nmake
         )
     elseif (UNIX)
         include(ProcessorCount)
@@ -67,7 +67,7 @@ if (CC_MQTT_FULL_SOLUTION)
             GIT_TAG ${cc_branch}
             CMAKE_ARGS -DCC_INSTALL_DIR=${INSTALL_DIR}
             BINARY_DIR ${CMAKE_BINARY_DIR}/comms_champion_build
-            BUILD_COMMAND make ${COMPILE_THREADS} install
+            BUILD_COMMAND make ${COMPILE_THREADS}
         )
     endif ()
     
