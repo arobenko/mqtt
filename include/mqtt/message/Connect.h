@@ -31,16 +31,16 @@ namespace message
 
 enum ConnectFlagsLowBitIdx
 {
-    ConnectFlagsLowBitIdx_Reserved,
-    ConnectFlagsLowBitIdx_CleanSession,
-    ConnectFlagsLowBitIdx_WillFlag
+    ConnectFlagsLowBitIdx_reserved,
+    ConnectFlagsLowBitIdx_cleanSession,
+    ConnectFlagsLowBitIdx_willFlag
 };
 
 enum ConnectFlagsHighBitIdx
 {
     ConnectFlagsHighBitIdx_WillRetain,
-    ConnectFlagsHighBitIdx_PasswordFlag,
-    ConnectFlagsHighBitIdx_UserNameFlag
+    ConnectFlagsHighBitIdx_passwordFlag,
+    ConnectFlagsHighBitIdx_userNameFlag
 };
 
 namespace details
@@ -56,7 +56,7 @@ struct ConnectFlagsExtraValidator
         auto& willQosField = std::get<1>(members);
         auto& flagsHighField = std::get<2>(members);
 
-        if (!flagsLowField.getBitValue(ConnectFlagsLowBitIdx_WillFlag)) {
+        if (!flagsLowField.getBitValue(ConnectFlagsLowBitIdx_willFlag)) {
             if (willQosField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
                 return false;
             }
@@ -66,8 +66,8 @@ struct ConnectFlagsExtraValidator
             }
         }
 
-        if (!flagsHighField.getBitValue(ConnectFlagsHighBitIdx_UserNameFlag)) {
-            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_PasswordFlag)) {
+        if (!flagsHighField.getBitValue(ConnectFlagsHighBitIdx_userNameFlag)) {
+            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_passwordFlag)) {
                 return false;
             }
         }
@@ -288,10 +288,10 @@ protected:
 
         auto allFields = fieldsAsStruct();
         auto flagsMembers = allFields.flags.fieldsAsStruct();
-        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic);
-        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage);
-        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName);
-        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password);
+        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willTopic);
+        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willMessage);
+        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_userNameFlag, allFields.userName);
+        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_passwordFlag, allFields.password);
 
         return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
     }
@@ -304,16 +304,16 @@ protected:
         bool updated = false;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic) || updated;
+                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willTopic) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage) || updated;
+                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willMessage) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName) || updated;
+                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_userNameFlag, allFields.userName) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password) || updated;
+                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_passwordFlag, allFields.password) || updated;
 
         return updated;
     }
