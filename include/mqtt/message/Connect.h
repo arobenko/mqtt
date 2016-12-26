@@ -29,6 +29,77 @@ namespace mqtt
 namespace message
 {
 
+enum ConnectFlagsLowBitIdx
+{
+    ConnectFlagsLowBitIdx_Reserved,
+    ConnectFlagsLowBitIdx_CleanSession,
+    ConnectFlagsLowBitIdx_WillFlag
+};
+
+enum ConnectFlagsHighBitIdx
+{
+    ConnectFlagsHighBitIdx_WillRetain,
+    ConnectFlagsHighBitIdx_PasswordFlag,
+    ConnectFlagsHighBitIdx_UserNameFlag
+};
+
+namespace details
+{
+
+struct ConnectFlagsExtraValidator
+{
+    template <typename TField>
+    bool operator()(TField&& field) const
+    {
+        auto& members = field.value();
+        auto& flagsLowField = std::get<0>(members);
+        auto& willQosField = std::get<1>(members);
+        auto& flagsHighField = std::get<2>(members);
+
+        if (!flagsLowField.getBitValue(ConnectFlagsLowBitIdx_WillFlag)) {
+            if (willQosField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
+                return false;
+            }
+
+            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_WillRetain)) {
+                return false;
+            }
+        }
+
+        if (!flagsHighField.getBitValue(ConnectFlagsHighBitIdx_UserNameFlag)) {
+            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_PasswordFlag)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+};
+
+template <typename TFieldBase>
+using ConnectFlagsFieldBase =
+    comms::field::Bitfield<
+        TFieldBase,
+        std::tuple<
+            comms::field::BitmaskValue<
+                TFieldBase,
+                comms::option::FixedBitLength<3>,
+                comms::option::BitmaskReservedBits<0x1, 0>
+            >,
+            mqtt::field::QoS<
+                TFieldBase,
+                comms::option::FixedBitLength<2>
+            >,
+            comms::field::BitmaskValue<
+                TFieldBase,
+                comms::option::FixedBitLength<3>
+            >
+        >,
+        comms::option::ContentsValidator<ConnectFlagsExtraValidator>
+    >;
+
+}  // namespace details
+
 struct ProtNameInitialiser
 {
     template <typename TField>
@@ -70,78 +141,13 @@ using ProtocolLevelField =
         comms::option::ValidNumValueRange<4, 4>
     >;
 
-enum ConnectFlagsMemberIdx
-{
-    ConnectFlagsMemberIdx_FlagsLow,
-    ConnectFlagsMemberIdx_WillQos,
-    ConnectFlagsMemberIdx_FlagsHigh
-};
-
-enum ConnectFlagsLowBitIdx
-{
-    ConnectFlagsLowBitIdx_Reserved,
-    ConnectFlagsLowBitIdx_CleanSession,
-    ConnectFlagsLowBitIdx_WillFlag
-};
-
-enum ConnectFlagsHighBitIdx
-{
-    ConnectFlagsHighBitIdx_WillRetain,
-    ConnectFlagsHighBitIdx_PasswordFlag,
-    ConnectFlagsHighBitIdx_UserNameFlag
-};
-
-struct ConnectFlagsExtraValidator
-{
-    template <typename TField>
-    bool operator()(TField&& field) const
-    {
-        auto& members = field.value();
-        auto& flagsLowField = std::get<ConnectFlagsMemberIdx_FlagsLow>(members);
-        auto& willQosField = std::get<ConnectFlagsMemberIdx_WillQos>(members);
-        auto& flagsHighField = std::get<ConnectFlagsMemberIdx_FlagsHigh>(members);
-
-        if (!flagsLowField.getBitValue(ConnectFlagsLowBitIdx_WillFlag)) {
-            if (willQosField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
-                return false;
-            }
-
-            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_WillRetain)) {
-                return false;
-            }
-        }
-
-        if (!flagsHighField.getBitValue(ConnectFlagsHighBitIdx_UserNameFlag)) {
-            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_PasswordFlag)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-};
-
 template <typename TFieldBase>
-using ConnectFlagsField =
-    comms::field::Bitfield<
-        TFieldBase,
-        std::tuple<
-            comms::field::BitmaskValue<
-                TFieldBase,
-                comms::option::FixedBitLength<3>,
-                comms::option::BitmaskReservedBits<0x1, 0>
-            >,
-            mqtt::field::QoS<
-                TFieldBase,
-                comms::option::FixedBitLength<2>
-            >,
-            comms::field::BitmaskValue<
-                TFieldBase,
-                comms::option::FixedBitLength<3>
-            >
-        >,
-        comms::option::ContentsValidator<ConnectFlagsExtraValidator>
-    >;
+class ConnectFlagsField : public details::ConnectFlagsFieldBase<TFieldBase>
+{
+    typedef details::ConnectFlagsFieldBase<TFieldBase> Base;
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(Base, flagsLow, willQos, flagsHigh);
+};
 
 template <typename TFieldBase>
 using KeepAliveField =
@@ -281,16 +287,11 @@ protected:
         }
 
         auto allFields = fieldsAsStruct();
-
-        auto& flagsMembers = allFields.flags.value();
-        auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
-        updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic);
-        updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage);
-
-        auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
-
-        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName);
-        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password);
+        auto flagsMembers = allFields.flags.fieldsAsStruct();
+        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic);
+        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage);
+        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName);
+        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password);
 
         return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
     }
@@ -298,23 +299,21 @@ protected:
     virtual bool refreshImpl() override
     {
         auto allFields = fieldsAsStruct();
-        auto& flagsMembers = allFields.flags.value();
-        auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
-        auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
+        auto flagsMembers = allFields.flags.fieldsAsStruct();
 
         bool updated = false;
         updated =
             refreshOptionalField(
-                flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic) || updated;
+                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic) || updated;
         updated =
             refreshOptionalField(
-                flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage) || updated;
+                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage) || updated;
         updated =
             refreshOptionalField(
-                flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName) || updated;
+                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName) || updated;
         updated =
             refreshOptionalField(
-                flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password) || updated;
+                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password) || updated;
 
         return updated;
     }

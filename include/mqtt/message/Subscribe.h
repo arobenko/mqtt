@@ -31,7 +31,6 @@ namespace mqtt
 namespace message
 {
 
-
 struct SubscribeTopicValidator
 {
     template <typename TField>
@@ -68,20 +67,36 @@ struct SubscribePayloadValidator
     }
 };
 
+namespace details
+{
+
+template <typename TFieldBase>
+using SubBundle =
+    comms::field::Bundle<
+        TFieldBase,
+        std::tuple<
+            SubscribeTopicField<TFieldBase>,
+            mqtt::field::QoS<TFieldBase>
+        >
+    >;
+
+template <typename TFieldBase>
+class SubElem : public SubBundle<TFieldBase>
+{
+    typedef SubBundle<TFieldBase> Base;
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(Base, topic, qos);
+};
+
+}  // namespace details
+
 template <typename TFieldBase>
 using SubscribePayload =
     comms::field::ArrayList<
         TFieldBase,
-        comms::field::Bundle<
-            TFieldBase,
-            std::tuple<
-                SubscribeTopicField<TFieldBase>,
-                mqtt::field::QoS<TFieldBase>
-            >
-        >,
+        details::SubElem<TFieldBase>,
         comms::option::ContentsValidator<SubscribePayloadValidator>
     >;
-
 
 template <typename TFieldBase>
 using SubscribeFields = std::tuple<
