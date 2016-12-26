@@ -45,7 +45,7 @@ QVariantList createFieldsProperties()
     QVariantList props;
     props.append(field::packetIdProperties());
 
-    assert(props.size() == Puback::FieldIdx_NumOfValues);
+    assert(props.size() == Puback::FieldIdx_numOfValues);
     return props;
 }
 

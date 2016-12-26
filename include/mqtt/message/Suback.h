@@ -103,22 +103,11 @@ public:
 
     typedef typename Base::FlagsField FlagsField;
 
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_Payload,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
 
     Suback() = default;
-
     Suback(const Suback&) = default;
-    Suback(Suback&& other)
-    {
-    }
+    Suback(Suback&& other) = default;
     virtual ~Suback() = default;
 
     Suback& operator=(const Suback&) = default;

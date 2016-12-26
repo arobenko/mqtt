@@ -70,7 +70,7 @@ QVariantList createFieldsProperties()
     props.append(field::packetIdProperties());
     props.append(createPayloadProperties());
 
-    assert(props.size() == Suback::FieldIdx_NumOfValues);
+    assert(props.size() == Suback::FieldIdx_numOfValues);
     return props;
 }
 

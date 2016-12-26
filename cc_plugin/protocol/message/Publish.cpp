@@ -103,7 +103,7 @@ QVariantList createFieldsProperties()
     props.append(field::optionalPacketIdProperties());
     props.append(createPayloadProperties());
 
-    assert(props.size() == Publish::FieldIdx_NumOfValues);
+    assert(props.size() == Publish::FieldIdx_numOfValues);
     return props;
 }
 

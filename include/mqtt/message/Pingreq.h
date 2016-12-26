@@ -49,9 +49,7 @@ public:
 
     Pingreq() = default;
     Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&& other)
-    {
-    }
+    Pingreq(Pingreq&& other) = default;
     virtual ~Pingreq() = default;
 
     Pingreq& operator=(const Pingreq&) = default;

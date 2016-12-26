@@ -49,20 +49,11 @@ class Pubcomp : public
         comms::option::DispatchImpl<Pubcomp<TMsgBase> >
     > Base;
 public:
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Pubcomp() = default;
     Pubcomp(const Pubcomp&) = default;
-    Pubcomp(Pubcomp&& other)
-    {
-    }
+    Pubcomp(Pubcomp&& other) = default;
     virtual ~Pubcomp() = default;
 
     Pubcomp& operator=(const Pubcomp&) = default;

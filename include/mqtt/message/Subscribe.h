@@ -116,15 +116,7 @@ public:
         comms::option::FailOnInvalid
     > SubscribeFlagsField;
 
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_Payload,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
 
     Subscribe()
     {
@@ -133,9 +125,7 @@ public:
     }
 
     Subscribe(const Subscribe&) = default;
-    Subscribe(Subscribe&& other)
-    {
-    }
+    Subscribe(Subscribe&& other) = default;
     virtual ~Subscribe() = default;
 
     Subscribe& operator=(const Subscribe&) = default;

@@ -49,20 +49,11 @@ class Pubrec : public
         comms::option::DispatchImpl<Pubrec<TMsgBase> >
     > Base;
 public:
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Pubrec() = default;
     Pubrec(const Pubrec&) = default;
-    Pubrec(Pubrec&& other)
-    {
-    }
+    Pubrec(Pubrec&& other) = default;
     virtual ~Pubrec() = default;
 
     Pubrec& operator=(const Pubrec&) = default;

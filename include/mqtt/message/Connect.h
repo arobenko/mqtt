@@ -241,45 +241,30 @@ class Connect : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNECT>,
         comms::option::FieldsImpl<ConnectFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Connect<TMsgBase> >
+        comms::option::DispatchImpl<Connect<TMsgBase> >,
+        comms::option::NoDefaultFieldsReadImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNECT>,
         comms::option::FieldsImpl<ConnectFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Connect<TMsgBase> >
+        comms::option::DispatchImpl<Connect<TMsgBase> >,
+        comms::option::NoDefaultFieldsReadImpl
     > Base;
 public:
-    enum FieldIdx
-    {
-        FieldIdx_Name,
-        FieldIdx_Level,
-        FieldIdx_Flags,
-        FieldIdx_KeepAlive,
-        FieldIdx_ClientId,
-        FieldIdx_WillTopic,
-        FieldIdx_WillMessage,
-        FieldIdx_UserName,
-        FieldIdx_Password,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
 
     Connect()
     {
         auto& allFields = Base::fields();
-        auto& willMsgField = std::get<FieldIdx_WillMessage>(allFields);
+        auto& willMsgField = std::get<FieldIdx_willMessage>(allFields);
 
         willMsgField.setMode(comms::field::OptionalMode::Missing);
     }
 
     Connect(const Connect&) = default;
-    Connect(Connect&& other)
-    {
-    }
+    Connect(Connect&& other) = default;
     virtual ~Connect() = default;
 
     Connect& operator=(const Connect&) = default;
@@ -290,57 +275,46 @@ protected:
         typename Base::ReadIterator& iter,
         std::size_t size) override
     {
-        auto status = Base::template readFieldsUntil<FieldIdx_WillTopic>(iter, size);
+        auto status = Base::template readFieldsUntil<FieldIdx_willTopic>(iter, size);
         if (status != comms::ErrorStatus::Success) {
             return status;
         }
 
-        auto& allFields = Base::fields();
-        auto& flagsField = std::get<FieldIdx_Flags>(allFields);
-        auto& willTopicField = std::get<FieldIdx_WillTopic>(allFields);
-        auto& willMessageField = std::get<FieldIdx_WillMessage>(allFields);
+        auto allFields = fieldsAsStruct();
 
-        auto& flagsMembers = flagsField.value();
+        auto& flagsMembers = allFields.flags.value();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
-        updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willTopicField);
-        updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willMessageField);
+        updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic);
+        updateOptionalField(flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage);
 
         auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
 
-        auto& userNameField = std::get<FieldIdx_UserName>(allFields);
-        auto& passwordField = std::get<FieldIdx_Password>(allFields);
-        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, userNameField);
-        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, passwordField);
+        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName);
+        updateOptionalField(flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password);
 
-        return Base::template readFieldsFrom<FieldIdx_WillTopic>(iter, size);
+        return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
     }
 
     virtual bool refreshImpl() override
     {
-        auto& allFields = Base::fields();
-        auto& flagsField = std::get<FieldIdx_Flags>(allFields);
-        auto& willTopicField = std::get<FieldIdx_WillTopic>(allFields);
-        auto& willMessageField = std::get<FieldIdx_WillMessage>(allFields);
-        auto& userNameField = std::get<FieldIdx_UserName>(allFields);
-        auto& passwordField = std::get<FieldIdx_Password>(allFields);
-
-        auto& flagsMembers = flagsField.value();
+        auto allFields = fieldsAsStruct();
+        auto& flagsMembers = allFields.flags.value();
         auto& flagsLowMember = std::get<ConnectFlagsMemberIdx_FlagsLow>(flagsMembers);
         auto& flagsHighMember = std::get<ConnectFlagsMemberIdx_FlagsHigh>(flagsMembers);
 
         bool updated = false;
         updated =
             refreshOptionalField(
-                flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willTopicField) || updated;
+                flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willTopic) || updated;
         updated =
             refreshOptionalField(
-                flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, willMessageField) || updated;
+                flagsLowMember, ConnectFlagsLowBitIdx_WillFlag, allFields.willMessage) || updated;
         updated =
             refreshOptionalField(
-                flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, userNameField) || updated;
+                flagsHighMember, ConnectFlagsHighBitIdx_UserNameFlag, allFields.userName) || updated;
         updated =
             refreshOptionalField(
-                flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, passwordField) || updated;
+                flagsHighMember, ConnectFlagsHighBitIdx_PasswordFlag, allFields.password) || updated;
 
         return updated;
     }
@@ -350,10 +324,10 @@ private:
     static void updateOptionalField(const TFlagsField& flagsField, unsigned idx, TOptField& optField)
     {
         if (flagsField.getBitValue(idx)) {
-            optField.setMode(comms::field::OptionalMode::Exists);
+            optField.setExists();
         }
         else {
-            optField.setMode(comms::field::OptionalMode::Missing);
+            optField.setMissing();
         }
     }
 
@@ -362,12 +336,12 @@ private:
     {
         bool updated = false;
         if (flagsField.getBitValue(idx)) {
-            updated = (optField.getMode() != comms::field::OptionalMode::Exists);
-            optField.setMode(comms::field::OptionalMode::Exists);
+            updated = !optField.doesExist();
+            optField.setExists();
         }
         else {
-            updated = (optField.getMode() != comms::field::OptionalMode::Missing);
-            optField.setMode(comms::field::OptionalMode::Missing);
+            updated = !optField.isMissing();
+            optField.setMissing();
         }
         return updated;
     }

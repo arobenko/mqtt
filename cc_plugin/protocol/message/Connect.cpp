@@ -197,7 +197,7 @@ QVariantList createFieldsProperties()
     props.append(createUserNameProperties());
     props.append(updatePasswordProperties());
 
-    assert(props.size() == Connect::FieldIdx_NumOfValues);
+    assert(props.size() == Connect::FieldIdx_numOfValues);
     return props;
 }
 

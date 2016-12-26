@@ -144,41 +144,32 @@ class Publish : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
         comms::option::FieldsImpl<PublishFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Publish<TMsgBase> >
+        comms::option::DispatchImpl<Publish<TMsgBase> >,
+        comms::option::NoDefaultFieldsReadImpl,
+        comms::option::NoDefaultFieldsWriteImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
         comms::option::FieldsImpl<PublishFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Publish<TMsgBase> >
+        comms::option::DispatchImpl<Publish<TMsgBase> >,
+        comms::option::NoDefaultFieldsReadImpl,
+        comms::option::NoDefaultFieldsWriteImpl
     > Base;
 public:
 
-    enum FieldIdx
-    {
-        FieldIdx_PublishFlags,
-        FieldIdx_Topic,
-        FieldIdx_PacketId,
-        FieldIdx_Payload,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, publishFlags, topic, packetId, payload);
 
     Publish()
     {
         auto& allFields = Base::fields();
-        auto& packetIdField = std::get<FieldIdx_PacketId>(allFields);
-
-        packetIdField.setMode(comms::field::OptionalMode::Missing);
+        auto& packetIdField = std::get<FieldIdx_packetId>(allFields);
+        packetIdField.setMissing();
     }
 
     Publish(const Publish&) = default;
-    Publish(Publish&& other)
-    {
-    }
+    Publish(Publish&& other) = default;
     virtual ~Publish() = default;
 
     Publish& operator=(const Publish&) = default;
@@ -191,7 +182,7 @@ protected:
         bool result = updatePacketId() && updateDup();
 
         auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
+        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
         Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
 
         return result;
@@ -203,17 +194,17 @@ protected:
     {
         auto& flagsField = Base::getFlags();
         auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
+        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
         updatePacketId();
-        return Base::template readFieldsFrom<FieldIdx_Topic>(iter, size);
+        return Base::template readFieldsFrom<FieldIdx_topic>(iter, size);
     }
 
     virtual comms::ErrorStatus writeImpl(
         typename Base::WriteIterator& iter,
         std::size_t size) const override
     {
-        return Base::template writeFieldsFrom<FieldIdx_Topic>(iter, size);
+        return Base::template writeFieldsFrom<FieldIdx_topic>(iter, size);
     }
 
     virtual std::size_t lengthImpl() const override
@@ -225,7 +216,7 @@ private:
     bool updatePacketId()
     {
         auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
+        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
         auto& publishFlagsMembers = publishFlagsField.value();
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
 
@@ -234,7 +225,7 @@ private:
             packetIdMode = comms::field::OptionalMode::Missing;
         }
 
-        auto& packetIdField = std::get<FieldIdx_PacketId>(Base::fields());
+        auto& packetIdField = std::get<FieldIdx_packetId>(Base::fields());
         bool updated = (packetIdField.getMode() != packetIdMode);
         packetIdField.setMode(packetIdMode);
         return updated;
@@ -243,7 +234,7 @@ private:
     bool updateDup()
     {
         auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_PublishFlags>(allFields);
+        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
         auto& publishFlagsMembers = publishFlagsField.value();
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
         auto& dupFlagsField = std::get<PublishActualFlagIdx_Dup>(publishFlagsMembers);

@@ -110,15 +110,7 @@ public:
         comms::option::FailOnInvalid
     > UnsubscribeFlagsField;
 
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_Payload,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
 
     Unsubscribe()
     {
@@ -127,9 +119,7 @@ public:
     }
 
     Unsubscribe(const Unsubscribe&) = default;
-    Unsubscribe(Unsubscribe&& other)
-    {
-    }
+    Unsubscribe(Unsubscribe&& other) = default;
     virtual ~Unsubscribe() = default;
 
     Unsubscribe& operator=(const Unsubscribe&) = default;

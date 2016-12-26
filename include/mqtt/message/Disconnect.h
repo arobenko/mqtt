@@ -49,9 +49,7 @@ public:
 
     Disconnect() = default;
     Disconnect(const Disconnect&) = default;
-    Disconnect(Disconnect&& other)
-    {
-    }
+    Disconnect(Disconnect&& other) = default;
     virtual ~Disconnect() = default;
 
     Disconnect& operator=(const Disconnect&) = default;

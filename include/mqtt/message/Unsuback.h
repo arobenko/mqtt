@@ -58,21 +58,11 @@ public:
 
     typedef typename Base::FlagsField FlagsField;
 
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Unsuback() = default;
-
     Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&& other)
-    {
-    }
+    Unsuback(Unsuback&& other) = default;
     virtual ~Unsuback() = default;
 
     Unsuback& operator=(const Unsuback&) = default;

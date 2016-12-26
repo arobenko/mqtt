@@ -49,20 +49,11 @@ class Puback : public
         comms::option::DispatchImpl<Puback<TMsgBase> >
     > Base;
 public:
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Puback() = default;
     Puback(const Puback&) = default;
-    Puback(Puback&& other)
-    {
-    }
+    Puback(Puback&& other) = default;
     virtual ~Puback() = default;
 
     Puback& operator=(const Puback&) = default;

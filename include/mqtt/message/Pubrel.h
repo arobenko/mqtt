@@ -49,14 +49,8 @@ class Pubrel : public
         comms::option::DispatchImpl<Pubrel<TMsgBase> >
     > Base;
 public:
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Pubrel()
     {
@@ -66,9 +60,7 @@ public:
     }
 
     Pubrel(const Pubrel&) = default;
-    Pubrel(Pubrel&& other)
-    {
-    }
+    Pubrel(Pubrel&& other) = default;
     virtual ~Pubrel() = default;
 
     Pubrel& operator=(const Pubrel&) = default;

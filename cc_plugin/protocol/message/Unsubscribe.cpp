@@ -61,7 +61,7 @@ QVariantList createFieldsProperties()
     props.append(field::packetIdProperties());
     props.append(createPayloadProperties());
 
-    assert(props.size() == Unsubscribe::FieldIdx_NumOfValues);
+    assert(props.size() == Unsubscribe::FieldIdx_numOfValues);
     return props;
 }
 

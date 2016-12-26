@@ -46,7 +46,7 @@ QVariantList createFieldsProperties()
     QVariantList props;
     props.append(field::packetIdProperties());
 
-    assert(props.size() == Unsuback::FieldIdx_NumOfValues);
+    assert(props.size() == Unsuback::FieldIdx_numOfValues);
     return props;
 }
 

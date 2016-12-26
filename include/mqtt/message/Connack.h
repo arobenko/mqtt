@@ -68,21 +68,11 @@ class Connack : public
         comms::option::DispatchImpl<Connack<TMsgBase> >
     > Base;
 public:
-    enum FieldIdx
-    {
-        FieldIdx_Flags,
-        FieldIdx_Response,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, flags, response);
 
     Connack() = default;
     Connack(const Connack&) = default;
-    Connack(Connack&& other)
-    {
-    }
+    Connack(Connack&& other) = default;
     virtual ~Connack() = default;
 
     Connack& operator=(const Connack&) = default;
