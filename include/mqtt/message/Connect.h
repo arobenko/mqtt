@@ -29,6 +29,9 @@ namespace mqtt
 namespace message
 {
 
+namespace details
+{
+
 enum ConnectFlagsLowBitIdx
 {
     ConnectFlagsLowBitIdx_reserved,
@@ -38,13 +41,10 @@ enum ConnectFlagsLowBitIdx
 
 enum ConnectFlagsHighBitIdx
 {
-    ConnectFlagsHighBitIdx_WillRetain,
+    ConnectFlagsHighBitIdx_willRetain,
     ConnectFlagsHighBitIdx_passwordFlag,
     ConnectFlagsHighBitIdx_userNameFlag
 };
-
-namespace details
-{
 
 struct ConnectFlagsExtraValidator
 {
@@ -61,7 +61,7 @@ struct ConnectFlagsExtraValidator
                 return false;
             }
 
-            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_WillRetain)) {
+            if (flagsHighField.getBitValue(ConnectFlagsHighBitIdx_willRetain)) {
                 return false;
             }
         }
@@ -76,24 +76,40 @@ struct ConnectFlagsExtraValidator
     }
 };
 
+
+template <typename TFieldBase>
+struct ConnectFlagsLow : public
+    comms::field::BitmaskValue<
+        TFieldBase,
+        comms::option::FixedBitLength<3>,
+        comms::option::BitmaskReservedBits<0x1, 0>
+    >
+{
+    COMMS_BITMASK_BITS(cleanSession=1, willFlag);
+};
+
+template <typename TFieldBase>
+struct ConnectFlagsHigh : public
+    comms::field::BitmaskValue<
+        TFieldBase,
+        comms::option::FixedBitLength<3>,
+        comms::option::BitmaskReservedBits<0x1, 0>
+    >
+{
+    COMMS_BITMASK_BITS(willRetain, password, username);
+};
+
 template <typename TFieldBase>
 using ConnectFlagsFieldBase =
     comms::field::Bitfield<
         TFieldBase,
         std::tuple<
-            comms::field::BitmaskValue<
-                TFieldBase,
-                comms::option::FixedBitLength<3>,
-                comms::option::BitmaskReservedBits<0x1, 0>
-            >,
+            ConnectFlagsLow<TFieldBase>,
             mqtt::field::QoS<
                 TFieldBase,
                 comms::option::FixedBitLength<2>
             >,
-            comms::field::BitmaskValue<
-                TFieldBase,
-                comms::option::FixedBitLength<3>
-            >
+            ConnectFlagsHigh<TFieldBase>
         >,
         comms::option::ContentsValidator<ConnectFlagsExtraValidator>
     >;
@@ -288,10 +304,12 @@ protected:
 
         auto allFields = fieldsAsStruct();
         auto flagsMembers = allFields.flags.fieldsAsStruct();
-        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willTopic);
-        updateOptionalField(flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willMessage);
-        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_userNameFlag, allFields.userName);
-        updateOptionalField(flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_passwordFlag, allFields.password);
+        typedef typename std::decay<decltype(flagsMembers.flagsLow)>::type FlagsLowField;
+        typedef typename std::decay<decltype(flagsMembers.flagsHigh)>::type FlagsHighField;
+        updateOptionalField(flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willTopic);
+        updateOptionalField(flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willMessage);
+        updateOptionalField(flagsMembers.flagsHigh, FlagsHighField::BitIdx_username, allFields.userName);
+        updateOptionalField(flagsMembers.flagsHigh, FlagsHighField::BitIdx_password, allFields.password);
 
         return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
     }
@@ -301,19 +319,22 @@ protected:
         auto allFields = fieldsAsStruct();
         auto flagsMembers = allFields.flags.fieldsAsStruct();
 
+        typedef typename std::decay<decltype(flagsMembers.flagsLow)>::type FlagsLowField;
+        typedef typename std::decay<decltype(flagsMembers.flagsHigh)>::type FlagsHighField;
+
         bool updated = false;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willTopic) || updated;
+                flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willTopic) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsLow, ConnectFlagsLowBitIdx_willFlag, allFields.willMessage) || updated;
+                flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willMessage) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_userNameFlag, allFields.userName) || updated;
+                flagsMembers.flagsHigh, FlagsHighField::BitIdx_username, allFields.userName) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsHigh, ConnectFlagsHighBitIdx_passwordFlag, allFields.password) || updated;
+                flagsMembers.flagsHigh, FlagsHighField::BitIdx_password, allFields.password) || updated;
 
         return updated;
     }
