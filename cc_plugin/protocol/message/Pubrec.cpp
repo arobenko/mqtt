@@ -21,7 +21,7 @@
 
 #include "Pubrec.h"
 
-#include "cc_plugin/protocol/field/PacketId.h"
+#include "cc_plugin/protocol/field.h"
 
 namespace cc = comms_champion;
 

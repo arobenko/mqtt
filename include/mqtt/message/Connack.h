@@ -20,6 +20,7 @@
 
 #include <tuple>
 #include "mqtt/Message.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
@@ -27,44 +28,25 @@ namespace mqtt
 namespace message
 {
 
-enum class ConnackResponseCode : std::uint8_t
-{
-    Accepted,
-    WrongProtocolVersion,
-    IdentifierRejected,
-    ServerUnavailable,
-    BadUsernameOrPassword,
-    NotAuthorized,
-    NumOfValues
-};
-
-template <typename TFieldBase>
-using ConnackFields = std::tuple<
-    comms::field::BitmaskValue<
-        TFieldBase,
-        comms::option::FixedLength<1>,
-        comms::option::BitmaskReservedBits<0xfe, 0x0>
-    >,
-    comms::field::EnumValue<
-        TFieldBase,
-        ConnackResponseCode,
-        comms::option::ValidNumValueRange<0, (int)(ConnackResponseCode::NumOfValues) - 1>
-    >
->;
+using ConnackFields =
+    std::tuple<
+        field::ConnackFlags,
+        field::ConnackResponseCode
+    >;
 
 template <typename TMsgBase = Message>
 class Connack : public
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-        comms::option::FieldsImpl<ConnackFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<ConnackFields>,
         comms::option::DispatchImpl<Connack<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-        comms::option::FieldsImpl<ConnackFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<ConnackFields>,
         comms::option::DispatchImpl<Connack<TMsgBase> >
     > Base;
 public:

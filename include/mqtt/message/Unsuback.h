@@ -22,7 +22,7 @@
 #include <algorithm>
 
 #include "mqtt/Message.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
@@ -31,12 +31,8 @@ namespace message
 {
 
 template <typename TFieldBase>
-using UnsubackPacketIdField =
-        mqtt::field::PacketId<TFieldBase>;
-
-template <typename TFieldBase>
 using UnsubackFields = std::tuple<
-    UnsubackPacketIdField<TFieldBase>
+    field::PacketId
 >;
 
 template <typename TMsgBase = Message>

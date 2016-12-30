@@ -20,7 +20,7 @@
 
 #include <tuple>
 #include "mqtt/Message.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
@@ -28,9 +28,8 @@ namespace mqtt
 namespace message
 {
 
-template <typename TFieldBase>
 using PubcompFields = std::tuple<
-    mqtt::field::PacketId<TFieldBase>
+    mqtt::field::PacketId
 >;
 
 template <typename TMsgBase = Message>
@@ -38,14 +37,14 @@ class Pubcomp : public
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
-        comms::option::FieldsImpl<PubcompFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<PubcompFields>,
         comms::option::DispatchImpl<Pubcomp<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
-        comms::option::FieldsImpl<PubcompFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<PubcompFields>,
         comms::option::DispatchImpl<Pubcomp<TMsgBase> >
     > Base;
 public:

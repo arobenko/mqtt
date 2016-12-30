@@ -21,8 +21,6 @@
 
 #include "Pingreq.h"
 
-#include "cc_plugin/protocol/field/PacketId.h"
-
 namespace cc = comms_champion;
 
 namespace mqtt

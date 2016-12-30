@@ -22,8 +22,7 @@
 #include <algorithm>
 
 #include "mqtt/Message.h"
-#include "mqtt/field/QoS.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
@@ -47,7 +46,8 @@ struct PublishActualFlagsValidator
     {
         auto& members = field.value();
         auto& qosField = std::get<PublishActualFlagIdx_QoS>(members);
-        if (qosField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
+        typedef typename std::decay<decltype(qosField)>::type QosFieldType;
+        if (qosField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
             return true;
         }
 
@@ -70,7 +70,6 @@ using PublishFlags =
                 comms::option::FixedBitLength<1>
             >,
             mqtt::field::QoS<
-                TFieldBase,
                 comms::option::FixedBitLength<2>
             >,
             comms::field::BitmaskValue<
@@ -117,12 +116,6 @@ using PublishTopicField =
     >;
 
 template <typename TFieldBase>
-using PublishPacketIdField =
-    comms::field::Optional<
-        mqtt::field::PacketId<TFieldBase>
-    >;
-
-template <typename TFieldBase>
 using PublishPayload =
     comms::field::ArrayList<
         TFieldBase,
@@ -134,7 +127,7 @@ template <typename TFieldBase>
 using PublishFields = std::tuple<
     PublishFlags<TFieldBase>,
     PublishTopicField<TFieldBase>,
-    PublishPacketIdField<TFieldBase>,
+    field::OptionalPacketId,
     PublishPayload<TFieldBase>
 >;
 
@@ -220,8 +213,9 @@ private:
         auto& publishFlagsMembers = publishFlagsField.value();
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
 
+        typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
         comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
-        if (qosMemberField.value() == mqtt::field::QosType::AtMostOnceDelivery) {
+        if (qosMemberField.value() == QosFieldType::ValueType::AtMostOnceDelivery) {
             packetIdMode = comms::field::OptionalMode::Missing;
         }
 
@@ -239,7 +233,8 @@ private:
         auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
         auto& dupFlagsField = std::get<PublishActualFlagIdx_Dup>(publishFlagsMembers);
 
-        if (qosMemberField.value() != mqtt::field::QosType::AtMostOnceDelivery) {
+        typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
+        if (qosMemberField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
             return false;
         }
 

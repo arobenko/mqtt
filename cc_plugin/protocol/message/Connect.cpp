@@ -19,7 +19,7 @@
 #include <functional>
 #include <cassert>
 
-#include "cc_plugin/protocol/field/QoS.h"
+#include "cc_plugin/protocol/field.h"
 #include "Connect.h"
 
 namespace cc = comms_champion;

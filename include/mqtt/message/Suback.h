@@ -22,17 +22,13 @@
 #include <algorithm>
 
 #include "mqtt/Message.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
 
 namespace message
 {
-
-template <typename TFieldBase>
-using SubackPacketIdField =
-        mqtt::field::PacketId<TFieldBase>;
 
 struct SubackPayloadValidator
 {
@@ -80,7 +76,7 @@ using SubackPayload =
 
 template <typename TFieldBase>
 using SubackFields = std::tuple<
-    SubackPacketIdField<TFieldBase>,
+    field::PacketId,
     SubackPayload<TFieldBase>
 >;
 

@@ -19,8 +19,7 @@
 #include <functional>
 #include <cassert>
 
-#include "cc_plugin/protocol/field/QoS.h"
-#include "cc_plugin/protocol/field/PacketId.h"
+#include "cc_plugin/protocol/field.h"
 #include "Publish.h"
 
 namespace cc = comms_champion;

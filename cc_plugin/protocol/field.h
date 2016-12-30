@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #pragma once
 
 #include "comms/CompileControl.h"
@@ -24,6 +23,8 @@ CC_DISABLE_WARNINGS()
 #include <QtCore/QObject>
 #include <QtCore/QString>
 CC_ENABLE_WARNINGS()
+
+#include "comms_champion/comms_champion.h"
 
 namespace mqtt
 {
@@ -41,6 +42,8 @@ const QString& packetIdFieldName();
 const QVariantMap& packetIdProperties();
 const QVariantMap& optionalPacketIdProperties();
 
+void updateQosPropertiesMap(comms_champion::property::field::EnumValue& props);
+
 }  // namespace field
 
 }  // namespace protocol
@@ -48,5 +51,8 @@ const QVariantMap& optionalPacketIdProperties();
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
+
+
 
 

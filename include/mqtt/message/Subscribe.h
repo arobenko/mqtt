@@ -22,8 +22,8 @@
 #include <algorithm>
 
 #include "mqtt/Message.h"
-#include "mqtt/field/QoS.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/field.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
@@ -54,10 +54,6 @@ using SubscribeTopicField =
         >
     >;
 
-template <typename TFieldBase>
-using SubscribePacketIdField =
-        mqtt::field::PacketId<TFieldBase>;
-
 struct SubscribePayloadValidator
 {
     template <typename TField>
@@ -76,7 +72,7 @@ using SubBundle =
         TFieldBase,
         std::tuple<
             SubscribeTopicField<TFieldBase>,
-            mqtt::field::QoS<TFieldBase>
+            mqtt::field::QoS<>
         >
     >;
 
@@ -100,7 +96,7 @@ using SubscribePayload =
 
 template <typename TFieldBase>
 using SubscribeFields = std::tuple<
-    SubscribePacketIdField<TFieldBase>,
+    field::PacketId,
     SubscribePayload<TFieldBase>
 >;
 

@@ -22,8 +22,7 @@
 #include <algorithm>
 
 #include "mqtt/Message.h"
-#include "mqtt/field/QoS.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/field.h"
 
 namespace mqtt
 {
@@ -55,10 +54,6 @@ using UnsubscribeTopicField =
         >
     >;
 
-template <typename TFieldBase>
-using UnsubscribePacketIdField =
-        mqtt::field::PacketId<TFieldBase>;
-
 struct UnsubscribePayloadValidator
 {
     template <typename TField>
@@ -79,7 +74,7 @@ using UnsubscribePayload =
 
 template <typename TFieldBase>
 using UnsubscribeFields = std::tuple<
-    UnsubscribePacketIdField<TFieldBase>,
+    field::PacketId,
     UnsubscribePayload<TFieldBase>
 >;
 
