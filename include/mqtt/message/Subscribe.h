@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -31,73 +31,9 @@ namespace mqtt
 namespace message
 {
 
-struct SubscribeTopicValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto& topic = field.value();
-        return (!topic.empty());
-    }
-};
-
-template <typename TFieldBase>
-using SubscribeTopicField =
-    comms::field::String<
-        TFieldBase,
-        comms::option::ContentsValidator<SubscribeTopicValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                TFieldBase,
-                std::uint16_t
-            >
-        >
-    >;
-
-struct SubscribePayloadValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        return 0U < field.value().size();
-    }
-};
-
-namespace details
-{
-
-template <typename TFieldBase>
-using SubBundle =
-    comms::field::Bundle<
-        TFieldBase,
-        std::tuple<
-            SubscribeTopicField<TFieldBase>,
-            mqtt::field::QoS<>
-        >
-    >;
-
-template <typename TFieldBase>
-class SubElem : public SubBundle<TFieldBase>
-{
-    typedef SubBundle<TFieldBase> Base;
-public:
-    COMMS_FIELD_MEMBERS_ACCESS(Base, topic, qos);
-};
-
-}  // namespace details
-
-template <typename TFieldBase>
-using SubscribePayload =
-    comms::field::ArrayList<
-        TFieldBase,
-        details::SubElem<TFieldBase>,
-        comms::option::ContentsValidator<SubscribePayloadValidator>
-    >;
-
-template <typename TFieldBase>
 using SubscribeFields = std::tuple<
     field::PacketId,
-    SubscribePayload<TFieldBase>
+    field::SubscribePayload
 >;
 
 template <typename TMsgBase = Message>
@@ -105,14 +41,14 @@ class Subscribe : public
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-        comms::option::FieldsImpl<SubscribeFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<SubscribeFields>,
         comms::option::DispatchImpl<Subscribe<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-        comms::option::FieldsImpl<SubscribeFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<SubscribeFields>,
         comms::option::DispatchImpl<Subscribe<TMsgBase> >
     > Base;
 public:

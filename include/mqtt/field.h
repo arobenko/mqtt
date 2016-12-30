@@ -26,6 +26,14 @@ namespace mqtt
 namespace field
 {
 
+enum class SubackReturnCode : std::uint8_t
+{
+    SuccessQos0 = 0,
+    SuccessQos1 = 1,
+    SuccessQos2 = 2,
+    Failure = 0x80
+};
+
 namespace details
 {
 
@@ -80,6 +88,107 @@ struct ProtNameValidator
         return field.value() == "MQTT";
     }
 };
+
+struct PublishActualFlagsValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        auto& members = field.value();
+        auto& qosField = std::get<1>(members);
+        typedef typename std::decay<decltype(qosField)>::type QosFieldType;
+        if (qosField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
+            return true;
+        }
+
+        auto& dupField = std::get<2>(members);
+        typedef typename std::decay<decltype(dupField)>::type DupFieldType;
+        if (dupField.getBitValue(DupFieldType::BitIdx_value)) {
+            return false;
+        }
+        return true;
+    }
+};
+
+
+struct PublishTopicValidator
+{
+    template <typename TField>
+    bool operator()(TField&& field) const
+    {
+        auto& topic = field.value();
+        return
+            (!topic.empty()) &&
+            (std::none_of(
+                topic.begin(), topic.end(),
+                [](char ch) -> bool
+                {
+                    return (ch == '#') || (ch == '+');
+                }));
+    }
+};
+
+struct SubackPayloadValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        return 0U < field.value().size();
+    }
+};
+
+struct SubackReturnCodeValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        auto value = field.value();
+        return
+            (value == SubackReturnCode::SuccessQos0) ||
+            (value == SubackReturnCode::SuccessQos1) ||
+            (value == SubackReturnCode::SuccessQos2) ||
+            (value == SubackReturnCode::Failure);
+    }
+};
+
+struct SubscribeTopicValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        auto& topic = field.value();
+        return (!topic.empty());
+    }
+};
+
+struct SubscribePayloadValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        return 0U < field.value().size();
+    }
+};
+
+struct UnsubscribeTopicValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        auto& topic = field.value();
+        return (!topic.empty());
+    }
+};
+
+struct UnsubscribePayloadValidator
+{
+    template <typename TField>
+    bool operator()(const TField& field) const
+    {
+        return 0U < field.value().size();
+    }
+};
+
 
 }  // namespace details
 
@@ -259,6 +368,121 @@ using PacketId =
     >;
 
 using OptionalPacketId = comms::field::Optional<PacketId>;
+
+class PubSingleBitFlag :
+    public comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedBitLength<1>
+    >
+{
+    typedef comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedBitLength<1>
+    > Base;
+public:
+    COMMS_BITMASK_BITS(value);
+};
+
+using PublishFlagsBase =
+    comms::field::Bitfield<
+        FieldBase,
+        std::tuple<
+            PubSingleBitFlag,
+            QoS<comms::option::FixedBitLength<2> >,
+            field::PubSingleBitFlag,
+            comms::field::IntValue<FieldBase, std::uint8_t, comms::option::FixedBitLength<4> >
+        >,
+        comms::option::ContentsValidator<details::PublishActualFlagsValidator>
+    >;
+
+class PublishFlags : public PublishFlagsBase
+{
+    typedef PublishFlagsBase Base;
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(Base, retain, qos, dup, reserved);
+};
+
+
+using PublishTopic =
+    comms::field::String<
+        FieldBase,
+        comms::option::ContentsValidator<details::PublishTopicValidator>,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                FieldBase,
+                std::uint16_t
+            >
+        >
+    >;
+
+using Payload =
+    comms::field::ArrayList<FieldBase, std::uint8_t>;
+
+
+using SubackPayload =
+    comms::field::ArrayList<
+        FieldBase,
+        comms::field::EnumValue<
+            FieldBase,
+            SubackReturnCode,
+            comms::option::ContentsValidator<details::SubackReturnCodeValidator>
+        >,
+        comms::option::ContentsValidator<details::SubackPayloadValidator>
+    >;
+
+using SubscribeTopic =
+    comms::field::String<
+        FieldBase,
+        comms::option::ContentsValidator<details::SubscribeTopicValidator>,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                FieldBase,
+                std::uint16_t
+            >
+        >
+    >;
+
+using SubElemBase =
+    comms::field::Bundle<
+        FieldBase,
+        std::tuple<
+            SubscribeTopic,
+            mqtt::field::QoS<>
+        >
+    >;
+
+class SubElem : public SubElemBase
+{
+    typedef SubElemBase Base;
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(Base, topic, qos);
+};
+
+using SubscribePayload =
+    comms::field::ArrayList<
+        FieldBase,
+        SubElem,
+        comms::option::ContentsValidator<details::SubscribePayloadValidator>
+    >;
+
+using UnsubscribeTopic =
+    comms::field::String<
+        FieldBase,
+        comms::option::ContentsValidator<details::UnsubscribeTopicValidator>,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                FieldBase,
+                std::uint16_t
+            >
+        >
+    >;
+
+using UnsubscribePayload =
+    comms::field::ArrayList<
+        FieldBase,
+        UnsubscribeTopic,
+        comms::option::ContentsValidator<details::UnsubscribePayloadValidator>
+    >;
 
 }  // namespace field
 

@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ namespace mqtt
 namespace message
 {
 
-template <typename TFieldBase>
 using UnsubackFields = std::tuple<
     field::PacketId
 >;
@@ -40,14 +39,14 @@ class Unsuback : public
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<UnsubackFields>,
         comms::option::DispatchImpl<Unsuback<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<UnsubackFields>,
         comms::option::DispatchImpl<Unsuback<TMsgBase> >
     > Base;
 public:

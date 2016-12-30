@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -30,105 +30,11 @@ namespace mqtt
 namespace message
 {
 
-enum PublishActualFlagIdx
-{
-    PublishActualFlagIdx_Retain,
-    PublishActualFlagIdx_QoS,
-    PublishActualFlagIdx_Dup,
-    PublishActualFlagIdx_Reserved,
-    ActualFlagIdx_NumOfMembers
-};
-
-struct PublishActualFlagsValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto& members = field.value();
-        auto& qosField = std::get<PublishActualFlagIdx_QoS>(members);
-        typedef typename std::decay<decltype(qosField)>::type QosFieldType;
-        if (qosField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
-            return true;
-        }
-
-        auto& dupField = std::get<PublishActualFlagIdx_Dup>(members);
-        if (dupField.getBitValue(0)) {
-            return false;
-        }
-        return true;
-    }
-};
-
-
-template <typename TFieldBase>
-using PublishFlags =
-    comms::field::Bitfield<
-        TFieldBase,
-        std::tuple<
-            comms::field::BitmaskValue<
-                TFieldBase,
-                comms::option::FixedBitLength<1>
-            >,
-            mqtt::field::QoS<
-                comms::option::FixedBitLength<2>
-            >,
-            comms::field::BitmaskValue<
-                TFieldBase,
-                comms::option::FixedBitLength<1>
-            >,
-            comms::field::IntValue<
-                TFieldBase,
-                std::uint8_t,
-                comms::option::FixedBitLength<4>
-            >
-        >,
-        comms::option::ContentsValidator<PublishActualFlagsValidator>
-    >;
-
-struct PublishTopicValidator
-{
-    template <typename TField>
-    bool operator()(TField&& field) const
-    {
-        auto& topic = field.value();
-        return
-            (!topic.empty()) &&
-            (std::none_of(
-                topic.begin(), topic.end(),
-                [](char ch) -> bool
-                {
-                    return (ch == '#') || (ch == '+');
-                }));
-    }
-};
-
-template <typename TFieldBase>
-using PublishTopicField =
-    comms::field::String<
-        TFieldBase,
-        comms::option::ContentsValidator<PublishTopicValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                TFieldBase,
-                std::uint16_t
-            >
-        >
-    >;
-
-template <typename TFieldBase>
-using PublishPayload =
-    comms::field::ArrayList<
-        TFieldBase,
-        std::uint8_t
-    >;
-
-
-template <typename TFieldBase>
 using PublishFields = std::tuple<
-    PublishFlags<TFieldBase>,
-    PublishTopicField<TFieldBase>,
+    field::PublishFlags,
+    field::PublishTopic,
     field::OptionalPacketId,
-    PublishPayload<TFieldBase>
+    field::Payload
 >;
 
 template <typename TMsgBase = Message>
@@ -136,7 +42,7 @@ class Publish : public
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
-        comms::option::FieldsImpl<PublishFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<PublishFields>,
         comms::option::DispatchImpl<Publish<TMsgBase> >,
         comms::option::NoDefaultFieldsReadImpl,
         comms::option::NoDefaultFieldsWriteImpl
@@ -145,7 +51,7 @@ class Publish : public
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
-        comms::option::FieldsImpl<PublishFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<PublishFields>,
         comms::option::DispatchImpl<Publish<TMsgBase> >,
         comms::option::NoDefaultFieldsReadImpl,
         comms::option::NoDefaultFieldsWriteImpl
@@ -202,7 +108,7 @@ protected:
 
     virtual std::size_t lengthImpl() const override
     {
-        return Base::lengthImpl() - PublishFlags<typename Base::Field>::minLength();
+        return Base::lengthImpl() - field::PublishFlags::minLength();
     }
 
 private:
@@ -210,8 +116,10 @@ private:
     {
         auto& allFields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
+
+        typedef typename std::decay<decltype(publishFlagsField)>::type FlagsFieldType;
         auto& publishFlagsMembers = publishFlagsField.value();
-        auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
+        auto& qosMemberField = std::get<FlagsFieldType::FieldIdx_qos>(publishFlagsMembers);
 
         typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
         comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
@@ -229,17 +137,15 @@ private:
     {
         auto& allFields = Base::fields();
         auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
-        auto& publishFlagsMembers = publishFlagsField.value();
-        auto& qosMemberField = std::get<PublishActualFlagIdx_QoS>(publishFlagsMembers);
-        auto& dupFlagsField = std::get<PublishActualFlagIdx_Dup>(publishFlagsMembers);
+        auto publishFlagsMembers = publishFlagsField.fieldsAsStruct();
 
-        typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
-        if (qosMemberField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
+        typedef typename std::decay<decltype(publishFlagsMembers.qos)>::type QosFieldType;
+        if (publishFlagsMembers.qos.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
             return false;
         }
 
-        if (dupFlagsField.value() != 0) {
-            dupFlagsField.value() = 0;
+        if (publishFlagsMembers.dup.value() != 0) {
+            publishFlagsMembers.dup.value() = 0;
             return true;
         }
 

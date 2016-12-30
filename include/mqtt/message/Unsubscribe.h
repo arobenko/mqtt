@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -31,51 +31,9 @@ namespace message
 {
 
 
-struct UnsubscribeTopicValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto& topic = field.value();
-        return (!topic.empty());
-    }
-};
-
-template <typename TFieldBase>
-using UnsubscribeTopicField =
-    comms::field::String<
-        TFieldBase,
-        comms::option::ContentsValidator<UnsubscribeTopicValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                TFieldBase,
-                std::uint16_t
-            >
-        >
-    >;
-
-struct UnsubscribePayloadValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        return 0U < field.value().size();
-    }
-};
-
-template <typename TFieldBase>
-using UnsubscribePayload =
-    comms::field::ArrayList<
-        TFieldBase,
-        UnsubscribeTopicField<TFieldBase>,
-        comms::option::ContentsValidator<UnsubscribePayloadValidator>
-    >;
-
-
-template <typename TFieldBase>
 using UnsubscribeFields = std::tuple<
     field::PacketId,
-    UnsubscribePayload<TFieldBase>
+    field::UnsubscribePayload
 >;
 
 template <typename TMsgBase = Message>
@@ -83,14 +41,14 @@ class Unsubscribe : public
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
-        comms::option::FieldsImpl<UnsubscribeFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<UnsubscribeFields>,
         comms::option::DispatchImpl<Unsubscribe<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
-        comms::option::FieldsImpl<UnsubscribeFields<typename TMsgBase::Field> >,
+        comms::option::FieldsImpl<UnsubscribeFields>,
         comms::option::DispatchImpl<Unsubscribe<TMsgBase> >
     > Base;
 public:
