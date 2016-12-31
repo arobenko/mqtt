@@ -42,6 +42,7 @@ class MessageT : public
         comms::option::BigEndian,
         comms::option::MsgIdType<MsgId>,
         comms::option::RefreshInterface,
+        comms::option::ValidCheckInterface,
         TOptions...
     >
 {
@@ -49,6 +50,7 @@ class MessageT : public
         comms::option::BigEndian,
         comms::option::MsgIdType<MsgId>,
         comms::option::RefreshInterface,
+        comms::option::ValidCheckInterface,
         TOptions...
     > Base;
 public:
