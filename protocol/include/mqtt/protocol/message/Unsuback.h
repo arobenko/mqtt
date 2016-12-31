@@ -19,49 +19,56 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include <algorithm>
+
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using ConnackFields =
-    std::tuple<
-        field::ConnackFlags,
-        field::ConnackResponseCode
-    >;
+using UnsubackFields = std::tuple<
+    field::PacketId
+>;
 
 template <typename TMsgBase = Message>
-class Connack : public
+class Unsuback : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-        comms::option::FieldsImpl<ConnackFields>,
-        comms::option::DispatchImpl<Connack<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
+        comms::option::FieldsImpl<UnsubackFields>,
+        comms::option::DispatchImpl<Unsuback<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-        comms::option::FieldsImpl<ConnackFields>,
-        comms::option::DispatchImpl<Connack<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
+        comms::option::FieldsImpl<UnsubackFields>,
+        comms::option::DispatchImpl<Unsuback<TMsgBase> >
     > Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, flags, response);
 
-    Connack() = default;
-    Connack(const Connack&) = default;
-    Connack(Connack&& other) = default;
-    virtual ~Connack() = default;
+    typedef typename Base::FlagsField FlagsField;
 
-    Connack& operator=(const Connack&) = default;
-    Connack& operator=(Connack&&) = default;
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
+
+    Unsuback() = default;
+    Unsuback(const Unsuback&) = default;
+    Unsuback(Unsuback&& other) = default;
+    virtual ~Unsuback() = default;
+
+    Unsuback& operator=(const Unsuback&) = default;
+    Unsuback& operator=(Unsuback&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

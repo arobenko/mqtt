@@ -18,37 +18,36 @@
 
 #pragma once
 
-#include <tuple>
-
-#include "comms/comms.h"
-
-#include "protocol/MsgIdFlagsLayer.h"
-
-#include "MsgId.h"
-#include "AllMessages.h"
-
+#include <cstdint>
 
 namespace mqtt
 {
 
-typedef comms::field::IntValue<
-    comms::Field<comms::option::LittleEndian>,
-    std::uint32_t,
-    comms::option::VarLength<1, 4>
-> RemSizeField;
+namespace protocol
+{
 
-template <
-    typename TMsgBase = Message,
-    typename TAllMessages = AllMessages<TMsgBase>,
-    typename TMsgAllocOptions = std::tuple<> >
-using Stack =
-    mqtt::protocol::MsgIdFlagsLayer<
-        TAllMessages,
-        comms::protocol::MsgSizeLayer<
-            RemSizeField,
-            comms::protocol::MsgDataLayer<TMsgBase>
-        >,
-        TMsgAllocOptions
-    >;
+enum MsgId : std::uint8_t
+{
+    MsgId_Reserved,
+    MsgId_CONNECT,
+    MsgId_CONNACK,
+    MsgId_PUBLISH,
+    MsgId_PUBACK,
+    MsgId_PUBREC,
+    MsgId_PUBREL,
+    MsgId_PUBCOMP,
+    MsgId_SUBSCRIBE,
+    MsgId_SUBACK,
+    MsgId_UNSUBSCRIBE,
+    MsgId_UNSUBACK,
+    MsgId_PINGREQ,
+    MsgId_PINGRESP,
+    MsgId_DISCONNECT,
+    MsgId_NumOfValues // Must be last
+};
+
+}  // namespace protocol
 
 }  // namespace mqtt
+
+

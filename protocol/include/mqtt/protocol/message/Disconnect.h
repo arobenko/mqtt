@@ -19,47 +19,48 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include "mqtt/protocol/Message.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using PubackFields = std::tuple<
-    mqtt::field::PacketId
->;
-
 template <typename TMsgBase = Message>
-class Puback : public
+class Disconnect : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBACK>,
-        comms::option::FieldsImpl<PubackFields>,
-        comms::option::DispatchImpl<Puback<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
+        comms::option::NoFieldsImpl,
+        comms::option::DispatchImpl<Disconnect<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBACK>,
-        comms::option::FieldsImpl<PubackFields>,
-        comms::option::DispatchImpl<Puback<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
+        comms::option::NoFieldsImpl,
+        comms::option::DispatchImpl<Disconnect<TMsgBase> >
     > Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
-    Puback() = default;
-    Puback(const Puback&) = default;
-    Puback(Puback&& other) = default;
-    virtual ~Puback() = default;
+    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
+        "Number of fields is incorrect");
 
-    Puback& operator=(const Puback&) = default;
-    Puback& operator=(Puback&&) = default;
+    Disconnect() = default;
+    Disconnect(const Disconnect&) = default;
+    Disconnect(Disconnect&& other) = default;
+    virtual ~Disconnect() = default;
+
+    Disconnect& operator=(const Disconnect&) = default;
+    Disconnect& operator=(Disconnect&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

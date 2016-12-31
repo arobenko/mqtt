@@ -19,23 +19,26 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/message/Connect.h"
-#include "mqtt/message/Connack.h"
-#include "mqtt/message/Publish.h"
-#include "mqtt/message/Puback.h"
-#include "mqtt/message/Pubrec.h"
-#include "mqtt/message/Pubrel.h"
-#include "mqtt/message/Pubcomp.h"
-#include "mqtt/message/Subscribe.h"
-#include "mqtt/message/Suback.h"
-#include "mqtt/message/Unsubscribe.h"
-#include "mqtt/message/Unsuback.h"
-#include "mqtt/message/Pingreq.h"
-#include "mqtt/message/Pingresp.h"
-#include "mqtt/message/Disconnect.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/message/Connect.h"
+#include "mqtt/protocol/message/Connack.h"
+#include "mqtt/protocol/message/Publish.h"
+#include "mqtt/protocol/message/Puback.h"
+#include "mqtt/protocol/message/Pubrec.h"
+#include "mqtt/protocol/message/Pubrel.h"
+#include "mqtt/protocol/message/Pubcomp.h"
+#include "mqtt/protocol/message/Subscribe.h"
+#include "mqtt/protocol/message/Suback.h"
+#include "mqtt/protocol/message/Unsubscribe.h"
+#include "mqtt/protocol/message/Unsuback.h"
+#include "mqtt/protocol/message/Pingreq.h"
+#include "mqtt/protocol/message/Pingresp.h"
+#include "mqtt/protocol/message/Disconnect.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 template <typename TMsgBase = Message>
@@ -57,9 +60,10 @@ using AllMessages = std::tuple<
 >;
 
 static_assert(
-    std::tuple_size<AllMessages<> >::value == (mqtt::MsgId_NumOfValues - 1),
+    std::tuple_size<AllMessages<> >::value == (MsgId_NumOfValues - 1),
         "Some messages are missing from the bundle.");
 
+}  // namespace protocol
 
 }  // namespace mqtt
 

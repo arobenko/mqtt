@@ -19,47 +19,57 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include <algorithm>
+
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using PubrecFields = std::tuple<
-    mqtt::field::PacketId
+using SubackFields = std::tuple<
+    field::PacketId,
+    field::SubackPayload
 >;
 
 template <typename TMsgBase = Message>
-class Pubrec : public
+class Suback : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREC>,
-        comms::option::FieldsImpl<PubrecFields>,
-        comms::option::DispatchImpl<Pubrec<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_SUBACK>,
+        comms::option::FieldsImpl<SubackFields>,
+        comms::option::DispatchImpl<Suback<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREC>,
-        comms::option::FieldsImpl<PubrecFields>,
-        comms::option::DispatchImpl<Pubrec<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_SUBACK>,
+        comms::option::FieldsImpl<SubackFields>,
+        comms::option::DispatchImpl<Suback<TMsgBase> >
     > Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
-    Pubrec() = default;
-    Pubrec(const Pubrec&) = default;
-    Pubrec(Pubrec&& other) = default;
-    virtual ~Pubrec() = default;
+    typedef typename Base::FlagsField FlagsField;
 
-    Pubrec& operator=(const Pubrec&) = default;
-    Pubrec& operator=(Pubrec&&) = default;
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
+
+    Suback() = default;
+    Suback(const Suback&) = default;
+    Suback(Suback&& other) = default;
+    virtual ~Suback() = default;
+
+    Suback& operator=(const Suback&) = default;
+    Suback& operator=(Suback&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

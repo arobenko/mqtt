@@ -19,44 +19,58 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
+using PubrelFields = std::tuple<
+    field::PacketId
+>;
+
 template <typename TMsgBase = Message>
-class Pingresp : public
+class Pubrel : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-        comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Pingresp<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PUBREL>,
+        comms::option::FieldsImpl<PubrelFields>,
+        comms::option::DispatchImpl<Pubrel<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-        comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Pingresp<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PUBREL>,
+        comms::option::FieldsImpl<PubrelFields>,
+        comms::option::DispatchImpl<Pubrel<TMsgBase> >
     > Base;
 public:
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
-    Pingresp() = default;
-    Pingresp(const Pingresp&) = default;
-    Pingresp(Pingresp&& other) = default;
-    virtual ~Pingresp() = default;
+    Pubrel()
+    {
+        typename Base::FlagsField flags;
+        flags.value() = 2;
+        Base::setFlags(flags);
+    }
 
-    Pingresp& operator=(const Pingresp&) = default;
-    Pingresp& operator=(Pingresp&&) = default;
+    Pubrel(const Pubrel&) = default;
+    Pubrel(Pubrel&& other) = default;
+    virtual ~Pubrel() = default;
+
+    Pubrel& operator=(const Pubrel&) = default;
+    Pubrel& operator=(Pubrel&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

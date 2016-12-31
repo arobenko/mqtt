@@ -19,47 +19,48 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include "mqtt/protocol/Message.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using PubcompFields = std::tuple<
-    mqtt::field::PacketId
->;
-
 template <typename TMsgBase = Message>
-class Pubcomp : public
+class Pingresp : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
-        comms::option::FieldsImpl<PubcompFields>,
-        comms::option::DispatchImpl<Pubcomp<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
+        comms::option::NoFieldsImpl,
+        comms::option::DispatchImpl<Pingresp<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
-        comms::option::FieldsImpl<PubcompFields>,
-        comms::option::DispatchImpl<Pubcomp<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
+        comms::option::NoFieldsImpl,
+        comms::option::DispatchImpl<Pingresp<TMsgBase> >
     > Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
-    Pubcomp() = default;
-    Pubcomp(const Pubcomp&) = default;
-    Pubcomp(Pubcomp&& other) = default;
-    virtual ~Pubcomp() = default;
+    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
+        "Number of fields is incorrect");
 
-    Pubcomp& operator=(const Pubcomp&) = default;
-    Pubcomp& operator=(Pubcomp&&) = default;
+    Pingresp() = default;
+    Pingresp(const Pingresp&) = default;
+    Pingresp(Pingresp&& other) = default;
+    virtual ~Pingresp() = default;
+
+    Pingresp& operator=(const Pingresp&) = default;
+    Pingresp& operator=(Pingresp&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

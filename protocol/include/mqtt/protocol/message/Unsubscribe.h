@@ -21,35 +21,37 @@
 #include <tuple>
 #include <algorithm>
 
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
-#include "mqtt/field.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using SubscribeFields = std::tuple<
+using UnsubscribeFields = std::tuple<
     field::PacketId,
-    field::SubscribePayload
+    field::UnsubscribePayload
 >;
 
 template <typename TMsgBase = Message>
-class Subscribe : public
+class Unsubscribe : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-        comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::DispatchImpl<Subscribe<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
+        comms::option::FieldsImpl<UnsubscribeFields>,
+        comms::option::DispatchImpl<Unsubscribe<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-        comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::DispatchImpl<Subscribe<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
+        comms::option::FieldsImpl<UnsubscribeFields>,
+        comms::option::DispatchImpl<Unsubscribe<TMsgBase> >
     > Base;
 public:
 
@@ -61,29 +63,29 @@ public:
         comms::option::DefaultNumValue<2>,
         comms::option::ValidNumValueRange<2, 2>,
         comms::option::FailOnInvalid
-    > SubscribeFlagsField;
+    > UnsubscribeFlagsField;
 
     COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
 
-    Subscribe()
+    Unsubscribe()
     {
-        FlagsField newFlags(SubscribeFlagsField().value());
+        FlagsField newFlags(UnsubscribeFlagsField().value());
         Base::setFlags(newFlags);
     }
 
-    Subscribe(const Subscribe&) = default;
-    Subscribe(Subscribe&& other) = default;
-    virtual ~Subscribe() = default;
+    Unsubscribe(const Unsubscribe&) = default;
+    Unsubscribe(Unsubscribe&& other) = default;
+    virtual ~Unsubscribe() = default;
 
-    Subscribe& operator=(const Subscribe&) = default;
-    Subscribe& operator=(Subscribe&&) = default;
+    Unsubscribe& operator=(const Unsubscribe&) = default;
+    Unsubscribe& operator=(Unsubscribe&&) = default;
 
 protected:
 
     virtual bool validImpl() const override
     {
         auto& flagsField = Base::getFlags();
-        SubscribeFlagsField actFlags(flagsField.value());
+        UnsubscribeFlagsField actFlags(flagsField.value());
 
         return actFlags.valid() && Base::validImpl();
     }
@@ -91,5 +93,6 @@ protected:
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

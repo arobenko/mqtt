@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/message/Publish.h"
+#include "mqtt/protocol/message/Publish.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Publish : public
     comms_champion::ProtocolMessageBase<
-        mqtt::message::Publish<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::message::Publish<mqtt::cc_plugin::protocol::Message>,
         Publish>
 {
 public:

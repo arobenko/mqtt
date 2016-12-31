@@ -19,44 +19,53 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
+using ConnackFields =
+    std::tuple<
+        field::ConnackFlags,
+        field::ConnackResponseCode
+    >;
+
 template <typename TMsgBase = Message>
-class Disconnect : public
+class Connack : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
-        comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Disconnect<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
+        comms::option::FieldsImpl<ConnackFields>,
+        comms::option::DispatchImpl<Connack<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
-        comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Disconnect<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
+        comms::option::FieldsImpl<ConnackFields>,
+        comms::option::DispatchImpl<Connack<TMsgBase> >
     > Base;
 public:
+    COMMS_MSG_FIELDS_ACCESS(Base, flags, response);
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
-        "Number of fields is incorrect");
+    Connack() = default;
+    Connack(const Connack&) = default;
+    Connack(Connack&& other) = default;
+    virtual ~Connack() = default;
 
-    Disconnect() = default;
-    Disconnect(const Disconnect&) = default;
-    Disconnect(Disconnect&& other) = default;
-    virtual ~Disconnect() = default;
-
-    Disconnect& operator=(const Disconnect&) = default;
-    Disconnect& operator=(Disconnect&&) = default;
+    Connack& operator=(const Connack&) = default;
+    Connack& operator=(Connack&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

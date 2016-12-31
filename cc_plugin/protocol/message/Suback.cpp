@@ -45,12 +45,12 @@ QVariantMap createReturnCodeProperties()
     cc::property::field::EnumValue props;
 
     props.name("Return Code");
-    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::field::SubackReturnCode::SuccessQos2); ++idx) {
+    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::protocol::field::SubackReturnCode::SuccessQos2); ++idx) {
         static const QString Prefix("Success QoS ");
         auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
         props.add(str, idx);
     }
-    props.add("Failure", (int)mqtt::field::SubackReturnCode::Failure);
+    props.add("Failure", (int)mqtt::protocol::field::SubackReturnCode::Failure);
     return props.asMap();
 }
 

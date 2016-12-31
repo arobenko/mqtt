@@ -21,10 +21,13 @@
 #include <tuple>
 #include <algorithm>
 
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
@@ -155,5 +158,6 @@ private:
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

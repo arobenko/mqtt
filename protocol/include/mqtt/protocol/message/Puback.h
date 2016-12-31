@@ -19,52 +19,51 @@
 #pragma once
 
 #include <tuple>
-#include <algorithm>
-
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using UnsubackFields = std::tuple<
+using PubackFields = std::tuple<
     field::PacketId
 >;
 
 template <typename TMsgBase = Message>
-class Unsuback : public
+class Puback : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::DispatchImpl<Unsuback<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PUBACK>,
+        comms::option::FieldsImpl<PubackFields>,
+        comms::option::DispatchImpl<Puback<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::DispatchImpl<Unsuback<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PUBACK>,
+        comms::option::FieldsImpl<PubackFields>,
+        comms::option::DispatchImpl<Puback<TMsgBase> >
     > Base;
 public:
-
-    typedef typename Base::FlagsField FlagsField;
-
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
-    Unsuback() = default;
-    Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&& other) = default;
-    virtual ~Unsuback() = default;
+    Puback() = default;
+    Puback(const Puback&) = default;
+    Puback(Puback&& other) = default;
+    virtual ~Puback() = default;
 
-    Unsuback& operator=(const Unsuback&) = default;
-    Unsuback& operator=(Unsuback&&) = default;
+    Puback& operator=(const Puback&) = default;
+    Puback& operator=(Puback&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms/comms.h"
-#include "mqtt/MsgId.h"
+#include "mqtt/protocol/MsgId.h"
 
 
 namespace mqtt

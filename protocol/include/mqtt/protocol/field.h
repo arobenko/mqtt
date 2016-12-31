@@ -23,6 +23,9 @@
 namespace mqtt
 {
 
+namespace protocol
+{
+
 namespace field
 {
 
@@ -447,7 +450,7 @@ using SubElemBase =
         FieldBase,
         std::tuple<
             SubscribeTopic,
-            mqtt::field::QoS<>
+            QoS<>
         >
     >;
 
@@ -485,6 +488,8 @@ using UnsubscribePayload =
     >;
 
 }  // namespace field
+
+}  // namespace protocol
 
 }  // namespace mqtt
 

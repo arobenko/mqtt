@@ -19,54 +19,48 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field.h"
+#include "mqtt/protocol/Message.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-using PubrelFields = std::tuple<
-    mqtt::field::PacketId
->;
-
 template <typename TMsgBase = Message>
-class Pubrel : public
+class Pingreq : public
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREL>,
-        comms::option::FieldsImpl<PubrelFields>,
-        comms::option::DispatchImpl<Pubrel<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
+        comms::option::NoFieldsImpl,
+        comms::option::DispatchImpl<Pingreq<TMsgBase> >
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREL>,
-        comms::option::FieldsImpl<PubrelFields>,
-        comms::option::DispatchImpl<Pubrel<TMsgBase> >
+        comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
+        comms::option::NoFieldsImpl,
+        comms::option::DispatchImpl<Pingreq<TMsgBase> >
     > Base;
 public:
 
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
+    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
+        "Number of fields is incorrect");
 
-    Pubrel()
-    {
-        typename Base::FlagsField flags;
-        flags.value() = 2;
-        Base::setFlags(flags);
-    }
+    Pingreq() = default;
+    Pingreq(const Pingreq&) = default;
+    Pingreq(Pingreq&& other) = default;
+    virtual ~Pingreq() = default;
 
-    Pubrel(const Pubrel&) = default;
-    Pubrel(Pubrel&& other) = default;
-    virtual ~Pubrel() = default;
-
-    Pubrel& operator=(const Pubrel&) = default;
-    Pubrel& operator=(Pubrel&&) = default;
+    Pingreq& operator=(const Pingreq&) = default;
+    Pingreq& operator=(Pingreq&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt
