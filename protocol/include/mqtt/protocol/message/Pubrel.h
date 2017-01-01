@@ -41,14 +41,16 @@ class Pubrel : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBREL>,
         comms::option::FieldsImpl<PubrelFields>,
-        comms::option::DispatchImpl<Pubrel<TMsgBase> >
+        comms::option::MsgType<Pubrel<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBREL>,
         comms::option::FieldsImpl<PubrelFields>,
-        comms::option::DispatchImpl<Pubrel<TMsgBase> >
+        comms::option::MsgType<Pubrel<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
 

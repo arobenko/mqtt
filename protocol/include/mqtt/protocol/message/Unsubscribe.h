@@ -44,14 +44,18 @@ class Unsubscribe : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
         comms::option::FieldsImpl<UnsubscribeFields>,
-        comms::option::DispatchImpl<Unsubscribe<TMsgBase> >
+        comms::option::MsgType<Unsubscribe<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoValid
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
         comms::option::FieldsImpl<UnsubscribeFields>,
-        comms::option::DispatchImpl<Unsubscribe<TMsgBase> >
+        comms::option::MsgType<Unsubscribe<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoValid
     > Base;
 public:
 
@@ -80,14 +84,12 @@ public:
     Unsubscribe& operator=(const Unsubscribe&) = default;
     Unsubscribe& operator=(Unsubscribe&&) = default;
 
-protected:
-
-    virtual bool validImpl() const override
+    bool doValid() const
     {
         auto& flagsField = Base::getFlags();
         UnsubscribeFlagsField actFlags(flagsField.value());
 
-        return actFlags.valid() && Base::validImpl();
+        return actFlags.valid() && Base::doValid();
     }
 };
 

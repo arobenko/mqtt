@@ -43,14 +43,16 @@ class Connack : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNACK>,
         comms::option::FieldsImpl<ConnackFields>,
-        comms::option::DispatchImpl<Connack<TMsgBase> >
+        comms::option::MsgType<Connack<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNACK>,
         comms::option::FieldsImpl<ConnackFields>,
-        comms::option::DispatchImpl<Connack<TMsgBase> >
+        comms::option::MsgType<Connack<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, flags, response);

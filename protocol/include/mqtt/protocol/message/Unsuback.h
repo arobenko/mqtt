@@ -43,14 +43,16 @@ class Unsuback : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
         comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::DispatchImpl<Unsuback<TMsgBase> >
+        comms::option::MsgType<Unsuback<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
         comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::DispatchImpl<Unsuback<TMsgBase> >
+        comms::option::MsgType<Unsuback<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
 

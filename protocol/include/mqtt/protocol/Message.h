@@ -41,16 +41,12 @@ class MessageT : public
     comms::Message<
         comms::option::BigEndian,
         comms::option::MsgIdType<MsgId>,
-        comms::option::RefreshInterface,
-        comms::option::ValidCheckInterface,
         TOptions...
     >
 {
     typedef comms::Message<
         comms::option::BigEndian,
         comms::option::MsgIdType<MsgId>,
-        comms::option::RefreshInterface,
-        comms::option::ValidCheckInterface,
         TOptions...
     > Base;
 public:

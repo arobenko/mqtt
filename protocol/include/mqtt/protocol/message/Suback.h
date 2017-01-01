@@ -44,14 +44,16 @@ class Suback : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBACK>,
         comms::option::FieldsImpl<SubackFields>,
-        comms::option::DispatchImpl<Suback<TMsgBase> >
+        comms::option::MsgType<Suback<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBACK>,
         comms::option::FieldsImpl<SubackFields>,
-        comms::option::DispatchImpl<Suback<TMsgBase> >
+        comms::option::MsgType<Suback<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
 

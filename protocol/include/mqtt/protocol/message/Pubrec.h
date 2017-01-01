@@ -41,14 +41,16 @@ class Pubrec : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBREC>,
         comms::option::FieldsImpl<PubrecFields>,
-        comms::option::DispatchImpl<Pubrec<TMsgBase> >
+        comms::option::MsgType<Pubrec<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBREC>,
         comms::option::FieldsImpl<PubrecFields>,
-        comms::option::DispatchImpl<Pubrec<TMsgBase> >
+        comms::option::MsgType<Pubrec<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);

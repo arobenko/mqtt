@@ -41,14 +41,16 @@ class Pubcomp : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
         comms::option::FieldsImpl<PubcompFields>,
-        comms::option::DispatchImpl<Pubcomp<TMsgBase> >
+        comms::option::MsgType<Pubcomp<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
         comms::option::FieldsImpl<PubcompFields>,
-        comms::option::DispatchImpl<Pubcomp<TMsgBase> >
+        comms::option::MsgType<Pubcomp<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);

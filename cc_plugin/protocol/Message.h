@@ -35,11 +35,13 @@ template <typename... TOptions>
 class MessageT : public
     comms_champion::MessageBase<
         mqtt::protocol::MessageT,
+        comms::option::RefreshInterface,
         TOptions...
     >
 {
     typedef comms_champion::MessageBase<
         mqtt::protocol::MessageT,
+        comms::option::RefreshInterface,
         TOptions...
     > Base;
 public:

@@ -36,14 +36,16 @@ class Disconnect : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
         comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Disconnect<TMsgBase> >
+        comms::option::MsgType<Disconnect<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
         comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Disconnect<TMsgBase> >
+        comms::option::MsgType<Disconnect<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
 

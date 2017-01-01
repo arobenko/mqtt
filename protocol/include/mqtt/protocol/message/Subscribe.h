@@ -44,14 +44,18 @@ class Subscribe : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
         comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::DispatchImpl<Subscribe<TMsgBase> >
+        comms::option::MsgType<Subscribe<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoValid
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
         comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::DispatchImpl<Subscribe<TMsgBase> >
+        comms::option::MsgType<Subscribe<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoValid
     > Base;
 public:
 
@@ -80,14 +84,12 @@ public:
     Subscribe& operator=(const Subscribe&) = default;
     Subscribe& operator=(Subscribe&&) = default;
 
-protected:
-
-    virtual bool validImpl() const override
+    bool doValid() const
     {
         auto& flagsField = Base::getFlags();
         SubscribeFlagsField actFlags(flagsField.value());
 
-        return actFlags.valid() && Base::validImpl();
+        return actFlags.valid() && Base::doValid();
     }
 };
 

@@ -50,16 +50,20 @@ class Connect : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNECT>,
         comms::option::FieldsImpl<ConnectFields>,
-        comms::option::DispatchImpl<Connect<TMsgBase> >,
-        comms::option::NoDefaultFieldsReadImpl
+        comms::option::MsgType<Connect<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoRead,
+        comms::option::MsgDoRefresh
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNECT>,
         comms::option::FieldsImpl<ConnectFields>,
-        comms::option::DispatchImpl<Connect<TMsgBase> >,
-        comms::option::NoDefaultFieldsReadImpl
+        comms::option::MsgType<Connect<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoRead,
+        comms::option::MsgDoRefresh
     > Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
@@ -79,10 +83,8 @@ public:
     Connect& operator=(const Connect&) = default;
     Connect& operator=(Connect&&) = default;
 
-protected:
-    virtual comms::ErrorStatus readImpl(
-        typename Base::ReadIterator& iter,
-        std::size_t size) override
+    template <typename TIter>
+    comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
         auto status = Base::template readFieldsUntil<FieldIdx_willTopic>(iter, size);
         if (status != comms::ErrorStatus::Success) {
@@ -101,7 +103,7 @@ protected:
         return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
     }
 
-    virtual bool refreshImpl() override
+    bool doRefresh()
     {
         auto allFields = fieldsAsStruct();
         auto flagsMembers = allFields.flags.fieldsAsStruct();

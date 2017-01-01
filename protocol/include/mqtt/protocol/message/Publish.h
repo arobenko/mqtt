@@ -46,18 +46,24 @@ class Publish : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
         comms::option::FieldsImpl<PublishFields>,
-        comms::option::DispatchImpl<Publish<TMsgBase> >,
-        comms::option::NoDefaultFieldsReadImpl,
-        comms::option::NoDefaultFieldsWriteImpl
+        comms::option::MsgType<Publish<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoRead,
+        comms::option::MsgDoWrite,
+        comms::option::MsgDoLength,
+        comms::option::MsgDoRefresh
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
         comms::option::FieldsImpl<PublishFields>,
-        comms::option::DispatchImpl<Publish<TMsgBase> >,
-        comms::option::NoDefaultFieldsReadImpl,
-        comms::option::NoDefaultFieldsWriteImpl
+        comms::option::MsgType<Publish<TMsgBase> >,
+        comms::option::DispatchImpl,
+        comms::option::MsgDoRead,
+        comms::option::MsgDoWrite,
+        comms::option::MsgDoLength,
+        comms::option::MsgDoRefresh
     > Base;
 public:
 
@@ -77,22 +83,8 @@ public:
     Publish& operator=(const Publish&) = default;
     Publish& operator=(Publish&&) = default;
 
-protected:
-
-    virtual bool refreshImpl() override
-    {
-        bool result = updatePacketId() && updateDup();
-
-        auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
-        Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
-
-        return result;
-    }
-
-    virtual comms::ErrorStatus readImpl(
-        typename Base::ReadIterator& iter,
-        std::size_t size) override
+    template <typename TIter>
+    comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
         auto& flagsField = Base::getFlags();
         auto& allFields = Base::fields();
@@ -102,16 +94,28 @@ protected:
         return Base::template readFieldsFrom<FieldIdx_topic>(iter, size);
     }
 
-    virtual comms::ErrorStatus writeImpl(
-        typename Base::WriteIterator& iter,
-        std::size_t size) const override
+    template <typename TIter>
+    comms::ErrorStatus doWrite(TIter& iter, std::size_t size) const
     {
         return Base::template writeFieldsFrom<FieldIdx_topic>(iter, size);
     }
 
-    virtual std::size_t lengthImpl() const override
+    std::size_t doLength() const
     {
-        return Base::lengthImpl() - field::PublishFlags::minLength();
+        return Base::doLength() - field::PublishFlags::minLength();
+    }
+
+    bool doRefresh()
+    {
+        bool result = false;
+        result = updatePacketId() || result;
+        result = updateDup() || result;
+
+        auto& allFields = Base::fields();
+        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
+        Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
+
+        return result;
     }
 
 private:

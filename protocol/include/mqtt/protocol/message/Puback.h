@@ -41,14 +41,16 @@ class Puback : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBACK>,
         comms::option::FieldsImpl<PubackFields>,
-        comms::option::DispatchImpl<Puback<TMsgBase> >
+        comms::option::MsgType<Puback<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBACK>,
         comms::option::FieldsImpl<PubackFields>,
-        comms::option::DispatchImpl<Puback<TMsgBase> >
+        comms::option::MsgType<Puback<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);

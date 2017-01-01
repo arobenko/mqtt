@@ -36,14 +36,16 @@ class Pingreq : public
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
         comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Pingreq<TMsgBase> >
+        comms::option::MsgType<Pingreq<TMsgBase> >,
+        comms::option::DispatchImpl
     >
 {
     typedef comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
         comms::option::NoFieldsImpl,
-        comms::option::DispatchImpl<Pingreq<TMsgBase> >
+        comms::option::MsgType<Pingreq<TMsgBase> >,
+        comms::option::DispatchImpl
     > Base;
 public:
 
