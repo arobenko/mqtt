@@ -38,23 +38,19 @@ using SubackFields = std::tuple<
     field::SubackPayload
 >;
 
-template <typename TMsgBase = Message>
-class Suback : public
+template <typename TMsgBase, template<class> class TActual>
+using SubackBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBACK>,
         comms::option::FieldsImpl<SubackFields>,
-        comms::option::MsgType<Suback<TMsgBase> >,
-        comms::option::DispatchImpl
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Suback : public SubackBase<TMsgBase, Suback>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_SUBACK>,
-        comms::option::FieldsImpl<SubackFields>,
-        comms::option::MsgType<Suback<TMsgBase> >,
-        comms::option::DispatchImpl
-    > Base;
+    typedef SubackBase<TMsgBase, Suback> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

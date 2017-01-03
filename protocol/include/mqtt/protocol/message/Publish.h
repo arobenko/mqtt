@@ -40,31 +40,20 @@ using PublishFields = std::tuple<
     field::Payload
 >;
 
-template <typename TMsgBase = Message>
-class Publish : public
+template <typename TMsgBase, template<class> class TActual>
+using PublishBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
         comms::option::FieldsImpl<PublishFields>,
-        comms::option::MsgType<Publish<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoRead,
-        comms::option::MsgDoWrite,
-        comms::option::MsgDoLength,
-        comms::option::MsgDoRefresh
-    >
+        comms::option::MsgType<TActual<TMsgBase> >,
+        comms::option::HasDoRefresh
+    >;
+
+template <typename TMsgBase = Message>
+class Publish : public PublishBase<TMsgBase, Publish>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
-        comms::option::FieldsImpl<PublishFields>,
-        comms::option::MsgType<Publish<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoRead,
-        comms::option::MsgDoWrite,
-        comms::option::MsgDoLength,
-        comms::option::MsgDoRefresh
-    > Base;
+    typedef PublishBase<TMsgBase, Publish> Base;
 public:
 
     COMMS_MSG_FIELDS_ACCESS(Base, publishFlags, topic, packetId, payload);

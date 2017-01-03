@@ -38,25 +38,19 @@ using SubscribeFields = std::tuple<
     field::SubscribePayload
 >;
 
-template <typename TMsgBase = Message>
-class Subscribe : public
+template <typename TMsgBase, template<class> class TActual>
+using SubscribeBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
         comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::MsgType<Subscribe<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoValid
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Subscribe : public SubscribeBase<TMsgBase, Subscribe>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-        comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::MsgType<Subscribe<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoValid
-    > Base;
+    typedef SubscribeBase<TMsgBase, Subscribe> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

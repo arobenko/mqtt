@@ -37,23 +37,19 @@ using ConnackFields =
         field::ConnackResponseCode
     >;
 
-template <typename TMsgBase = Message>
-class Connack : public
+template <typename TMsgBase, template<class> class TActual>
+using ConnackBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNACK>,
         comms::option::FieldsImpl<ConnackFields>,
-        comms::option::MsgType<Connack<TMsgBase> >,
-        comms::option::DispatchImpl
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Connack : public ConnackBase<TMsgBase, Connack>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-        comms::option::FieldsImpl<ConnackFields>,
-        comms::option::MsgType<Connack<TMsgBase> >,
-        comms::option::DispatchImpl
-    > Base;
+    typedef ConnackBase<TMsgBase, Connack> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, flags, response);
 

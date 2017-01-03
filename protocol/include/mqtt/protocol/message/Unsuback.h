@@ -37,23 +37,19 @@ using UnsubackFields = std::tuple<
     field::PacketId
 >;
 
-template <typename TMsgBase = Message>
-class Unsuback : public
+template <typename TMsgBase, template<class> class TActual>
+using UnsubackBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
         comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::MsgType<Unsuback<TMsgBase> >,
-        comms::option::DispatchImpl
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Unsuback : public UnsubackBase<TMsgBase, Unsuback>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::MsgType<Unsuback<TMsgBase> >,
-        comms::option::DispatchImpl
-    > Base;
+    typedef UnsubackBase<TMsgBase, Unsuback> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

@@ -30,23 +30,19 @@ namespace protocol
 namespace message
 {
 
-template <typename TMsgBase = Message>
-class Pingresp : public
+template <typename TMsgBase, template<class> class TActual>
+using PingrespBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
         comms::option::NoFieldsImpl,
-        comms::option::MsgType<Pingresp<TMsgBase> >,
-        comms::option::DispatchImpl
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Pingresp : public PingrespBase<TMsgBase, Pingresp>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-        comms::option::NoFieldsImpl,
-        comms::option::MsgType<Pingresp<TMsgBase> >,
-        comms::option::DispatchImpl
-    > Base;
+    typedef PingrespBase<TMsgBase, Pingresp> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,

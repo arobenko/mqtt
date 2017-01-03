@@ -44,27 +44,20 @@ using ConnectFields = std::tuple<
     field::Password
 >;
 
-template <typename TMsgBase = Message>
-class Connect : public
+template <typename TMsgBase, template<class> class TActual>
+using ConnectBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_CONNECT>,
         comms::option::FieldsImpl<ConnectFields>,
-        comms::option::MsgType<Connect<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoRead,
-        comms::option::MsgDoRefresh
-    >
+        comms::option::MsgType<TActual<TMsgBase> >,
+        comms::option::HasDoRefresh
+    >;
+
+template <typename TMsgBase = Message>
+class Connect : public ConnectBase<TMsgBase, Connect>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_CONNECT>,
-        comms::option::FieldsImpl<ConnectFields>,
-        comms::option::MsgType<Connect<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoRead,
-        comms::option::MsgDoRefresh
-    > Base;
+    typedef ConnectBase<TMsgBase, Connect> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
 

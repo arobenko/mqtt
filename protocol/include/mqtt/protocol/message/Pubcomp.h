@@ -35,23 +35,19 @@ using PubcompFields = std::tuple<
     field::PacketId
 >;
 
-template <typename TMsgBase = Message>
-class Pubcomp : public
+template <typename TMsgBase, template<class> class TActual>
+using PubcompBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
         comms::option::FieldsImpl<PubcompFields>,
-        comms::option::MsgType<Pubcomp<TMsgBase> >,
-        comms::option::DispatchImpl
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Pubcomp : public PubcompBase<TMsgBase, Pubcomp>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
-        comms::option::FieldsImpl<PubcompFields>,
-        comms::option::MsgType<Pubcomp<TMsgBase> >,
-        comms::option::DispatchImpl
-    > Base;
+    typedef PubcompBase<TMsgBase, Pubcomp> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 

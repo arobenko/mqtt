@@ -38,25 +38,19 @@ using UnsubscribeFields = std::tuple<
     field::UnsubscribePayload
 >;
 
-template <typename TMsgBase = Message>
-class Unsubscribe : public
+template <typename TMsgBase, template<class> class TActual>
+using UnsubscribeBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
         comms::option::FieldsImpl<UnsubscribeFields>,
-        comms::option::MsgType<Unsubscribe<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoValid
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Unsubscribe : public UnsubscribeBase<TMsgBase, Unsubscribe>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
-        comms::option::FieldsImpl<UnsubscribeFields>,
-        comms::option::MsgType<Unsubscribe<TMsgBase> >,
-        comms::option::DispatchImpl,
-        comms::option::MsgDoValid
-    > Base;
+    typedef UnsubscribeBase<TMsgBase, Unsubscribe> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

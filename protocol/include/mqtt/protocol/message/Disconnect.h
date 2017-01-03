@@ -30,23 +30,19 @@ namespace protocol
 namespace message
 {
 
-template <typename TMsgBase = Message>
-class Disconnect : public
+template <typename TMsgBase, template<class> class TActual>
+using DisconnectBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
         comms::option::NoFieldsImpl,
-        comms::option::MsgType<Disconnect<TMsgBase> >,
-        comms::option::DispatchImpl
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Disconnect : public DisconnectBase<TMsgBase, Disconnect>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
-        comms::option::NoFieldsImpl,
-        comms::option::MsgType<Disconnect<TMsgBase> >,
-        comms::option::DispatchImpl
-    > Base;
+    typedef DisconnectBase<TMsgBase, Disconnect> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
