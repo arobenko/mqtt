@@ -49,7 +49,7 @@ using ConnackBase =
 template <typename TMsgBase = Message>
 class Connack : public ConnackBase<TMsgBase, Connack>
 {
-    typedef ConnackBase<TMsgBase, Connack> Base;
+    typedef ConnackBase<TMsgBase, mqtt::protocol::message::Connack> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, flags, response);
 
