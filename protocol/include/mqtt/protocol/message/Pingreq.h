@@ -42,7 +42,7 @@ using PingreqBase =
 template <typename TMsgBase = Message>
 class Pingreq : public PingreqBase<TMsgBase, Pingreq>
 {
-    typedef PingreqBase<TMsgBase, Pingreq> Base;
+    typedef PingreqBase<TMsgBase, mqtt::protocol::message::Pingreq> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,

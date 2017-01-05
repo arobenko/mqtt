@@ -50,7 +50,7 @@ using SubscribeBase =
 template <typename TMsgBase = Message>
 class Subscribe : public SubscribeBase<TMsgBase, Subscribe>
 {
-    typedef SubscribeBase<TMsgBase, Subscribe> Base;
+    typedef SubscribeBase<TMsgBase, mqtt::protocol::message::Subscribe> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

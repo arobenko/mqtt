@@ -57,7 +57,7 @@ using ConnectBase =
 template <typename TMsgBase = Message>
 class Connect : public ConnectBase<TMsgBase, Connect>
 {
-    typedef ConnectBase<TMsgBase, Connect> Base;
+    typedef ConnectBase<TMsgBase, mqtt::protocol::message::Connect> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
 

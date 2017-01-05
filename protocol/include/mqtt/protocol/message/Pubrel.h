@@ -47,7 +47,7 @@ using PubrelBase =
 template <typename TMsgBase = Message>
 class Pubrel : public PubrelBase<TMsgBase, Pubrel>
 {
-    typedef PubrelBase<TMsgBase, Pubrel> Base;
+    typedef PubrelBase<TMsgBase, mqtt::protocol::message::Pubrel> Base;
 public:
 
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);

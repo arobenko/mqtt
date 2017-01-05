@@ -50,7 +50,7 @@ using UnsubscribeBase =
 template <typename TMsgBase = Message>
 class Unsubscribe : public UnsubscribeBase<TMsgBase, Unsubscribe>
 {
-    typedef UnsubscribeBase<TMsgBase, Unsubscribe> Base;
+    typedef UnsubscribeBase<TMsgBase, mqtt::protocol::message::Unsubscribe> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

@@ -53,7 +53,7 @@ using PublishBase =
 template <typename TMsgBase = Message>
 class Publish : public PublishBase<TMsgBase, Publish>
 {
-    typedef PublishBase<TMsgBase, Publish> Base;
+    typedef PublishBase<TMsgBase, mqtt::protocol::message::Publish> Base;
 public:
 
     COMMS_MSG_FIELDS_ACCESS(Base, publishFlags, topic, packetId, payload);

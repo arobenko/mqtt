@@ -49,7 +49,7 @@ using UnsubackBase =
 template <typename TMsgBase = Message>
 class Unsuback : public UnsubackBase<TMsgBase, Unsuback>
 {
-    typedef UnsubackBase<TMsgBase, Unsuback> Base;
+    typedef UnsubackBase<TMsgBase, mqtt::protocol::message::Unsuback> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

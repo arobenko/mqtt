@@ -47,7 +47,7 @@ using PubcompBase =
 template <typename TMsgBase = Message>
 class Pubcomp : public PubcompBase<TMsgBase, Pubcomp>
 {
-    typedef PubcompBase<TMsgBase, Pubcomp> Base;
+    typedef PubcompBase<TMsgBase, mqtt::protocol::message::Pubcomp> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 

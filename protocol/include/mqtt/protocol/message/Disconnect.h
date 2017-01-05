@@ -42,7 +42,7 @@ using DisconnectBase =
 template <typename TMsgBase = Message>
 class Disconnect : public DisconnectBase<TMsgBase, Disconnect>
 {
-    typedef DisconnectBase<TMsgBase, Disconnect> Base;
+    typedef DisconnectBase<TMsgBase, mqtt::protocol::message::Disconnect> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,

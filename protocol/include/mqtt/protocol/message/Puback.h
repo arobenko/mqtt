@@ -35,21 +35,19 @@ using PubackFields = std::tuple<
     field::PacketId
 >;
 
-template <typename TMsgBase = Message>
-class Puback : public
+template <typename TMsgBase, template<class> class TActual>
+using PubackBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBACK>,
         comms::option::FieldsImpl<PubackFields>,
-        comms::option::MsgType<Puback<TMsgBase> >
-    >
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Puback : public PubackBase<TMsgBase, Puback>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBACK>,
-        comms::option::FieldsImpl<PubackFields>,
-        comms::option::MsgType<Puback<TMsgBase> >
-    > Base;
+    typedef PubackBase<TMsgBase, mqtt::protocol::message::Puback> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 

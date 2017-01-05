@@ -50,7 +50,7 @@ using SubackBase =
 template <typename TMsgBase = Message>
 class Suback : public SubackBase<TMsgBase, Suback>
 {
-    typedef SubackBase<TMsgBase, Suback> Base;
+    typedef SubackBase<TMsgBase, mqtt::protocol::message::Suback> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;

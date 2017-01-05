@@ -42,7 +42,7 @@ using PingrespBase =
 template <typename TMsgBase = Message>
 class Pingresp : public PingrespBase<TMsgBase, Pingresp>
 {
-    typedef PingrespBase<TMsgBase, Pingresp> Base;
+    typedef PingrespBase<TMsgBase, mqtt::protocol::message::Pingresp> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
