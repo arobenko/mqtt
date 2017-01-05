@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.11)
+cmake_minimum_required (VERSION 3.0)
 project ("mqtt")
 
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
