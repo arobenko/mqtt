@@ -21,8 +21,7 @@
 
 #include "Suback.h"
 
-#include "cc_plugin/protocol/field/PacketId.h"
-#include "cc_plugin/protocol/field/QoS.h"
+#include "cc_plugin/protocol/field.h"
 
 namespace cc = comms_champion;
 
@@ -46,12 +45,12 @@ QVariantMap createReturnCodeProperties()
     cc::property::field::EnumValue props;
 
     props.name("Return Code");
-    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::message::SubackReturnCode::SuccessQos2); ++idx) {
+    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::protocol::field::SubackReturnCode::SuccessQos2); ++idx) {
         static const QString Prefix("Success QoS ");
         auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
         props.add(str, idx);
     }
-    props.add("Failure", (int)mqtt::message::SubackReturnCode::Failure);
+    props.add("Failure", (int)mqtt::protocol::field::SubackReturnCode::Failure);
     return props.asMap();
 }
 
@@ -70,7 +69,7 @@ QVariantList createFieldsProperties()
     props.append(field::packetIdProperties());
     props.append(createPayloadProperties());
 
-    assert(props.size() == Suback::FieldIdx_NumOfValues);
+    assert(props.size() == Suback::FieldIdx_numOfValues);
     return props;
 }
 

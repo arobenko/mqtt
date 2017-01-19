@@ -19,8 +19,7 @@
 #include <functional>
 #include <cassert>
 
-#include "cc_plugin/protocol/field/QoS.h"
-#include "cc_plugin/protocol/field/PacketId.h"
+#include "cc_plugin/protocol/field.h"
 #include "Publish.h"
 
 namespace cc = comms_champion;
@@ -103,7 +102,7 @@ QVariantList createFieldsProperties()
     props.append(field::optionalPacketIdProperties());
     props.append(createPayloadProperties());
 
-    assert(props.size() == Publish::FieldIdx_NumOfValues);
+    assert(props.size() == Publish::FieldIdx_numOfValues);
     return props;
 }
 

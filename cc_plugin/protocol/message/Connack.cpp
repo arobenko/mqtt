@@ -67,7 +67,7 @@ QVariantList createFieldsProperties()
     props.append(createConnectAcknowledgeFlagsProperties());
     props.append(createResponseProperties());
 
-    assert(props.size() == Connack::FieldIdx_NumOfValues);
+    assert(props.size() == Connack::FieldIdx_numOfValues);
     return props;
 }
 

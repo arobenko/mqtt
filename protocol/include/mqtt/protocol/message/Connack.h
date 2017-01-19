@@ -18,14 +18,11 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/message/Connack.h"
-#include "cc_plugin/protocol/Message.h"
+#include <tuple>
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
@@ -34,31 +31,39 @@ namespace protocol
 namespace message
 {
 
-class Connack : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::message::Connack<mqtt::cc_plugin::protocol::Message>,
-        Connack>
+using ConnackFields =
+    std::tuple<
+        field::ConnackFlags,
+        field::ConnackResponseCode
+    >;
+
+template <typename TMsgBase, template<class> class TActual>
+using ConnackBase =
+    comms::MessageBase<
+        TMsgBase,
+        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
+        comms::option::FieldsImpl<ConnackFields>,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Connack : public ConnackBase<TMsgBase, Connack>
 {
+    typedef ConnackBase<TMsgBase, mqtt::protocol::message::Connack> Base;
 public:
+    COMMS_MSG_FIELDS_ACCESS(Base, flags, response);
+
     Connack() = default;
     Connack(const Connack&) = default;
-    Connack(Connack&&) = default;
+    Connack(Connack&& other) = default;
     virtual ~Connack() = default;
 
     Connack& operator=(const Connack&) = default;
     Connack& operator=(Connack&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
 }  // namespace message
 
 }  // namespace protocol
 
-}  // namespace cc_plugin
-
 }  // namespace mqtt
-
-

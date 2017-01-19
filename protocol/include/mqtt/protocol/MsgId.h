@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,34 +18,35 @@
 
 #pragma once
 
-#include "comms/CompileControl.h"
-
-CC_DISABLE_WARNINGS()
-#include <QtCore/QObject>
-#include <QtCore/QString>
-CC_ENABLE_WARNINGS()
+#include <cstdint>
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
 {
 
-namespace field
+enum MsgId : std::uint8_t
 {
-
-const QString& packetIdFieldName();
-const QVariantMap& packetIdProperties();
-const QVariantMap& optionalPacketIdProperties();
-
-}  // namespace field
+    MsgId_Reserved,
+    MsgId_CONNECT,
+    MsgId_CONNACK,
+    MsgId_PUBLISH,
+    MsgId_PUBACK,
+    MsgId_PUBREC,
+    MsgId_PUBREL,
+    MsgId_PUBCOMP,
+    MsgId_SUBSCRIBE,
+    MsgId_SUBACK,
+    MsgId_UNSUBSCRIBE,
+    MsgId_UNSUBACK,
+    MsgId_PINGREQ,
+    MsgId_PINGRESP,
+    MsgId_DISCONNECT,
+    MsgId_NumOfValues // Must be last
+};
 
 }  // namespace protocol
-
-}  // namespace cc_plugin
 
 }  // namespace mqtt
 

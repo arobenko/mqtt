@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -21,58 +21,44 @@
 #include <tuple>
 #include <algorithm>
 
-#include "mqtt/Message.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-template <typename TFieldBase>
-using UnsubackPacketIdField =
-        mqtt::field::PacketId<TFieldBase>;
-
-template <typename TFieldBase>
 using UnsubackFields = std::tuple<
-    UnsubackPacketIdField<TFieldBase>
+    field::PacketId
 >;
 
-template <typename TMsgBase = Message>
-class Unsuback : public
+template <typename TMsgBase, template<class> class TActual>
+using UnsubackBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Unsuback<TMsgBase> >
-    >
+        comms::option::FieldsImpl<UnsubackFields>,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Unsuback : public UnsubackBase<TMsgBase, Unsuback>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Unsuback<TMsgBase> >
-    > Base;
+    typedef UnsubackBase<TMsgBase, mqtt::protocol::message::Unsuback> Base;
 public:
 
     typedef typename Base::FlagsField FlagsField;
 
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
-
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Unsuback() = default;
-
     Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&& other)
-    {
-    }
+    Unsuback(Unsuback&& other) = default;
     virtual ~Unsuback() = default;
 
     Unsuback& operator=(const Unsuback&) = default;
@@ -81,5 +67,6 @@ public:
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

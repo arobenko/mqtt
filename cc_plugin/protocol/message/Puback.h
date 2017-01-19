@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/message/Puback.h"
+#include "mqtt/protocol/message/Puback.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Puback : public
     comms_champion::ProtocolMessageBase<
-        mqtt::message::Puback<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::message::Puback<mqtt::cc_plugin::protocol::Message>,
         Puback>
 {
 public:

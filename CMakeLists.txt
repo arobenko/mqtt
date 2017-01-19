@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.11)
+cmake_minimum_required (VERSION 3.0)
 project ("mqtt")
 
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
@@ -29,12 +29,9 @@ set (BIN_INSTALL_DIR ${INSTALL_DIR}/bin)
 set (INC_INSTALL_DIR ${INSTALL_DIR}/include)
 set (PLUGIN_INSTALL_DIR ${INSTALL_DIR}/plugin)
 
-install (
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/mqtt
-    DESTINATION ${INC_INSTALL_DIR}
-)
-
 install (DIRECTORY cmake DESTINATION ${INSTALL_DIR})
+
+add_subdirectory (protocol)
 
 if (CC_MQTT_LIB_ONLY)
     return ()
@@ -77,8 +74,10 @@ if ((UNIX) AND (NOT CC_MQTT_NO_CCACHE))
     endif(CCACHE_FOUND)
 endif ()    
 
-include_directories(${CMAKE_SOURCE_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/protocol/include
+)
 
 add_subdirectory(cc_plugin)
 

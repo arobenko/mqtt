@@ -21,7 +21,7 @@
 
 #include "Puback.h"
 
-#include "cc_plugin/protocol/field/PacketId.h"
+#include "cc_plugin/protocol/field.h"
 
 namespace cc = comms_champion;
 
@@ -45,7 +45,7 @@ QVariantList createFieldsProperties()
     QVariantList props;
     props.append(field::packetIdProperties());
 
-    assert(props.size() == Puback::FieldIdx_NumOfValues);
+    assert(props.size() == Puback::FieldIdx_numOfValues);
     return props;
 }
 

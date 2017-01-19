@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/Message.h"
+#include "mqtt/protocol/Message.h"
 
 
 namespace mqtt
@@ -31,16 +31,19 @@ namespace cc_plugin
 namespace protocol
 {
 
-typedef std::tuple<
-    comms::option::BigEndian,
-    comms::option::MsgIdType<MsgId>,
-    comms::option::ValidCheckInterface
-> PluginOptions;
-
 template <typename... TOptions>
-class MessageT : public comms_champion::MessageBase<mqtt::MessageT, TOptions...>
+class MessageT : public
+    comms_champion::MessageBase<
+        mqtt::protocol::MessageT,
+        comms::option::RefreshInterface,
+        TOptions...
+    >
 {
-    typedef comms_champion::MessageBase<mqtt::MessageT, TOptions...> Base;
+    typedef comms_champion::MessageBase<
+        mqtt::protocol::MessageT,
+        comms::option::RefreshInterface,
+        TOptions...
+    > Base;
 public:
     MessageT() = default;
     MessageT(const MessageT&) = default;
@@ -55,7 +58,7 @@ protected:
     }
 };
 
-typedef MessageT<PluginOptions> Message;
+typedef MessageT<> Message;
 
 }  // namespace protocol
 

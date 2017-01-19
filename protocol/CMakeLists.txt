@@ -1,0 +1,4 @@
+install (
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/mqtt
+    DESTINATION ${INC_INSTALL_DIR}
+)

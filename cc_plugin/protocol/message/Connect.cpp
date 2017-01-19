@@ -19,7 +19,7 @@
 #include <functional>
 #include <cassert>
 
-#include "cc_plugin/protocol/field/QoS.h"
+#include "cc_plugin/protocol/field.h"
 #include "Connect.h"
 
 namespace cc = comms_champion;
@@ -197,7 +197,7 @@ QVariantList createFieldsProperties()
     props.append(createUserNameProperties());
     props.append(updatePasswordProperties());
 
-    assert(props.size() == Connect::FieldIdx_NumOfValues);
+    assert(props.size() == Connect::FieldIdx_numOfValues);
     return props;
 }
 

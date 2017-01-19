@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,50 +19,41 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-template <typename TFieldBase>
 using PubrecFields = std::tuple<
-    mqtt::field::PacketId<TFieldBase>
+    field::PacketId
 >;
 
-template <typename TMsgBase = Message>
-class Pubrec : public
+template <typename TMsgBase, template<class> class TActual>
+using PubrecBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBREC>,
-        comms::option::FieldsImpl<PubrecFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Pubrec<TMsgBase> >
-    >
-{
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREC>,
-        comms::option::FieldsImpl<PubrecFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Pubrec<TMsgBase> >
-    > Base;
-public:
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
+        comms::option::FieldsImpl<PubrecFields>,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+template <typename TMsgBase = Message>
+class Pubrec : public PubrecBase<TMsgBase, Pubrec>
+{
+    typedef PubrecBase<TMsgBase, mqtt::protocol::message::Pubrec> Base;
+public:
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Pubrec() = default;
     Pubrec(const Pubrec&) = default;
-    Pubrec(Pubrec&& other)
-    {
-    }
+    Pubrec(Pubrec&& other) = default;
     virtual ~Pubrec() = default;
 
     Pubrec& operator=(const Pubrec&) = default;
@@ -71,5 +62,6 @@ public:
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

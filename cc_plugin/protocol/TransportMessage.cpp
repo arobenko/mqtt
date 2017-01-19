@@ -21,7 +21,7 @@
 
 #include <QtCore/QVariantMap>
 
-#include "mqtt/MsgId.h"
+#include "mqtt/protocol/MsgId.h"
 #include "comms/Assert.h"
 
 namespace cc = comms_champion;
@@ -51,20 +51,20 @@ QVariantMap createMsgIdMemberData()
     return
         cc::property::field::ForField<mqtt::protocol::MsgIdField>()
             .name("ID")
-            .add("CONNECT", mqtt::MsgId_CONNECT)
-            .add("CONNACK", mqtt::MsgId_CONNACK)
-            .add("PUBLISH", mqtt::MsgId_PUBLISH)
-            .add("PUBACK", mqtt::MsgId_PUBACK)
-            .add("PUBREC", mqtt::MsgId_PUBREC)
-            .add("PUBREL", mqtt::MsgId_PUBREL)
-            .add("PUBCOMP", mqtt::MsgId_PUBCOMP)
-            .add("SUBSCRIBE", mqtt::MsgId_SUBSCRIBE)
-            .add("SUBACK", mqtt::MsgId_SUBACK)
-            .add("UNSUBSCRIBE", mqtt::MsgId_UNSUBSCRIBE)
-            .add("UNSUBACK", mqtt::MsgId_UNSUBACK)
-            .add("PINGREQ", mqtt::MsgId_PINGREQ)
-            .add("PINGRESP", mqtt::MsgId_PINGRESP)
-            .add("DISCONNECT", mqtt::MsgId_DISCONNECT)
+            .add("CONNECT", mqtt::protocol::MsgId_CONNECT)
+            .add("CONNACK", mqtt::protocol::MsgId_CONNACK)
+            .add("PUBLISH", mqtt::protocol::MsgId_PUBLISH)
+            .add("PUBACK", mqtt::protocol::MsgId_PUBACK)
+            .add("PUBREC", mqtt::protocol::MsgId_PUBREC)
+            .add("PUBREL", mqtt::protocol::MsgId_PUBREL)
+            .add("PUBCOMP", mqtt::protocol::MsgId_PUBCOMP)
+            .add("SUBSCRIBE", mqtt::protocol::MsgId_SUBSCRIBE)
+            .add("SUBACK", mqtt::protocol::MsgId_SUBACK)
+            .add("UNSUBSCRIBE", mqtt::protocol::MsgId_UNSUBSCRIBE)
+            .add("UNSUBACK", mqtt::protocol::MsgId_UNSUBACK)
+            .add("PINGREQ", mqtt::protocol::MsgId_PINGREQ)
+            .add("PINGRESP", mqtt::protocol::MsgId_PINGRESP)
+            .add("DISCONNECT", mqtt::protocol::MsgId_DISCONNECT)
             .serialisedHidden()
             .asMap();
 }
@@ -90,7 +90,7 @@ QVariantMap createIdAndFlagsProperties()
 QVariantMap createSizeProperties()
 {
     return
-        cc::property::field::ForField<mqtt::RemSizeField>()
+        cc::property::field::ForField<mqtt::protocol::RemSizeField>()
             .name("Size")
             .asMap();
 }

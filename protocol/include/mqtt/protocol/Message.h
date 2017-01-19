@@ -28,21 +28,27 @@
 namespace mqtt
 {
 
-class MsgHandler;
+namespace protocol
+{
 
 typedef std::tuple<
-    comms::option::BigEndian,
     comms::option::ReadIterator<const std::uint8_t*>,
-    comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >,
-    comms::option::MsgIdType<MsgId>,
-    comms::option::Handler<MsgHandler>,
-    comms::option::RefreshInterface
+    comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >
 > DefaultOptions;
 
 template <typename... TOptions>
-class MessageT : public comms::Message<TOptions...>
+class MessageT : public
+    comms::Message<
+        comms::option::BigEndian,
+        comms::option::MsgIdType<MsgId>,
+        TOptions...
+    >
 {
-    typedef comms::Message<TOptions...> Base;
+    typedef comms::Message<
+        comms::option::BigEndian,
+        comms::option::MsgIdType<MsgId>,
+        TOptions...
+    > Base;
 public:
 
     typedef typename Base::Field Field;
@@ -77,5 +83,7 @@ private:
 };
 
 typedef MessageT<DefaultOptions> Message;
+
+}  // namespace protocol
 
 }  // namespace mqtt

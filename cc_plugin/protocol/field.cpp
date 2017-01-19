@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "comms_champion/comms_champion.h"
-#include "QoS.h"
+#include "field.h"
 
 namespace cc = comms_champion;
 
@@ -32,7 +31,45 @@ namespace protocol
 namespace field
 {
 
-void updateQosPropertiesMap(comms_champion::property::field::EnumValue& props)
+
+namespace
+{
+
+QVariantMap createPacketIdProperties()
+{
+    return cc::property::field::IntValue().name(packetIdFieldName()).asMap();
+}
+
+QVariantMap createOptionalPacketIdProperties()
+{
+    return cc::property::field::Optional()
+        .name(packetIdFieldName())
+        .field(createPacketIdProperties())
+        .uncheckable()
+        .asMap();
+}
+
+}  // namespace
+
+const QString& packetIdFieldName()
+{
+    static const QString Str("Packet ID");
+    return Str;
+}
+
+const QVariantMap& packetIdProperties()
+{
+    static const auto Props = createPacketIdProperties();
+    return Props;
+}
+
+const QVariantMap& optionalPacketIdProperties()
+{
+    static const auto Props = createOptionalPacketIdProperties();
+    return Props;
+}
+
+void updateQosPropertiesMap(cc::property::field::EnumValue& props)
 {
     props
         .add("At most once delivery")
@@ -47,5 +84,6 @@ void updateQosPropertiesMap(comms_champion::property::field::EnumValue& props)
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
 
 

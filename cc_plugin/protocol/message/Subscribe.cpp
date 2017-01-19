@@ -21,8 +21,7 @@
 
 #include "Subscribe.h"
 
-#include "cc_plugin/protocol/field/PacketId.h"
-#include "cc_plugin/protocol/field/QoS.h"
+#include "cc_plugin/protocol/field.h"
 
 namespace cc = comms_champion;
 
@@ -79,7 +78,7 @@ QVariantList createFieldsProperties()
     props.append(field::packetIdProperties());
     props.append(createPayloadProperties());
 
-    assert(props.size() == Subscribe::FieldIdx_NumOfValues);
+    assert(props.size() == Subscribe::FieldIdx_numOfValues);
     return props;
 }
 

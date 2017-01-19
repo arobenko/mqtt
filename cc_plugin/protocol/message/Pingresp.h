@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/message/Pingresp.h"
+#include "mqtt/protocol/message/Pingresp.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Pingresp : public
     comms_champion::ProtocolMessageBase<
-        mqtt::message::Pingresp<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::message::Pingresp<mqtt::cc_plugin::protocol::Message>,
         Pingresp>
 {
 public:

@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,44 +19,38 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
-#include "mqtt/field/PacketId.h"
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-template <typename TFieldBase>
 using PubrelFields = std::tuple<
-    mqtt::field::PacketId<TFieldBase>
+    field::PacketId
 >;
 
-template <typename TMsgBase = Message>
-class Pubrel : public
+template <typename TMsgBase, template<class> class TActual>
+using PubrelBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PUBREL>,
-        comms::option::FieldsImpl<PubrelFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Pubrel<TMsgBase> >
-    >
-{
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREL>,
-        comms::option::FieldsImpl<PubrelFields<typename TMsgBase::Field> >,
-        comms::option::DispatchImpl<Pubrel<TMsgBase> >
-    > Base;
-public:
-    enum FieldIdx
-    {
-        FieldIdx_PacketId,
-        FieldIdx_NumOfValues
-    };
+        comms::option::FieldsImpl<PubrelFields>,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == FieldIdx_NumOfValues,
-        "Number of fields is incorrect");
+template <typename TMsgBase = Message>
+class Pubrel : public PubrelBase<TMsgBase, Pubrel>
+{
+    typedef PubrelBase<TMsgBase, mqtt::protocol::message::Pubrel> Base;
+public:
+
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
 
     Pubrel()
     {
@@ -66,9 +60,7 @@ public:
     }
 
     Pubrel(const Pubrel&) = default;
-    Pubrel(Pubrel&& other)
-    {
-    }
+    Pubrel(Pubrel&& other) = default;
     virtual ~Pubrel() = default;
 
     Pubrel& operator=(const Pubrel&) = default;
@@ -77,5 +69,6 @@ public:
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

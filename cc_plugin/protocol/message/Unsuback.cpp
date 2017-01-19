@@ -21,8 +21,7 @@
 
 #include "Unsuback.h"
 
-#include "cc_plugin/protocol/field/PacketId.h"
-#include "cc_plugin/protocol/field/QoS.h"
+#include "cc_plugin/protocol/field.h"
 
 namespace cc = comms_champion;
 
@@ -46,7 +45,7 @@ QVariantList createFieldsProperties()
     QVariantList props;
     props.append(field::packetIdProperties());
 
-    assert(props.size() == Unsuback::FieldIdx_NumOfValues);
+    assert(props.size() == Unsuback::FieldIdx_numOfValues);
     return props;
 }
 

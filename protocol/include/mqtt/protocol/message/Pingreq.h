@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,46 +19,46 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
+#include "mqtt/protocol/Message.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-template <typename TMsgBase = Message>
-class Pingresp : public
+template <typename TMsgBase, template<class> class TActual>
+using PingreqBase =
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-        comms::option::FieldsImpl<std::tuple<> >,
-        comms::option::DispatchImpl<Pingresp<TMsgBase> >
-    >
+        comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
+        comms::option::NoFieldsImpl,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Pingreq : public PingreqBase<TMsgBase, Pingreq>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-        comms::option::FieldsImpl<std::tuple<> >,
-        comms::option::DispatchImpl<Pingresp<TMsgBase> >
-    > Base;
+    typedef PingreqBase<TMsgBase, mqtt::protocol::message::Pingreq> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
         "Number of fields is incorrect");
 
-    Pingresp() = default;
-    Pingresp(const Pingresp&) = default;
-    Pingresp(Pingresp&& other)
-    {
-    }
-    virtual ~Pingresp() = default;
+    Pingreq() = default;
+    Pingreq(const Pingreq&) = default;
+    Pingreq(Pingreq&& other) = default;
+    virtual ~Pingreq() = default;
 
-    Pingresp& operator=(const Pingresp&) = default;
-    Pingresp& operator=(Pingresp&&) = default;
+    Pingreq& operator=(const Pingreq&) = default;
+    Pingreq& operator=(Pingreq&&) = default;
 };
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

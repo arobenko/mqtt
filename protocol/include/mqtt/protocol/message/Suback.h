@@ -18,14 +18,13 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/message/Suback.h"
-#include "cc_plugin/protocol/Message.h"
+#include <tuple>
+#include <algorithm>
+
+#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/field.h"
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
@@ -34,31 +33,41 @@ namespace protocol
 namespace message
 {
 
-class Suback : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::message::Suback<mqtt::cc_plugin::protocol::Message>,
-        Suback>
+using SubackFields = std::tuple<
+    field::PacketId,
+    field::SubackPayload
+>;
+
+template <typename TMsgBase, template<class> class TActual>
+using SubackBase =
+    comms::MessageBase<
+        TMsgBase,
+        comms::option::StaticNumIdImpl<MsgId_SUBACK>,
+        comms::option::FieldsImpl<SubackFields>,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Suback : public SubackBase<TMsgBase, Suback>
 {
+    typedef SubackBase<TMsgBase, mqtt::protocol::message::Suback> Base;
 public:
+
+    typedef typename Base::FlagsField FlagsField;
+
+    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
+
     Suback() = default;
     Suback(const Suback&) = default;
-    Suback(Suback&&) = default;
+    Suback(Suback&& other) = default;
     virtual ~Suback() = default;
 
     Suback& operator=(const Suback&) = default;
     Suback& operator=(Suback&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
 }  // namespace message
 
 }  // namespace protocol
 
-}  // namespace cc_plugin
-
 }  // namespace mqtt
-
-

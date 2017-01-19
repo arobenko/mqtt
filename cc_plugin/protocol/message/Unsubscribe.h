@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/message/Unsubscribe.h"
+#include "mqtt/protocol/message/Unsubscribe.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Unsubscribe : public
     comms_champion::ProtocolMessageBase<
-        mqtt::message::Unsubscribe<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::message::Unsubscribe<mqtt::cc_plugin::protocol::Message>,
         Unsubscribe>
 {
 public:

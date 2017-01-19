@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/message/Disconnect.h"
+#include "mqtt/protocol/message/Disconnect.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Disconnect : public
     comms_champion::ProtocolMessageBase<
-        mqtt::message::Disconnect<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::message::Disconnect<mqtt::cc_plugin::protocol::Message>,
         Disconnect>
 {
 public:

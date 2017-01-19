@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,29 +19,30 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/Message.h"
+#include "mqtt/protocol/Message.h"
 
 namespace mqtt
+{
+
+namespace protocol
 {
 
 namespace message
 {
 
-template <typename TMsgBase = Message>
-class Disconnect : public
+template <typename TMsgBase, template<class> class TActual>
+using DisconnectBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
-        comms::option::FieldsImpl<std::tuple<> >,
-        comms::option::DispatchImpl<Disconnect<TMsgBase> >
-    >
+        comms::option::NoFieldsImpl,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase = Message>
+class Disconnect : public DisconnectBase<TMsgBase, Disconnect>
 {
-    typedef comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
-        comms::option::FieldsImpl<std::tuple<> >,
-        comms::option::DispatchImpl<Disconnect<TMsgBase> >
-    > Base;
+    typedef DisconnectBase<TMsgBase, mqtt::protocol::message::Disconnect> Base;
 public:
 
     static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
@@ -49,9 +50,7 @@ public:
 
     Disconnect() = default;
     Disconnect(const Disconnect&) = default;
-    Disconnect(Disconnect&& other)
-    {
-    }
+    Disconnect(Disconnect&& other) = default;
     virtual ~Disconnect() = default;
 
     Disconnect& operator=(const Disconnect&) = default;
@@ -60,5 +59,6 @@ public:
 
 }  // namespace message
 
+}  // namespace protocol
 
 }  // namespace mqtt

@@ -18,27 +18,42 @@
 
 #pragma once
 
-#include <cstdint>
+#include <tuple>
 
 #include "comms/comms.h"
+
+#include "MsgIdFlagsLayer.h"
+
+#include "MsgId.h"
+#include "AllMessages.h"
+
 
 namespace mqtt
 {
 
-namespace field
+namespace protocol
 {
 
-template <typename TFieldBase>
-using PacketId =
-    comms::field::IntValue<
-        TFieldBase,
-        std::uint16_t,
-        comms::option::DefaultNumValue<1>,
-        comms::option::ValidNumValueRange<1, 0xffff>
+typedef comms::field::IntValue<
+    comms::Field<comms::option::LittleEndian>,
+    std::uint32_t,
+    comms::option::VarLength<1, 4>
+> RemSizeField;
+
+template <
+    typename TMsgBase = Message,
+    typename TAllMessages = AllMessages<TMsgBase>,
+    typename TMsgAllocOptions = std::tuple<> >
+using Stack =
+    mqtt::protocol::MsgIdFlagsLayer<
+        TAllMessages,
+        comms::protocol::MsgSizeLayer<
+            RemSizeField,
+            comms::protocol::MsgDataLayer<TMsgBase>
+        >,
+        TMsgAllocOptions
     >;
 
-}  // namespace field
+}  // namespace protocol
 
 }  // namespace mqtt
-
-
