@@ -151,12 +151,9 @@ public:
     }
 
 signals:
-    void sigConnectionStatus(bool connected);
-
     void sigOnConnect(int rc);
     void sigOnDisconnect(int rc);
     void sigOnMessage(const struct mosquitto_message* msg);
-    void sigConnectionStatusInternal(bool connected);
 protected:
     virtual bool startImpl() override;
     virtual void stopImpl() override;
@@ -183,7 +180,7 @@ private:
     static void onConnect(struct mosquitto* mosq, void* obj, int rc);
     static void onDisconnect(struct mosquitto* mosq, void* obj, int rc);
     static void onMessage(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg);
-    static Socket* checkCallcack(struct mosquitto* mosq, void* obj);
+    static Socket* checkCallback(struct mosquitto* mosq, void* obj);
 
     void reportConnectFromThread(int rc);
     void reportDisconnectFromThread(int rc);
