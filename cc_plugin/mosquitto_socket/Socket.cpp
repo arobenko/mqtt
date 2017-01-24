@@ -189,23 +189,28 @@ bool Socket::startImpl()
     ::mosquitto_message_callback_set(m_mosq.get(), &Socket::onMessage);
 
     exitGuard.release();
-
-    if (m_autoConnect) {
-        connectToServer();
-    }
     return true;
 }
 
 void Socket::stopImpl()
 {
+    assert(!isConnected());
+    m_mosq.reset();
+}
+
+bool Socket::socketConnectImpl()
+{
+    return connectToServer();
+}
+
+void Socket::socketDisconnectImpl()
+{
     if (isConnected()) {
         assert(m_mosq);
         m_connected = false;
         ::mosquitto_loop_stop(m_mosq.get(), true);
-        ::mosquitto_disconnect(m_mosq.get());
+        disconnectFromServer();
     }
-
-    m_mosq.reset();
 }
 
 void Socket::sendDataImpl(cc::DataInfoPtr dataPtr)

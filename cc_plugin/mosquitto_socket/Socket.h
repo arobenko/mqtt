@@ -83,16 +83,6 @@ public:
         return m_port;
     }
 
-    void setAutoConnect(bool value)
-    {
-        m_autoConnect = value;
-    }
-
-    bool getAutoConnect() const
-    {
-        return m_autoConnect;
-    }
-
     void setCleanSession(bool value)
     {
         m_cleanSession = value;
@@ -170,6 +160,8 @@ signals:
 protected:
     virtual bool startImpl() override;
     virtual void stopImpl() override;
+    virtual bool socketConnectImpl() override;
+    virtual void socketDisconnectImpl() override;
     virtual void sendDataImpl(comms_champion::DataInfoPtr dataPtr) override;
 
 private:
@@ -202,7 +194,6 @@ private:
     QString m_id;
     QString m_host;
     PortType m_port = DefaultPort;
-    bool m_autoConnect = false;
     bool m_cleanSession = true;
     int m_keepAlivePeriod = 60;
     QStringList m_subTopics;

@@ -21,14 +21,12 @@ function (cc_plugin_mosquitto_socket)
         Plugin.cpp
         Socket.cpp
         SocketConfigWidget.cpp
-        ConnectAction.cpp
     )
     
     set (hdr
         Plugin.h
         Socket.h
         SocketConfigWidget.h
-        ConnectAction.h
     )
     
     qt5_wrap_cpp(
@@ -41,9 +39,9 @@ function (cc_plugin_mosquitto_socket)
         SocketConfigWidget.ui
     )
     
-    qt5_add_resources(resources ${CMAKE_CURRENT_SOURCE_DIR}/mosquitto_socket.qrc)
+    #qt5_add_resources(resources ${CMAKE_CURRENT_SOURCE_DIR}/mosquitto_socket.qrc)
     
-    add_library (${name} SHARED ${src} ${moc} ${ui} ${resources})
+    add_library (${name} SHARED ${src} ${moc} ${ui})
     target_link_libraries (${name} ${CC_PLUGIN_LIBRARIES} ${MOSQUITTO_LIBRARIES})
     qt5_use_modules(${name} Network Widgets Core)
     
