@@ -47,9 +47,9 @@ using PubrecBase =
 template <typename TMsgBase = Message>
 class Pubrec : public PubrecBase<TMsgBase, Pubrec>
 {
-    typedef PubrecBase<TMsgBase, mqtt::protocol::message::Pubrec> Base;
+//    typedef PubrecBase<TMsgBase, mqtt::protocol::message::Pubrec> Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
+    COMMS_MSG_FIELDS_ACCESS(packetId);
 
     Pubrec() = default;
     Pubrec(const Pubrec&) = default;

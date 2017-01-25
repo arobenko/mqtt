@@ -56,13 +56,11 @@ class Publish : public PublishBase<TMsgBase, Publish>
     typedef PublishBase<TMsgBase, mqtt::protocol::message::Publish> Base;
 public:
 
-    COMMS_MSG_FIELDS_ACCESS(Base, publishFlags, topic, packetId, payload);
+    COMMS_MSG_FIELDS_ACCESS(publishFlags, topic, packetId, payload);
 
     Publish()
     {
-        auto& allFields = Base::fields();
-        auto& packetIdField = std::get<FieldIdx_packetId>(allFields);
-        packetIdField.setMissing();
+        field_packetId().setMissing();
     }
 
     Publish(const Publish&) = default;
@@ -76,8 +74,7 @@ public:
     comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
         auto& flagsField = Base::getFlags();
-        auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
+        auto& publishFlagsField = field_publishFlags();
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
         updatePacketId();
         return Base::template readFieldsFrom<FieldIdx_topic>(iter, size);
@@ -100,8 +97,7 @@ public:
         result = updatePacketId() || result;
         result = updateDup() || result;
 
-        auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
+        auto& publishFlagsField = field_publishFlags();
         Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
 
         return result;
@@ -110,12 +106,8 @@ public:
 private:
     bool updatePacketId()
     {
-        auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
-
-        typedef typename std::decay<decltype(publishFlagsField)>::type FlagsFieldType;
-        auto& publishFlagsMembers = publishFlagsField.value();
-        auto& qosMemberField = std::get<FlagsFieldType::FieldIdx_qos>(publishFlagsMembers);
+        auto& publishFlagsField = field_publishFlags();
+        auto& qosMemberField = publishFlagsField.field_qos();
 
         typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
         comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
@@ -123,7 +115,7 @@ private:
             packetIdMode = comms::field::OptionalMode::Missing;
         }
 
-        auto& packetIdField = std::get<FieldIdx_packetId>(Base::fields());
+        auto& packetIdField = field_packetId();
         bool updated = (packetIdField.getMode() != packetIdMode);
         packetIdField.setMode(packetIdMode);
         return updated;
@@ -131,17 +123,16 @@ private:
 
     bool updateDup()
     {
-        auto& allFields = Base::fields();
-        auto& publishFlagsField = std::get<FieldIdx_publishFlags>(allFields);
-        auto publishFlagsMembers = publishFlagsField.fieldsAsStruct();
+        auto& publishFlagsField = field_publishFlags();
+        auto& qosMemberField = publishFlagsField.field_qos();
 
-        typedef typename std::decay<decltype(publishFlagsMembers.qos)>::type QosFieldType;
-        if (publishFlagsMembers.qos.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
+        typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
+        if (qosMemberField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
             return false;
         }
 
-        if (publishFlagsMembers.dup.value() != 0) {
-            publishFlagsMembers.dup.value() = 0;
+        if (publishFlagsField.field_dup().value() != 0) {
+            publishFlagsField.field_dup().value() = 0;
             return true;
         }
 
