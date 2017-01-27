@@ -46,10 +46,11 @@ template <
     typename TMsgAllocOptions = std::tuple<> >
 using Stack =
     mqtt::protocol::MsgIdFlagsLayer<
+        TMsgBase,
         TAllMessages,
         comms::protocol::MsgSizeLayer<
             RemSizeField,
-            comms::protocol::MsgDataLayer<TMsgBase>
+            comms::protocol::MsgDataLayer<>
         >,
         TMsgAllocOptions
     >;

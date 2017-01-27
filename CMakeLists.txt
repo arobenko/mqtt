@@ -75,6 +75,7 @@ if ((UNIX) AND (NOT CC_MQTT_NO_CCACHE))
 endif ()    
 
 include_directories(
+    BEFORE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/protocol/include
 )
