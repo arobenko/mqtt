@@ -59,14 +59,11 @@ class Connect : public ConnectBase<TMsgBase, Connect>
 {
     typedef ConnectBase<TMsgBase, mqtt::protocol::message::Connect> Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
+    COMMS_MSG_FIELDS_ACCESS(name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
 
     Connect()
     {
-        auto& allFields = Base::fields();
-        auto& willMsgField = std::get<FieldIdx_willMessage>(allFields);
-
-        willMsgField.setMode(comms::field::OptionalMode::Missing);
+        field_willMessage().setMode(comms::field::OptionalMode::Missing);
     }
 
     Connect(const Connect&) = default;
@@ -84,39 +81,38 @@ public:
             return status;
         }
 
-        auto allFields = fieldsAsStruct();
-        auto flagsMembers = allFields.flags.fieldsAsStruct();
-        typedef typename std::decay<decltype(flagsMembers.flagsLow)>::type FlagsLowField;
-        typedef typename std::decay<decltype(flagsMembers.flagsHigh)>::type FlagsHighField;
-        updateOptionalField(flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willTopic);
-        updateOptionalField(flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willMessage);
-        updateOptionalField(flagsMembers.flagsHigh, FlagsHighField::BitIdx_username, allFields.userName);
-        updateOptionalField(flagsMembers.flagsHigh, FlagsHighField::BitIdx_password, allFields.password);
+        auto& flagsLowField = field_flags().field_flagsLow();
+        auto& flagsHighField = field_flags().field_flagsHigh();
+        typedef typename std::decay<decltype(flagsLowField)>::type FlagsLowField;
+        typedef typename std::decay<decltype(flagsHighField)>::type FlagsHighField;
+        updateOptionalField(flagsLowField, FlagsLowField::BitIdx_willFlag, field_willTopic());
+        updateOptionalField(flagsLowField, FlagsLowField::BitIdx_willFlag, field_willMessage());
+        updateOptionalField(flagsHighField, FlagsHighField::BitIdx_username, field_userName());
+        updateOptionalField(flagsHighField, FlagsHighField::BitIdx_password, field_password());
 
         return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
     }
 
     bool doRefresh()
     {
-        auto allFields = fieldsAsStruct();
-        auto flagsMembers = allFields.flags.fieldsAsStruct();
-
-        typedef typename std::decay<decltype(flagsMembers.flagsLow)>::type FlagsLowField;
-        typedef typename std::decay<decltype(flagsMembers.flagsHigh)>::type FlagsHighField;
+        auto& flagsLowField = field_flags().field_flagsLow();
+        auto& flagsHighField = field_flags().field_flagsHigh();
+        typedef typename std::decay<decltype(flagsLowField)>::type FlagsLowField;
+        typedef typename std::decay<decltype(flagsHighField)>::type FlagsHighField;
 
         bool updated = false;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willTopic) || updated;
+                flagsLowField, FlagsLowField::BitIdx_willFlag, field_willTopic()) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsLow, FlagsLowField::BitIdx_willFlag, allFields.willMessage) || updated;
+                flagsLowField, FlagsLowField::BitIdx_willFlag, field_willMessage()) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsHigh, FlagsHighField::BitIdx_username, allFields.userName) || updated;
+                flagsHighField, FlagsHighField::BitIdx_username, field_userName()) || updated;
         updated =
             refreshOptionalField(
-                flagsMembers.flagsHigh, FlagsHighField::BitIdx_password, allFields.password) || updated;
+                flagsHighField, FlagsHighField::BitIdx_password, field_password()) || updated;
 
         return updated;
     }

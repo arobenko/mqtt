@@ -51,7 +51,8 @@ typedef comms::field::Bitfield<
     >
 > MsgIdFlagsBundle;
 
-template <typename TAllMessages,
+template <typename TMessage,
+          typename TAllMessages,
           typename TNextLayer,
           typename TMsgAllocOptions = std::tuple<> >
 class MsgIdFlagsLayer :
@@ -59,7 +60,7 @@ class MsgIdFlagsLayer :
 {
     typedef comms::protocol::ProtocolLayerBase<MsgIdFlagsBundle, TNextLayer> Base;
 
-    typedef comms::MsgFactory<typename Base::Message, TAllMessages, TMsgAllocOptions> Factory;
+    typedef comms::MsgFactory<TMessage, TAllMessages, TMsgAllocOptions> Factory;
 
 public:
 
@@ -67,15 +68,11 @@ public:
 
     typedef typename Factory::MsgPtr MsgPtr;
 
-    typedef typename Base::Message Message;
+    typedef typename MsgPtr::element_type Message;
 
     typedef typename Message::MsgIdParamType MsgIdParamType;
 
     typedef typename Message::MsgIdType MsgIdType;
-
-    typedef typename Base::ReadIterator ReadIterator;
-
-    typedef typename Base::WriteIterator WriteIterator;
 
     typedef typename Base::Field Field;
 
@@ -103,9 +100,10 @@ public:
     /// @brief Destructor
     ~MsgIdFlagsLayer() = default;
 
+    template <typename TIter>
     comms::ErrorStatus read(
         MsgPtr& msgPtr,
-        ReadIterator& iter,
+        TIter& iter,
         std::size_t size,
         std::size_t* missingSize = nullptr)
     {
@@ -113,11 +111,11 @@ public:
         return readInternal(field, msgPtr, iter, size, missingSize, Base::createNextLayerReader());
     }
 
-    template <std::size_t TIdx, typename TAllFields>
+    template <std::size_t TIdx, typename TAllFields, typename TIter>
     comms::ErrorStatus readFieldsCached(
         TAllFields& allFields,
         MsgPtr& msgPtr,
-        ReadIterator& iter,
+        TIter& iter,
         std::size_t size,
         std::size_t* missingSize = nullptr)
     {
@@ -132,9 +130,10 @@ public:
                 Base::template createNextLayerCachedFieldsReader<TIdx>(allFields));
     }
 
+    template <typename TMsg, typename TIter>
     comms::ErrorStatus write(
-        const Message& msg,
-        WriteIterator& iter,
+        const TMsg& msg,
+        TIter& iter,
         std::size_t size) const
     {
         Field field;
@@ -142,11 +141,11 @@ public:
         return writeInternal(field, msg, iter, size, Base::createNextLayerWriter());
     }
 
-    template <std::size_t TIdx, typename TAllFields>
+    template <std::size_t TIdx, typename TAllFields, typename TMsg, typename TIter>
     comms::ErrorStatus writeFieldsCached(
         TAllFields& allFields,
-        const Message& msg,
-        WriteIterator& iter,
+        const TMsg& msg,
+        TIter& iter,
         std::size_t size) const
     {
         auto& field = Base::template getField<TIdx>(allFields);
@@ -167,11 +166,11 @@ public:
 
 private:
 
-    template <typename TReader>
+    template <typename TIter, typename TReader>
     comms::ErrorStatus readInternal(
         Field& field,
         MsgPtr& msgPtr,
-        ReadIterator& iter,
+        TIter& iter,
         std::size_t size,
         std::size_t* missingSize,
         TReader&& reader)
@@ -214,11 +213,11 @@ private:
         return es;
     }
 
-    template <typename TWriter>
+    template <typename TMsg, typename TIter, typename TWriter>
     comms::ErrorStatus writeInternal(
         Field& field,
-        const Message& msg,
-        WriteIterator& iter,
+        const TMsg& msg,
+        TIter& iter,
         std::size_t size,
         TWriter&& nextLayerWriter) const
     {
@@ -231,7 +230,8 @@ private:
         return nextLayerWriter.write(msg, iter, size - field.length());
     }
 
-    static void updateField(const Message& msg, Field& field)
+    template <typename TMsg>
+    static void updateField(const TMsg& msg, Field& field)
     {
         auto& members = field.value();
 

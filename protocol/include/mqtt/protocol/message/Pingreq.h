@@ -35,7 +35,7 @@ using PingreqBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
-        comms::option::NoFieldsImpl,
+        comms::option::ZeroFieldsImpl,
         comms::option::MsgType<TActual<TMsgBase> >
     >;
 

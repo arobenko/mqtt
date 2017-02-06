@@ -60,8 +60,6 @@ SocketConfigWidget::SocketConfigWidget(
     m_ui.m_portSpinBox->setValue(
         static_cast<int>(m_socket.getPort()));
 
-    m_ui.m_autoConnectCheckBox->setChecked(m_socket.getAutoConnect());
-
     m_ui.m_clientIdLineEdit->setText(m_socket.getId());
 
     m_ui.m_cleanCheckBox->setChecked(m_socket.getCleanSession());
@@ -85,10 +83,6 @@ SocketConfigWidget::SocketConfigWidget(
     connect(
         m_ui.m_portSpinBox, SIGNAL(valueChanged(int)),
         this, SLOT(portValueChanged(int)));
-
-    connect(
-        m_ui.m_autoConnectCheckBox, SIGNAL(stateChanged(int)),
-        this, SLOT(autoConnectChanged(int)));
 
     connect(
         m_ui.m_clientIdLineEdit, SIGNAL(textChanged(const QString&)),
@@ -129,12 +123,6 @@ void SocketConfigWidget::hostValueChanged(const QString& value)
 void SocketConfigWidget::portValueChanged(int value)
 {
     m_socket.setPort(static_cast<PortType>(value));
-}
-
-void SocketConfigWidget::autoConnectChanged(int value)
-{
-    bool checked = (value != Qt::Unchecked);
-    m_socket.setAutoConnect(checked);
 }
 
 void SocketConfigWidget::idChanged(const QString& value)

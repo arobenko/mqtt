@@ -52,11 +52,6 @@ const QString QosPropName("mqtt.qos");
 Socket::Socket()
 {
     connect(
-        this, SIGNAL(sigConnectionStatusInternal(bool)),
-        this, SIGNAL(sigConnectionStatus(bool)),
-        Qt::QueuedConnection);
-
-    connect(
         this, SIGNAL(sigOnConnect(int)),
         this, SLOT(onConnectInternal(int)),
         Qt::QueuedConnection);
@@ -189,23 +184,28 @@ bool Socket::startImpl()
     ::mosquitto_message_callback_set(m_mosq.get(), &Socket::onMessage);
 
     exitGuard.release();
-
-    if (m_autoConnect) {
-        connectToServer();
-    }
     return true;
 }
 
 void Socket::stopImpl()
 {
+    assert(!isConnected());
+    m_mosq.reset();
+}
+
+bool Socket::socketConnectImpl()
+{
+    return connectToServer();
+}
+
+void Socket::socketDisconnectImpl()
+{
     if (isConnected()) {
         assert(m_mosq);
         m_connected = false;
         ::mosquitto_loop_stop(m_mosq.get(), true);
-        ::mosquitto_disconnect(m_mosq.get());
+        disconnectFromServer();
     }
-
-    m_mosq.reset();
 }
 
 void Socket::sendDataImpl(cc::DataInfoPtr dataPtr)
@@ -287,12 +287,11 @@ void Socket::onConnectInternal(int rc)
             error.append(SuffixMap[rc]);
         }
         reportError(error);
-        emit sigConnectionStatusInternal(false);
+        reportDisconnected();
         return;
     }
 
     m_connected = true;
-    emit sigConnectionStatusInternal(true);
 
     for (auto& sub : m_subTopics) {
         if (sub.isEmpty()) {
@@ -332,7 +331,7 @@ void Socket::onDisconnectInternal(int rc)
         reportError(error);
     }
 
-    emit sigConnectionStatusInternal(false);
+    reportDisconnected();
 }
 
 void Socket::onMessageInternal(const struct mosquitto_message* msg)
@@ -359,7 +358,7 @@ void Socket::onMessageInternal(const struct mosquitto_message* msg)
 
 void Socket::onConnect(struct mosquitto* mosq, void* obj, int rc)
 {
-    auto* thisPtr = checkCallcack(mosq, obj);
+    auto* thisPtr = checkCallback(mosq, obj);
     if (thisPtr != nullptr) {
         thisPtr->reportConnectFromThread(rc);
     }
@@ -367,7 +366,7 @@ void Socket::onConnect(struct mosquitto* mosq, void* obj, int rc)
 
 void Socket::onDisconnect(struct mosquitto* mosq, void* obj, int rc)
 {
-    auto* thisPtr = checkCallcack(mosq, obj);
+    auto* thisPtr = checkCallback(mosq, obj);
     if (thisPtr != nullptr) {
         thisPtr->reportDisconnectFromThread(rc);
     }
@@ -378,13 +377,13 @@ void Socket::onMessage(
     void* obj,
     const struct mosquitto_message* msg)
 {
-    auto* thisPtr = checkCallcack(mosq, obj);
+    auto* thisPtr = checkCallback(mosq, obj);
     if (thisPtr != nullptr) {
         thisPtr->reportMessageFromThread(msg);
     }
 }
 
-Socket* Socket::checkCallcack(struct mosquitto* mosq, void* obj)
+Socket* Socket::checkCallback(struct mosquitto* mosq, void* obj)
 {
     if (obj == nullptr) {
         assert(!"NULL object is provided");

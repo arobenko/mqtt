@@ -50,12 +50,10 @@ using SubackBase =
 template <typename TMsgBase = Message>
 class Suback : public SubackBase<TMsgBase, Suback>
 {
-    typedef SubackBase<TMsgBase, mqtt::protocol::message::Suback> Base;
+//    typedef SubackBase<TMsgBase, mqtt::protocol::message::Suback> Base;
 public:
 
-    typedef typename Base::FlagsField FlagsField;
-
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
+    COMMS_MSG_FIELDS_ACCESS(packetId, payload);
 
     Suback() = default;
     Suback(const Suback&) = default;

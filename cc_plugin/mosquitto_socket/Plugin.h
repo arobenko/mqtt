@@ -23,7 +23,6 @@
 #include "comms_champion/comms_champion.h"
 
 #include "Socket.h"
-#include "ConnectAction.h"
 
 namespace mqtt
 {
@@ -48,15 +47,10 @@ protected:
     virtual void getCurrentConfigImpl(QVariantMap& config) override;
     virtual void reconfigureImpl(const QVariantMap& config) override;
 
-private slots:
-    void connectStatusChangeRequest(bool connected);
-    void connectionStatusChanged(bool connected);
-
 private:
     void createSocketIfNeeded();
 
     std::shared_ptr<Socket> m_socket;
-    ConnectAction* m_connectAction = nullptr;
 };
 
 }  // namespace mosquitto_socket

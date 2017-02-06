@@ -257,7 +257,7 @@ using QoS = comms::field::EnumValue<
         TExtraOptions...
     >;
 
-using ConnectFlagsFieldBase =
+class ConnectFlags : public
     comms::field::Bitfield<
         FieldBase,
         std::tuple<
@@ -266,13 +266,10 @@ using ConnectFlagsFieldBase =
             field::ConnectFlagsHigh
         >,
         comms::option::ContentsValidator<details::ConnectFlagsExtraValidator>
-    >;
-
-class ConnectFlags : public ConnectFlagsFieldBase
+    >
 {
-    typedef ConnectFlagsFieldBase Base;
 public:
-    COMMS_FIELD_MEMBERS_ACCESS(Base, flagsLow, willQos, flagsHigh);
+    COMMS_FIELD_MEMBERS_ACCESS(flagsLow, willQos, flagsHigh);
 };
 
 using ProtocolName =
@@ -378,15 +375,11 @@ class PubSingleBitFlag :
         comms::option::FixedBitLength<1>
     >
 {
-    typedef comms::field::BitmaskValue<
-        FieldBase,
-        comms::option::FixedBitLength<1>
-    > Base;
 public:
     COMMS_BITMASK_BITS(value);
 };
 
-using PublishFlagsBase =
+class PublishFlags : public
     comms::field::Bitfield<
         FieldBase,
         std::tuple<
@@ -396,13 +389,10 @@ using PublishFlagsBase =
             comms::field::IntValue<FieldBase, std::uint8_t, comms::option::FixedBitLength<4> >
         >,
         comms::option::ContentsValidator<details::PublishActualFlagsValidator>
-    >;
-
-class PublishFlags : public PublishFlagsBase
+    >
 {
-    typedef PublishFlagsBase Base;
 public:
-    COMMS_FIELD_MEMBERS_ACCESS(Base, retain, qos, dup, reserved);
+    COMMS_FIELD_MEMBERS_ACCESS(retain, qos, dup, reserved);
 };
 
 
@@ -454,11 +444,17 @@ using SubElemBase =
         >
     >;
 
-class SubElem : public SubElemBase
+class SubElem : public
+    comms::field::Bundle<
+        FieldBase,
+        std::tuple<
+            SubscribeTopic,
+            QoS<>
+        >
+    >
 {
-    typedef SubElemBase Base;
 public:
-    COMMS_FIELD_MEMBERS_ACCESS(Base, topic, qos);
+    COMMS_FIELD_MEMBERS_ACCESS(topic, qos);
 };
 
 using SubscribePayload =

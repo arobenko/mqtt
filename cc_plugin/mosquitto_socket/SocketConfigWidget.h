@@ -52,7 +52,6 @@ public:
 private slots:
     void hostValueChanged(const QString& value);
     void portValueChanged(int value);
-    void autoConnectChanged(int value);
     void idChanged(const QString& value);
     void cleanSessionChanged(int value);
     void keepAliveChanged(int value);

@@ -41,7 +41,7 @@ set (CC_EXTERNAL_TGT "comms_champion_external")
 if (CC_MQTT_FULL_SOLUTION)
     include(ExternalProject)
     
-    set (cc_branch "master")
+    set (cc_branch "v0.14")
     set (cc_main_dir "${CMAKE_BINARY_DIR}/comms_champion")
     set (cc_src_dir "${cc_main_dir}/src")
     set (cc_bin_dir "${cc_main_dir}/build")
@@ -75,6 +75,7 @@ if ((UNIX) AND (NOT CC_MQTT_NO_CCACHE))
 endif ()    
 
 include_directories(
+    BEFORE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/protocol/include
 )

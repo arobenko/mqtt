@@ -35,7 +35,7 @@ using DisconnectBase =
     comms::MessageBase<
         TMsgBase,
         comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
-        comms::option::NoFieldsImpl,
+        comms::option::ZeroFieldsImpl,
         comms::option::MsgType<TActual<TMsgBase> >
     >;
 

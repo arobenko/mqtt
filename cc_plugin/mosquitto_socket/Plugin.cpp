@@ -36,7 +36,6 @@ namespace
 const QString MainConfigKey("mqtt_mosquitto_socket");
 const QString HostSubKey("host");
 const QString PortSubKey("port");
-const QString AutoConnectKey("auto_connect");
 const QString ClientIdKey("client_id");
 const QString CleanSessionKey("clean");
 const QString KeepAliveKey("keep_alive");
@@ -62,19 +61,6 @@ Plugin::Plugin()
             {
                 createSocketIfNeeded();
                 return new SocketConfigWidget(*m_socket);
-            })
-        .setGuiActionsCreateFunc(
-            [this]() -> ListOfGuiActions
-            {
-                ListOfGuiActions list;
-                m_connectAction = new ConnectAction();
-                createSocketIfNeeded();
-                m_connectAction->setConnected(m_socket->isConnected());
-                connect(
-                    m_connectAction, SIGNAL(sigConnectStateChangeReq(bool)),
-                    this, SLOT(connectStatusChangeRequest(bool)));
-                list.append(m_connectAction);
-                return list;
             });
 }
 
@@ -91,7 +77,6 @@ void Plugin::getCurrentConfigImpl(QVariantMap& config)
     QVariantMap subConfig;
     subConfig.insert(HostSubKey, m_socket->getHost());
     subConfig.insert(PortSubKey, m_socket->getPort());
-    subConfig.insert(AutoConnectKey, m_socket->getAutoConnect());
     subConfig.insert(ClientIdKey, m_socket->getId());
     subConfig.insert(CleanSessionKey, m_socket->getCleanSession());
     subConfig.insert(KeepAliveKey, m_socket->getKeepAlivePeriod());
@@ -128,13 +113,6 @@ void Plugin::reconfigureImpl(const QVariantMap& config)
         if (portVar.isValid() && portVar.canConvert<PortType>()) {
             auto port = portVar.value<PortType>();
             m_socket->setPort(port);
-        }
-    }
-
-    {
-        auto autoConnectVar = subConfig.value(AutoConnectKey);
-        if (autoConnectVar.isValid() && autoConnectVar.canConvert<bool>()) {
-            m_socket->setAutoConnect(autoConnectVar.value<bool>());
         }
     }
 
@@ -188,25 +166,10 @@ void Plugin::reconfigureImpl(const QVariantMap& config)
     }
 }
 
-void Plugin::connectStatusChangeRequest(bool connected)
-{
-    assert(m_socket);
-    m_socket->setConnected(connected);
-}
-
-void Plugin::connectionStatusChanged(bool connected)
-{
-    assert(m_connectAction != nullptr);
-    m_connectAction->setConnected(connected);
-}
-
 void Plugin::createSocketIfNeeded()
 {
     if (!m_socket) {
         m_socket.reset(new Socket());
-        connect(
-            m_socket.get(), SIGNAL(sigConnectionStatus(bool)),
-            this, SLOT(connectionStatusChanged(bool)));
     }
 }
 

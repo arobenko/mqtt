@@ -47,9 +47,9 @@ using PubackBase =
 template <typename TMsgBase = Message>
 class Puback : public PubackBase<TMsgBase, Puback>
 {
-    typedef PubackBase<TMsgBase, mqtt::protocol::message::Puback> Base;
+    //typedef PubackBase<TMsgBase, mqtt::protocol::message::Puback> Base;
 public:
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
+    COMMS_MSG_FIELDS_ACCESS(packetId);
 
     Puback() = default;
     Puback(const Puback&) = default;

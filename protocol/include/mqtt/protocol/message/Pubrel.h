@@ -50,7 +50,7 @@ class Pubrel : public PubrelBase<TMsgBase, Pubrel>
     typedef PubrelBase<TMsgBase, mqtt::protocol::message::Pubrel> Base;
 public:
 
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId);
+    COMMS_MSG_FIELDS_ACCESS(packetId);
 
     Pubrel()
     {

@@ -63,7 +63,7 @@ public:
         comms::option::FailOnInvalid
     > UnsubscribeFlagsField;
 
-    COMMS_MSG_FIELDS_ACCESS(Base, packetId, payload);
+    COMMS_MSG_FIELDS_ACCESS(packetId, payload);
 
     Unsubscribe()
     {

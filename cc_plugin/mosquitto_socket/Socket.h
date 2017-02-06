@@ -83,16 +83,6 @@ public:
         return m_port;
     }
 
-    void setAutoConnect(bool value)
-    {
-        m_autoConnect = value;
-    }
-
-    bool getAutoConnect() const
-    {
-        return m_autoConnect;
-    }
-
     void setCleanSession(bool value)
     {
         m_cleanSession = value;
@@ -161,15 +151,14 @@ public:
     }
 
 signals:
-    void sigConnectionStatus(bool connected);
-
     void sigOnConnect(int rc);
     void sigOnDisconnect(int rc);
     void sigOnMessage(const struct mosquitto_message* msg);
-    void sigConnectionStatusInternal(bool connected);
 protected:
     virtual bool startImpl() override;
     virtual void stopImpl() override;
+    virtual bool socketConnectImpl() override;
+    virtual void socketDisconnectImpl() override;
     virtual void sendDataImpl(comms_champion::DataInfoPtr dataPtr) override;
 
 private:
@@ -191,7 +180,7 @@ private:
     static void onConnect(struct mosquitto* mosq, void* obj, int rc);
     static void onDisconnect(struct mosquitto* mosq, void* obj, int rc);
     static void onMessage(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg);
-    static Socket* checkCallcack(struct mosquitto* mosq, void* obj);
+    static Socket* checkCallback(struct mosquitto* mosq, void* obj);
 
     void reportConnectFromThread(int rc);
     void reportDisconnectFromThread(int rc);
@@ -202,7 +191,6 @@ private:
     QString m_id;
     QString m_host;
     PortType m_port = DefaultPort;
-    bool m_autoConnect = false;
     bool m_cleanSession = true;
     int m_keepAlivePeriod = 60;
     QStringList m_subTopics;
