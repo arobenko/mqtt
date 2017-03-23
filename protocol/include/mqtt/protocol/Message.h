@@ -56,7 +56,7 @@ public:
         Field,
         std::uint8_t,
         comms::option::ValidNumValueRange<0x0, 0xf>,
-        comms::option::FailOnInvalid
+        comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
     > FlagsField;
 
     MessageT() = default;

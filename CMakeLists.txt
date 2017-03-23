@@ -1,12 +1,13 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1)
 project ("mqtt")
 
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
 option (CC_MQTT_FULL_SOLUTION "Build and install full solution, including CommsChampion sources." OFF)
 
+set (CMAKE_CXX_STANDARD 11)
+
 if (CMAKE_COMPILER_IS_GNUCC)
     set (extra_flags_list
-        "--std=c++11"
         "-Wall" "-Wextra" "-Werror" "-Wcast-align" "-Wcast-qual" "-Wctor-dtor-privacy"
         "-Wmissing-include-dirs" "-Wnoexcept" "-Wlogical-op" "-Wstrict-null-sentinel"
         "-Woverloaded-virtual" "-Wredundant-decls" "-Wshadow" "-Wundef" "-Wunused"
@@ -24,12 +25,18 @@ if (NOT "${CC_MQTT_INSTALL_DIR}" STREQUAL "")
     set (INSTALL_DIR "${CC_MQTT_INSTALL_DIR}")
 endif ()
 
-set (LIB_INSTALL_DIR ${INSTALL_DIR}/lib)
-set (BIN_INSTALL_DIR ${INSTALL_DIR}/bin)
-set (INC_INSTALL_DIR ${INSTALL_DIR}/include)
-set (PLUGIN_INSTALL_DIR ${INSTALL_DIR}/plugin)
+include(GNUInstallDirs)
+set (INSTALL_NAME "CC_Mqtt")
+set (LIB_INSTALL_DIR ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR})
+set (BIN_INSTALL_DIR ${INSTALL_DIR}/${CMAKE_INSTALL_BINDIR})
+set (INC_INSTALL_DIR ${INSTALL_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
+set (DOC_INSTALL_DIR ${DATA_INSTALL_DIR}/doc)
+set (ICON_INSTALL_DIR ${DATA_INSTALL_DIR}/icon)
+set (CONFIG_INSTALL_DIR ${INSTALL_DIR}/config)
+set (PLUGIN_INSTALL_DIR ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/CommsChampion/plugin)
+set (DATA_INSTALL_DIR ${INSTALL_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${INSTALL_NAME})
 
-install (DIRECTORY cmake DESTINATION ${INSTALL_DIR})
+install (DIRECTORY cmake DESTINATION ${LIB_INSTALL_DIR}/${INSTALL_NAME})
 
 add_subdirectory (protocol)
 
@@ -41,7 +48,7 @@ set (CC_EXTERNAL_TGT "comms_champion_external")
 if (CC_MQTT_FULL_SOLUTION)
     include(ExternalProject)
     
-    set (cc_branch "v0.14")
+    set (cc_branch "develop")
     set (cc_main_dir "${CMAKE_BINARY_DIR}/comms_champion")
     set (cc_src_dir "${cc_main_dir}/src")
     set (cc_bin_dir "${cc_main_dir}/build")
@@ -63,7 +70,21 @@ if (CC_MQTT_FULL_SOLUTION)
         
     include_directories("${INSTALL_DIR}/include")
     link_directories("${INSTALL_DIR}/lib")
+    set (CC_COMMS_FOUND TRUE)
+    set (CC_COMMS_CHAMPION_FOUND TRUE)
+    set (CC_INCLUDE_DIRS ${INC_INSTALL_DIR})
+    set (CC_PLUGIN_LIBRARY_DIRS ${LIB_INSTALL_DIR})
     set (CC_PLUGIN_LIBRARIES "comms_champion")
+else ()
+    if (EXISTS "${INSTALL_DIR}/lib/CommsChampion/cmake/CommsChampionConfig.cmake")
+        list (APPEND CMAKE_PREFIX_PATH "${INSTALL_DIR}")
+    endif ()
+
+    if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
+        list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}")
+    endif ()
+
+    find_package(CommsChampion NO_MODULE)
 endif ()
 
 if ((UNIX) AND (NOT CC_MQTT_NO_CCACHE))
