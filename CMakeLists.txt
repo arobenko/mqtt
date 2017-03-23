@@ -85,6 +85,10 @@ else ()
     endif ()
 
     find_package(CommsChampion NO_MODULE)
+    if (CC_COMMS_CHAMPION_FOUND)
+        file (RELATIVE_PATH rel_plugin_install_path "${CC_ROOT_DIR}" "${CC_PLUGIN_DIR}")
+        set (PLUGIN_INSTALL_DIR "${INSTALL_DIR}/${rel_plugin_install_path}")
+    endif ()
 endif ()
 
 if ((UNIX) AND (NOT CC_MQTT_NO_CCACHE))
