@@ -5,7 +5,7 @@
 #  CC_MQTT_FOUND - Found MQTT protocol library, use MQTT_INCLUDE_DIRS for includes
 #  CC_MQTT_INCLUDE_DIRS - Where to find all the headers
 
-get_filename_component (MQTT_INSTALL_LIB_PROJ_DIR ${MQTT_INSTALL_LIB_PROJ_DIR} DIRECTORY)
+get_filename_component (MQTT_INSTALL_LIB_PROJ_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
 get_filename_component (MQTT_INSTALL_LIB_DIR ${MQTT_INSTALL_LIB_PROJ_DIR} DIRECTORY)
 get_filename_component (MQTT_INSTALL_PATH ${MQTT_INSTALL_LIB_DIR} DIRECTORY)
 
