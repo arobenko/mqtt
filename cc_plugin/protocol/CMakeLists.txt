@@ -1,4 +1,4 @@
-set (THIS_PLUGIN_NAME "mqtt")
+set (THIS_PLUGIN_NAME "mqtt_protocol")
 
 ######################################################################
 
@@ -60,6 +60,11 @@ endfunction()
 
 ######################################################################
 
+if (NOT CC_COMMS_CHAMPION_FOUND)
+    message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
+    return ()
+endif ()
+
 if (NOT "${CC_MQTT_QT_DIR}" STREQUAL "")
     list (APPEND CMAKE_PREFIX_PATH ${CC_MQTT_QT_DIR})
 endif ()
@@ -71,30 +76,12 @@ if (NOT Qt5Core_FOUND)
     return ()
 endif ()
 
-if (NOT CC_MQTT_FULL_SOLUTION)
-    if (EXISTS "${INSTALL_DIR}/cmake/CommsChampionConfig.cmake")
-        list (APPEND CMAKE_PREFIX_PATH "${INSTALL_DIR}/cmake")
-    endif ()
-    
-    if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
-        list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
-    endif ()
-    
-    
-    find_package(CommsChampion)
-    
-    if (NOT CC_COMMS_CHAMPION_FOUND)
-        message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
-        return ()
-    endif ()
-    
-    include_directories(${CC_INCLUDE_DIRS})
-    link_directories(${CC_PLUGIN_LIBRARY_DIRS})
-endif ()    
-
 if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
 endif ()
+
+include_directories(${CC_INCLUDE_DIRS})
+link_directories(${CC_PLUGIN_LIBRARY_DIRS})
 
 cc_plugin_mqtt ()
 

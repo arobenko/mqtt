@@ -60,7 +60,7 @@ public:
         std::uint8_t,
         comms::option::DefaultNumValue<2>,
         comms::option::ValidNumValueRange<2, 2>,
-        comms::option::FailOnInvalid
+        comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
     > UnsubscribeFlagsField;
 
     COMMS_MSG_FIELDS_ACCESS(packetId, payload);

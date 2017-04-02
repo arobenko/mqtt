@@ -53,6 +53,14 @@ endfunction()
 
 ######################################################################
 
+if (NOT CC_COMMS_CHAMPION_FOUND)
+    message (WARNING "Can NOT compile mosquitto socket plugin due to missing CommsChampion library")
+    return ()
+endif ()
+
+include_directories(${CC_INCLUDE_DIRS})
+link_directories(${CC_PLUGIN_LIBRARY_DIRS})
+
 if (NOT "${CC_MQTT_QT_DIR}" STREQUAL "")
     list (APPEND CMAKE_PREFIX_PATH ${CC_MQTT_QT_DIR})
 endif ()
@@ -91,27 +99,6 @@ include_directories (
 link_directories(
     ${MOSQUITTO_LIBRARY_DIRS}
 )
-
-if (NOT CC_MQTT_FULL_SOLUTION)
-    if (EXISTS "${INSTALL_DIR}/cmake/CommsChampionConfig.cmake")
-        list (APPEND CMAKE_PREFIX_PATH "${INSTALL_DIR}/cmake")
-    endif ()
-    
-    if (NOT "${CC_MAIN_INSTALL_DIR}" STREQUAL "")
-        list (APPEND CMAKE_PREFIX_PATH "${CC_MAIN_INSTALL_DIR}/cmake")
-    endif ()
-    
-    
-    find_package(CommsChampion)
-    
-    if (NOT CC_COMMS_CHAMPION_FOUND)
-        message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
-        return ()
-    endif ()
-    
-    include_directories(${CC_INCLUDE_DIRS})
-    link_directories(${CC_PLUGIN_LIBRARY_DIRS})
-endif ()   
 
 cc_plugin_mosquitto_socket ()
 

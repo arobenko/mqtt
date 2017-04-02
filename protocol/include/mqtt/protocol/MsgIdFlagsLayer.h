@@ -34,7 +34,7 @@ typedef comms::field::EnumValue<
     comms::option::FixedBitLength<4>,
     comms::option::DefaultNumValue<MsgId_CONNECT>,
     comms::option::ValidNumValueRange<MsgId_CONNECT, MsgId_NumOfValues - 1>,
-    comms::option::FailOnInvalid
+    comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
 > MsgIdField;
 
 typedef comms::field::IntValue<
