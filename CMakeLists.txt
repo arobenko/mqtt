@@ -3,19 +3,36 @@ project ("mqtt")
 
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
 option (CC_MQTT_FULL_SOLUTION "Build and install full solution, including CommsChampion sources." OFF)
+option (CC_MQTT_NO_WARN_AS_ERR "Do NOT treat warning as error" OFF)
 
-set (CMAKE_CXX_STANDARD 11)
+if (NOT CMAKE_CXX_STANDARD)
+    set (CMAKE_CXX_STANDARD 11)
+endif()
 
-if (CMAKE_COMPILER_IS_GNUCC)
+if ((CMAKE_COMPILER_IS_GNUCC) OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
     set (extra_flags_list
-        "-Wall" "-Wextra" "-Werror" "-Wcast-align" "-Wcast-qual" "-Wctor-dtor-privacy"
-        "-Wmissing-include-dirs" "-Wnoexcept" "-Wlogical-op" "-Wstrict-null-sentinel"
+        "-Wall" "-Wextra" "-Wcast-align" "-Wcast-qual" "-Wctor-dtor-privacy"
+        "-Wmissing-include-dirs"
         "-Woverloaded-virtual" "-Wredundant-decls" "-Wshadow" "-Wundef" "-Wunused"
         "-Wno-unknown-pragmas" "-fdiagnostics-show-option"
     )
-    
+
+    if (CMAKE_COMPILER_IS_GNUCC)
+        list (APPEND extra_flags_list
+            "-Wnoexcept" "-Wlogical-op" "-Wstrict-null-sentinel"
+        )
+    endif ()
+
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        list (APPEND extra_flags_list "-Wno-dangling-field")
+    endif ()
+
+    if (NOT CC_MQTT_NO_WARN_AS_ERR)
+        list (APPEND extra_flags_list "-Werror")
+    endif ()
+
     string(REPLACE ";" " " extra_flags "${extra_flags_list}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${extra_flags}") 
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${extra_flags}")
 elseif (MSVC)
     add_definitions( "/wd4503" "/wd4309" "/wd4267" "-D_SCL_SECURE_NO_WARNINGS")
 endif ()
@@ -46,7 +63,7 @@ set (CC_EXTERNAL_TGT "comms_champion_external")
 if (CC_MQTT_FULL_SOLUTION)
     include(ExternalProject)
     
-    set (cc_branch "v0.15")
+    set (cc_branch "v0.15.1")
     set (cc_main_dir "${CMAKE_BINARY_DIR}/comms_champion")
     set (cc_src_dir "${cc_main_dir}/src")
     set (cc_bin_dir "${cc_main_dir}/build")
@@ -62,7 +79,10 @@ if (CC_MQTT_FULL_SOLUTION)
         GIT_REPOSITORY "https://github.com/arobenko/comms_champion.git"
         GIT_TAG "${cc_branch}"
         SOURCE_DIR "${cc_src_dir}"
-        CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCC_INSTALL_DIR=${INSTALL_DIR} ${extra_cc_args}
+        CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCC_INSTALL_DIR=${INSTALL_DIR} 
+            -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}  
+            -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} 
+            ${extra_cc_args}
         BINARY_DIR "${cc_bin_dir}"
     )
         
