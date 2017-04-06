@@ -63,7 +63,7 @@ set (CC_EXTERNAL_TGT "comms_champion_external")
 if (CC_MQTT_FULL_SOLUTION)
     include(ExternalProject)
     
-    set (cc_branch "v0.15")
+    set (cc_branch "develop")
     set (cc_main_dir "${CMAKE_BINARY_DIR}/comms_champion")
     set (cc_src_dir "${cc_main_dir}/src")
     set (cc_bin_dir "${cc_main_dir}/build")
@@ -79,7 +79,10 @@ if (CC_MQTT_FULL_SOLUTION)
         GIT_REPOSITORY "https://github.com/arobenko/comms_champion.git"
         GIT_TAG "${cc_branch}"
         SOURCE_DIR "${cc_src_dir}"
-        CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCC_INSTALL_DIR=${INSTALL_DIR} ${extra_cc_args}
+        CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCC_INSTALL_DIR=${INSTALL_DIR} 
+            -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}  
+            -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} 
+            ${extra_cc_args}
         BINARY_DIR "${cc_bin_dir}"
     )
         
