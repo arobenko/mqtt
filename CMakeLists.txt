@@ -67,7 +67,7 @@ set (CC_EXTERNAL_TGT "comms_champion_external")
 if (CC_MQTT_FULL_SOLUTION)
     include(ExternalProject)
     
-    set (cc_branch "v0.15.1")
+    set (cc_branch "v0.17")
     set (cc_main_dir "${CMAKE_BINARY_DIR}/comms_champion")
     set (cc_src_dir "${cc_main_dir}/src")
     set (cc_bin_dir "${cc_main_dir}/build")
