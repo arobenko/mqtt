@@ -26,6 +26,9 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 enum MsgId : std::uint8_t
 {
     MsgId_Reserved,
@@ -45,6 +48,8 @@ enum MsgId : std::uint8_t
     MsgId_DISCONNECT,
     MsgId_NumOfValues // Must be last
 };
+
+} // namespace v311
 
 }  // namespace protocol
 

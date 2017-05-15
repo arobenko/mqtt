@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,7 +19,10 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
+#include <algorithm>
+
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
@@ -27,37 +30,42 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-template <typename TMsgBase, template<class> class TActual>
-using PingrespBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-        comms::option::ZeroFieldsImpl,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
+using SubackFields = std::tuple<
+    field::PacketId,
+    field::SubackPayload
+>;
 
 template <typename TMsgBase = Message>
-class Pingresp : public PingrespBase<TMsgBase, Pingresp>
+class Suback : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_SUBACK>,
+            comms::option::FieldsImpl<SubackFields>,
+            comms::option::MsgType<Suback<TMsgBase> >
+        >
 {
-    typedef PingrespBase<TMsgBase, mqtt::protocol::message::Pingresp> Base;
 public:
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
-        "Number of fields is incorrect");
+    COMMS_MSG_FIELDS_ACCESS(packetId, payload);
 
-    Pingresp() = default;
-    Pingresp(const Pingresp&) = default;
-    Pingresp(Pingresp&& other) = default;
-    virtual ~Pingresp() = default;
+    Suback() = default;
+    Suback(const Suback&) = default;
+    Suback(Suback&& other) = default;
+    virtual ~Suback() = default;
 
-    Pingresp& operator=(const Pingresp&) = default;
-    Pingresp& operator=(Pingresp&&) = default;
+    Suback& operator=(const Suback&) = default;
+    Suback& operator=(Suback&&) = default;
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

@@ -31,6 +31,9 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 typedef std::tuple<
     comms::option::ReadIterator<const std::uint8_t*>,
     comms::option::WriteIterator<std::back_insert_iterator<std::vector<std::uint8_t> > >
@@ -83,6 +86,8 @@ private:
 };
 
 typedef MessageT<DefaultOptions> Message;
+
+} // namespace v311
 
 }  // namespace protocol
 

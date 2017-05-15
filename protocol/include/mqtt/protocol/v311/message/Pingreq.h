@@ -1,5 +1,5 @@
 //
-// Copyright 2015 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,14 +19,7 @@
 #pragma once
 
 #include <tuple>
-
-#include "comms/comms.h"
-
-#include "MsgIdFlagsLayer.h"
-
-#include "MsgId.h"
-#include "AllMessages.h"
-
+#include "mqtt/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,26 +27,34 @@ namespace mqtt
 namespace protocol
 {
 
-typedef comms::field::IntValue<
-    comms::Field<comms::option::LittleEndian>,
-    std::uint32_t,
-    comms::option::VarLength<1, 4>
-> RemSizeField;
+namespace v311
+{
 
-template <
-    typename TMsgBase = Message,
-    typename TAllMessages = AllMessages<TMsgBase>,
-    typename TMsgAllocOptions = std::tuple<> >
-using Stack =
-    mqtt::protocol::MsgIdFlagsLayer<
-        TMsgBase,
-        TAllMessages,
-        comms::protocol::MsgSizeLayer<
-            RemSizeField,
-            comms::protocol::MsgDataLayer<>
-        >,
-        TMsgAllocOptions
-    >;
+namespace message
+{
+
+template <typename TMsgBase = Message>
+class Pingreq : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
+            comms::option::ZeroFieldsImpl,
+            comms::option::MsgType<Pingreq<TMsgBase> >
+        >
+{
+public:
+    Pingreq() = default;
+    Pingreq(const Pingreq&) = default;
+    Pingreq(Pingreq&& other) = default;
+    virtual ~Pingreq() = default;
+
+    Pingreq& operator=(const Pingreq&) = default;
+    Pingreq& operator=(Pingreq&&) = default;
+};
+
+}  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

@@ -19,26 +19,29 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/message/Connect.h"
-#include "mqtt/protocol/message/Connack.h"
-#include "mqtt/protocol/message/Publish.h"
-#include "mqtt/protocol/message/Puback.h"
-#include "mqtt/protocol/message/Pubrec.h"
-#include "mqtt/protocol/message/Pubrel.h"
-#include "mqtt/protocol/message/Pubcomp.h"
-#include "mqtt/protocol/message/Subscribe.h"
-#include "mqtt/protocol/message/Suback.h"
-#include "mqtt/protocol/message/Unsubscribe.h"
-#include "mqtt/protocol/message/Unsuback.h"
-#include "mqtt/protocol/message/Pingreq.h"
-#include "mqtt/protocol/message/Pingresp.h"
-#include "mqtt/protocol/message/Disconnect.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/message/Connect.h"
+#include "mqtt/protocol/v311/message/Connack.h"
+#include "mqtt/protocol/v311/message/Publish.h"
+#include "mqtt/protocol/v311/message/Puback.h"
+#include "mqtt/protocol/v311/message/Pubrec.h"
+#include "mqtt/protocol/v311/message/Pubrel.h"
+#include "mqtt/protocol/v311/message/Pubcomp.h"
+#include "mqtt/protocol/v311/message/Subscribe.h"
+#include "mqtt/protocol/v311/message/Suback.h"
+#include "mqtt/protocol/v311/message/Unsubscribe.h"
+#include "mqtt/protocol/v311/message/Unsuback.h"
+#include "mqtt/protocol/v311/message/Pingreq.h"
+#include "mqtt/protocol/v311/message/Pingresp.h"
+#include "mqtt/protocol/v311/message/Disconnect.h"
 
 namespace mqtt
 {
 
 namespace protocol
+{
+
+namespace v311
 {
 
 template <typename TMsgBase = Message>
@@ -62,6 +65,7 @@ using AllMessages = std::tuple<
 static_assert(
     std::tuple_size<AllMessages<> >::value == (MsgId_NumOfValues - 1),
         "Some messages are missing from the bundle.");
+} // namespace v311
 
 }  // namespace protocol
 

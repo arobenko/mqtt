@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/v311/Message.h"
 
 
 namespace mqtt
@@ -34,13 +34,13 @@ namespace protocol
 template <typename... TOptions>
 class MessageT : public
     comms_champion::MessageBase<
-        mqtt::protocol::MessageT,
+        mqtt::protocol::v311::MessageT,
         comms::option::RefreshInterface,
         TOptions...
     >
 {
     typedef comms_champion::MessageBase<
-        mqtt::protocol::MessageT,
+        mqtt::protocol::v311::MessageT,
         comms::option::RefreshInterface,
         TOptions...
     > Base;

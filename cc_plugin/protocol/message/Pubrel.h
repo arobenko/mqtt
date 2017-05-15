@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/message/Pubrel.h"
+#include "mqtt/protocol/v311/message/Pubrel.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Pubrel : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::message::Pubrel<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::v311::message::Pubrel<mqtt::cc_plugin::protocol::Message>,
         Pubrel>
 {
 public:

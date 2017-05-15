@@ -21,8 +21,8 @@
 #include <tuple>
 #include <algorithm>
 
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
@@ -30,41 +30,41 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-using SubackFields = std::tuple<
-    field::PacketId,
-    field::SubackPayload
+using UnsubackFields = std::tuple<
+    field::PacketId
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using SubackBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_SUBACK>,
-        comms::option::FieldsImpl<SubackFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
-
 template <typename TMsgBase = Message>
-class Suback : public SubackBase<TMsgBase, Suback>
+class Unsuback : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
+            comms::option::FieldsImpl<UnsubackFields>,
+            comms::option::MsgType<Unsuback<TMsgBase> >
+        >
 {
-//    typedef SubackBase<TMsgBase, mqtt::protocol::message::Suback> Base;
 public:
 
-    COMMS_MSG_FIELDS_ACCESS(packetId, payload);
+    COMMS_MSG_FIELDS_ACCESS(packetId);
 
-    Suback() = default;
-    Suback(const Suback&) = default;
-    Suback(Suback&& other) = default;
-    virtual ~Suback() = default;
+    Unsuback() = default;
+    Unsuback(const Unsuback&) = default;
+    Unsuback(Unsuback&& other) = default;
+    virtual ~Unsuback() = default;
 
-    Suback& operator=(const Suback&) = default;
-    Suback& operator=(Suback&&) = default;
+    Unsuback& operator=(const Unsuback&) = default;
+    Unsuback& operator=(Unsuback&&) = default;
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

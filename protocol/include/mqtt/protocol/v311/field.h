@@ -26,6 +26,9 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace field
 {
 
@@ -484,6 +487,8 @@ using UnsubscribePayload =
     >;
 
 }  // namespace field
+
+} // namespace v311
 
 }  // namespace protocol
 

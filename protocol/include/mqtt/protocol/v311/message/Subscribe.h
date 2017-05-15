@@ -21,8 +21,8 @@
 #include <tuple>
 #include <algorithm>
 
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
@@ -30,27 +30,30 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-using UnsubscribeFields = std::tuple<
+using SubscribeFields = std::tuple<
     field::PacketId,
-    field::UnsubscribePayload
+    field::SubscribePayload
 >;
 
 template <typename TMsgBase, template<class> class TActual>
-using UnsubscribeBase =
+using SubscribeBase =
     comms::MessageBase<
         TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
-        comms::option::FieldsImpl<UnsubscribeFields>,
+        comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
+        comms::option::FieldsImpl<SubscribeFields>,
         comms::option::MsgType<TActual<TMsgBase> >
     >;
 
 template <typename TMsgBase = Message>
-class Unsubscribe : public UnsubscribeBase<TMsgBase, Unsubscribe>
+class Subscribe : public SubscribeBase<TMsgBase, Subscribe>
 {
-    typedef UnsubscribeBase<TMsgBase, mqtt::protocol::message::Unsubscribe> Base;
+    using Base = SubscribeBase<TMsgBase, mqtt::protocol::v311::message::Subscribe>;
 public:
 
     typedef typename Base::FlagsField FlagsField;
@@ -61,33 +64,35 @@ public:
         comms::option::DefaultNumValue<2>,
         comms::option::ValidNumValueRange<2, 2>,
         comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
-    > UnsubscribeFlagsField;
+    > SubscribeFlagsField;
 
     COMMS_MSG_FIELDS_ACCESS(packetId, payload);
 
-    Unsubscribe()
+    Subscribe()
     {
-        FlagsField newFlags(UnsubscribeFlagsField().value());
+        FlagsField newFlags(SubscribeFlagsField().value());
         Base::setFlags(newFlags);
     }
 
-    Unsubscribe(const Unsubscribe&) = default;
-    Unsubscribe(Unsubscribe&& other) = default;
-    virtual ~Unsubscribe() = default;
+    Subscribe(const Subscribe&) = default;
+    Subscribe(Subscribe&& other) = default;
+    virtual ~Subscribe() = default;
 
-    Unsubscribe& operator=(const Unsubscribe&) = default;
-    Unsubscribe& operator=(Unsubscribe&&) = default;
+    Subscribe& operator=(const Subscribe&) = default;
+    Subscribe& operator=(Subscribe&&) = default;
 
     bool doValid() const
     {
         auto& flagsField = Base::getFlags();
-        UnsubscribeFlagsField actFlags(flagsField.value());
+        SubscribeFlagsField actFlags(flagsField.value());
 
         return actFlags.valid() && Base::doValid();
     }
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

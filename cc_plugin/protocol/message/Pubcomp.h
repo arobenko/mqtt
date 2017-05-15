@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/message/Pubcomp.h"
+#include "mqtt/protocol/v311/message/Pubcomp.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Pubcomp : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::message::Pubcomp<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::v311::message::Pubcomp<mqtt::cc_plugin::protocol::Message>,
         Pubcomp>
 {
 public:

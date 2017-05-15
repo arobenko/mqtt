@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,10 +19,8 @@
 #pragma once
 
 #include <tuple>
-#include <algorithm>
-
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
@@ -30,40 +28,48 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-using UnsubackFields = std::tuple<
+using PubrelFields = std::tuple<
     field::PacketId
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using UnsubackBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
-        comms::option::FieldsImpl<UnsubackFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
-
 template <typename TMsgBase = Message>
-class Unsuback : public UnsubackBase<TMsgBase, Unsuback>
+class Pubrel : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PUBREL>,
+            comms::option::FieldsImpl<PubrelFields>,
+            comms::option::MsgType<Pubrel<TMsgBase> >
+        >
 {
-//    typedef UnsubackBase<TMsgBase, mqtt::protocol::message::Unsuback> Base;
 public:
 
     COMMS_MSG_FIELDS_ACCESS(packetId);
 
-    Unsuback() = default;
-    Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&& other) = default;
-    virtual ~Unsuback() = default;
+    Pubrel()
+    {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
+        typename Base::FlagsField flags;
+        flags.value() = 2;
+        Base::setFlags(flags);
+    }
 
-    Unsuback& operator=(const Unsuback&) = default;
-    Unsuback& operator=(Unsuback&&) = default;
+    Pubrel(const Pubrel&) = default;
+    Pubrel(Pubrel&& other) = default;
+    virtual ~Pubrel() = default;
+
+    Pubrel& operator=(const Pubrel&) = default;
+    Pubrel& operator=(Pubrel&&) = default;
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

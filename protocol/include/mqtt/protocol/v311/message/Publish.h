@@ -21,13 +21,16 @@
 #include <tuple>
 #include <algorithm>
 
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
 
 namespace protocol
+{
+
+namespace v311
 {
 
 namespace message
@@ -40,20 +43,16 @@ using PublishFields = std::tuple<
     field::Payload
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using PublishBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
-        comms::option::FieldsImpl<PublishFields>,
-        comms::option::MsgType<TActual<TMsgBase> >,
-        comms::option::HasDoRefresh
-    >;
-
 template <typename TMsgBase = Message>
-class Publish : public PublishBase<TMsgBase, Publish>
+class Publish : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
+            comms::option::FieldsImpl<PublishFields>,
+            comms::option::MsgType<Publish<TMsgBase> >,
+            comms::option::HasDoRefresh
+        >
 {
-    typedef PublishBase<TMsgBase, mqtt::protocol::message::Publish> Base;
 public:
 
     COMMS_MSG_FIELDS_ACCESS(publishFlags, topic, packetId, payload);
@@ -73,6 +72,8 @@ public:
     template <typename TIter>
     comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
+
         auto& flagsField = Base::getFlags();
         auto& publishFlagsField = field_publishFlags();
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
@@ -83,16 +84,19 @@ public:
     template <typename TIter>
     comms::ErrorStatus doWrite(TIter& iter, std::size_t size) const
     {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
         return Base::template writeFieldsFrom<FieldIdx_topic>(iter, size);
     }
 
     std::size_t doLength() const
     {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
         return Base::doLength() - field::PublishFlags::minLength();
     }
 
     bool doRefresh()
     {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
         bool result = false;
         result = updatePacketId() || result;
         result = updateDup() || result;
@@ -141,6 +145,8 @@ private:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

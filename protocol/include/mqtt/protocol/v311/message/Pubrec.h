@@ -19,8 +19,8 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
@@ -28,40 +28,41 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-using ConnackFields =
-    std::tuple<
-        field::ConnackFlags,
-        field::ConnackResponseCode
-    >;
 
-template <typename TMsgBase, template<class> class TActual>
-using ConnackBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-        comms::option::FieldsImpl<ConnackFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
+using PubrecFields = std::tuple<
+    field::PacketId
+>;
 
 template <typename TMsgBase = Message>
-class Connack : public ConnackBase<TMsgBase, Connack>
+class Pubrec : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PUBREC>,
+            comms::option::FieldsImpl<PubrecFields>,
+            comms::option::MsgType<Pubrec<TMsgBase> >
+        >
 {
 public:
-    COMMS_MSG_FIELDS_ACCESS(flags, response);
+    COMMS_MSG_FIELDS_ACCESS(packetId);
 
-    Connack() = default;
-    Connack(const Connack&) = default;
-    Connack(Connack&& other) = default;
-    virtual ~Connack() = default;
+    Pubrec() = default;
+    Pubrec(const Pubrec&) = default;
+    Pubrec(Pubrec&& other) = default;
+    virtual ~Pubrec() = default;
 
-    Connack& operator=(const Connack&) = default;
-    Connack& operator=(Connack&&) = default;
+    Pubrec& operator=(const Pubrec&) = default;
+    Pubrec& operator=(Pubrec&&) = default;
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

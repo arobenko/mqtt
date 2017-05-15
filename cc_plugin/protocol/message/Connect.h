@@ -19,7 +19,7 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/message/Connect.h"
+#include "mqtt/protocol/v311/message/Connect.h"
 #include "cc_plugin/protocol/Message.h"
 
 namespace mqtt
@@ -36,7 +36,7 @@ namespace message
 
 class Connect : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::message::Connect<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::v311::message::Connect<mqtt::cc_plugin::protocol::Message>,
         Connect>
 {
 public:

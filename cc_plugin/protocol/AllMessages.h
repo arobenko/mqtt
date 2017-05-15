@@ -63,7 +63,7 @@ typedef std::tuple<
 > AllMessages;
 
 static_assert(
-    std::tuple_size<AllMessages>::value == (mqtt::protocol::MsgId_NumOfValues - 1),
+    std::tuple_size<AllMessages>::value == (mqtt::protocol::v311::MsgId_NumOfValues - 1),
         "Some messages are missing from the bundle.");
 
 }  // namespace protocol

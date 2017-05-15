@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,29 +18,48 @@
 
 #pragma once
 
-#include "mqtt/protocol/v311/Stack.h"
-#include "Message.h"
+#include <tuple>
+
+#include "comms/comms.h"
+
+#include "MsgIdFlagsLayer.h"
+
+#include "MsgId.h"
 #include "AllMessages.h"
 
-namespace mqtt
-{
 
-namespace cc_plugin
+namespace mqtt
 {
 
 namespace protocol
 {
 
-typedef mqtt::protocol::v311::Stack<
-    cc_plugin::protocol::Message,
-    cc_plugin::protocol::AllMessages
-> Stack;
+namespace v311
+{
+
+typedef comms::field::IntValue<
+    comms::Field<comms::option::LittleEndian>,
+    std::uint32_t,
+    comms::option::VarLength<1, 4>
+> RemSizeField;
+
+template <
+    typename TMsgBase = Message,
+    typename TAllMessages = AllMessages<TMsgBase>,
+    typename TMsgAllocOptions = std::tuple<> >
+using Stack =
+    mqtt::protocol::v311::MsgIdFlagsLayer<
+        TMsgBase,
+        TAllMessages,
+        comms::protocol::MsgSizeLayer<
+            RemSizeField,
+            comms::protocol::MsgDataLayer<>
+        >,
+        TMsgAllocOptions
+    >;
+
+} // namespace v311
 
 }  // namespace protocol
 
-}  // namespace cc_plugin
-
 }  // namespace mqtt
-
-
-

@@ -19,13 +19,16 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
 
 namespace protocol
+{
+
+namespace v311
 {
 
 namespace message
@@ -35,17 +38,14 @@ using PubackFields = std::tuple<
     field::PacketId
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using PubackBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBACK>,
-        comms::option::FieldsImpl<PubackFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
-
 template <typename TMsgBase = Message>
-class Puback : public PubackBase<TMsgBase, Puback>
+class Puback : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PUBACK>,
+            comms::option::FieldsImpl<PubackFields>,
+            comms::option::MsgType<Puback<TMsgBase> >
+        >
 {
     //typedef PubackBase<TMsgBase, mqtt::protocol::message::Puback> Base;
 public:
@@ -61,6 +61,8 @@ public:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

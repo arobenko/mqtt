@@ -19,13 +19,16 @@
 #pragma once
 
 #include "comms/comms.h"
-#include "mqtt/protocol/MsgId.h"
+#include "mqtt/protocol/v311/MsgId.h"
 
 
 namespace mqtt
 {
 
 namespace protocol
+{
+
+namespace v311
 {
 
 typedef comms::field::EnumValue<
@@ -245,6 +248,7 @@ private:
     Factory factory_;
 };
 
+} // namespace v311
 
 }  // namespace protocol
 

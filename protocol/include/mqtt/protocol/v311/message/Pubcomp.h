@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,13 +19,16 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
 
 namespace protocol
+{
+
+namespace v311
 {
 
 namespace message
@@ -35,19 +38,15 @@ using PubcompFields = std::tuple<
     field::PacketId
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using PubcompBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
-        comms::option::FieldsImpl<PubcompFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
-
 template <typename TMsgBase = Message>
-class Pubcomp : public PubcompBase<TMsgBase, Pubcomp>
+class Pubcomp : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
+            comms::option::FieldsImpl<PubcompFields>,
+            comms::option::MsgType<Pubcomp<TMsgBase> >
+        >
 {
-    //typedef PubcompBase<TMsgBase, mqtt::protocol::message::Pubcomp> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(packetId);
 
@@ -61,6 +60,8 @@ public:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

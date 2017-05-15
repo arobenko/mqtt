@@ -19,8 +19,7 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -28,46 +27,35 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-using PubrelFields = std::tuple<
-    field::PacketId
->;
-
-template <typename TMsgBase, template<class> class TActual>
-using PubrelBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PUBREL>,
-        comms::option::FieldsImpl<PubrelFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
 
 template <typename TMsgBase = Message>
-class Pubrel : public PubrelBase<TMsgBase, Pubrel>
+class Pingresp : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
+            comms::option::ZeroFieldsImpl,
+            comms::option::MsgType<Pingresp<TMsgBase> >
+        >
 {
-    typedef PubrelBase<TMsgBase, mqtt::protocol::message::Pubrel> Base;
 public:
+    Pingresp() = default;
+    Pingresp(const Pingresp&) = default;
+    Pingresp(Pingresp&& other) = default;
+    virtual ~Pingresp() = default;
 
-    COMMS_MSG_FIELDS_ACCESS(packetId);
-
-    Pubrel()
-    {
-        typename Base::FlagsField flags;
-        flags.value() = 2;
-        Base::setFlags(flags);
-    }
-
-    Pubrel(const Pubrel&) = default;
-    Pubrel(Pubrel&& other) = default;
-    virtual ~Pubrel() = default;
-
-    Pubrel& operator=(const Pubrel&) = default;
-    Pubrel& operator=(Pubrel&&) = default;
+    Pingresp& operator=(const Pingresp&) = default;
+    Pingresp& operator=(Pingresp&&) = default;
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

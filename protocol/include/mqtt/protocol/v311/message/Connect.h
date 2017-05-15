@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -20,13 +20,16 @@
 
 #include <tuple>
 #include <algorithm>
-#include "mqtt/protocol/Message.h"
-#include "mqtt/protocol/field.h"
+#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
 {
 
 namespace protocol
+{
+
+namespace v311
 {
 
 namespace message
@@ -44,20 +47,16 @@ using ConnectFields = std::tuple<
     field::Password
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using ConnectBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_CONNECT>,
-        comms::option::FieldsImpl<ConnectFields>,
-        comms::option::MsgType<TActual<TMsgBase> >,
-        comms::option::HasDoRefresh
-    >;
-
 template <typename TMsgBase = Message>
-class Connect : public ConnectBase<TMsgBase, Connect>
+class Connect : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_CONNECT>,
+            comms::option::FieldsImpl<ConnectFields>,
+            comms::option::MsgType<Connect<TMsgBase> >,
+            comms::option::HasDoRefresh
+        >
 {
-    typedef ConnectBase<TMsgBase, mqtt::protocol::message::Connect> Base;
 public:
     COMMS_MSG_FIELDS_ACCESS(name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
 
@@ -76,6 +75,7 @@ public:
     template <typename TIter>
     comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
         auto status = Base::template readFieldsUntil<FieldIdx_willTopic>(iter, size);
         if (status != comms::ErrorStatus::Success) {
             return status;
@@ -146,6 +146,8 @@ private:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

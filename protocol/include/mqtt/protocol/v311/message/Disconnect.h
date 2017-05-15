@@ -19,7 +19,7 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/Message.h"
+#include "mqtt/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -27,37 +27,35 @@ namespace mqtt
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
-template <typename TMsgBase, template<class> class TActual>
-using PingreqBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
-        comms::option::ZeroFieldsImpl,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
-
 template <typename TMsgBase = Message>
-class Pingreq : public PingreqBase<TMsgBase, Pingreq>
+class Disconnect : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
+            comms::option::ZeroFieldsImpl,
+            comms::option::MsgType<Disconnect<TMsgBase> >
+        >
 {
-    typedef PingreqBase<TMsgBase, mqtt::protocol::message::Pingreq> Base;
 public:
 
-    static_assert(std::tuple_size<typename Base::AllFields>::value == 0U,
-        "Number of fields is incorrect");
+    Disconnect() = default;
+    Disconnect(const Disconnect&) = default;
+    Disconnect(Disconnect&& other) = default;
+    virtual ~Disconnect() = default;
 
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&& other) = default;
-    virtual ~Pingreq() = default;
-
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
+    Disconnect& operator=(const Disconnect&) = default;
+    Disconnect& operator=(Disconnect&&) = default;
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 
