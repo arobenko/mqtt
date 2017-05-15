@@ -31,12 +31,15 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
 class Unsuback : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Unsuback<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::v311::message::Unsuback<mqtt::cc_plugin::protocol::v311::Message>,
         Unsuback>
 {
 public:
@@ -54,6 +57,8 @@ protected:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

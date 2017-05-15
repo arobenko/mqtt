@@ -31,10 +31,13 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 class TransportMessage : public
     comms_champion::TransportMessageBase<
-        cc_plugin::protocol::Stack::Message,
-        cc_plugin::protocol::Stack::AllFields>
+        cc_plugin::protocol::v311::Stack::Message,
+        cc_plugin::protocol::v311::Stack::AllFields>
 {
 public:
     TransportMessage() = default;
@@ -48,6 +51,8 @@ public:
 protected:
     virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
+
+} // namespace v311
 
 }  // namespace protocol
 

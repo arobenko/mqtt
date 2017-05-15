@@ -30,6 +30,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 Plugin::Plugin()
 {
     pluginProperties()
@@ -41,6 +44,8 @@ Plugin::Plugin()
 }
 
 Plugin::~Plugin() = default;
+
+} // namespace v311
 
 }  // namespace protocol
 

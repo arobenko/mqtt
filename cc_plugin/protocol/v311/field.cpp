@@ -28,9 +28,11 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace field
+namespace v311
 {
 
+namespace field
+{
 
 namespace
 {
@@ -78,6 +80,8 @@ void updateQosPropertiesMap(cc::property::field::EnumValue& props)
 }
 
 }  // namespace field
+
+} // namespace v311
 
 }  // namespace protocol
 

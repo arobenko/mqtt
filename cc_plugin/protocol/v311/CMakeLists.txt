@@ -1,4 +1,4 @@
-set (THIS_PLUGIN_NAME "mqtt_protocol")
+set (THIS_PLUGIN_NAME "mqtt_v311_protocol")
 
 ######################################################################
 

@@ -33,6 +33,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
@@ -216,6 +219,8 @@ const QVariantList& Connect::fieldsPropertiesImpl() const
 }
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

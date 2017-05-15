@@ -31,12 +31,15 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
 class Pubrec : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Pubrec<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::v311::message::Pubrec<mqtt::cc_plugin::protocol::v311::Message>,
         Pubrec>
 {
 public:
@@ -54,6 +57,8 @@ protected:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

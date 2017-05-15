@@ -45,26 +45,31 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 typedef std::tuple<
-    cc_plugin::protocol::message::Connect,
-    cc_plugin::protocol::message::Connack,
-    cc_plugin::protocol::message::Publish,
-    cc_plugin::protocol::message::Puback,
-    cc_plugin::protocol::message::Pubrec,
-    cc_plugin::protocol::message::Pubrel,
-    cc_plugin::protocol::message::Pubcomp,
-    cc_plugin::protocol::message::Subscribe,
-    cc_plugin::protocol::message::Suback,
-    cc_plugin::protocol::message::Unsubscribe,
-    cc_plugin::protocol::message::Unsuback,
-    cc_plugin::protocol::message::Pingreq,
-    cc_plugin::protocol::message::Pingresp,
-    cc_plugin::protocol::message::Disconnect
+    cc_plugin::protocol::v311::message::Connect,
+    cc_plugin::protocol::v311::message::Connack,
+    cc_plugin::protocol::v311::message::Publish,
+    cc_plugin::protocol::v311::message::Puback,
+    cc_plugin::protocol::v311::message::Pubrec,
+    cc_plugin::protocol::v311::message::Pubrel,
+    cc_plugin::protocol::v311::message::Pubcomp,
+    cc_plugin::protocol::v311::message::Subscribe,
+    cc_plugin::protocol::v311::message::Suback,
+    cc_plugin::protocol::v311::message::Unsubscribe,
+    cc_plugin::protocol::v311::message::Unsuback,
+    cc_plugin::protocol::v311::message::Pingreq,
+    cc_plugin::protocol::v311::message::Pingresp,
+    cc_plugin::protocol::v311::message::Disconnect
 > AllMessages;
 
 static_assert(
     std::tuple_size<AllMessages>::value == (mqtt::protocol::v311::MsgId_NumOfValues - 1),
         "Some messages are missing from the bundle.");
+
+} // namespace v311
 
 }  // namespace protocol
 

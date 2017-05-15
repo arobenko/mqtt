@@ -31,10 +31,15 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 typedef mqtt::protocol::v311::Stack<
-    cc_plugin::protocol::Message,
-    cc_plugin::protocol::AllMessages
+    cc_plugin::protocol::v311::Message,
+    cc_plugin::protocol::v311::AllMessages
 > Stack;
+
+} // namespace v311
 
 }  // namespace protocol
 

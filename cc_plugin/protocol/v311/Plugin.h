@@ -31,6 +31,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 class Plugin : public comms_champion::Plugin
 {
     Q_OBJECT
@@ -42,6 +45,8 @@ public:
     ~Plugin();
 
 };
+
+} // namespace v311
 
 }  // namespace protocol
 

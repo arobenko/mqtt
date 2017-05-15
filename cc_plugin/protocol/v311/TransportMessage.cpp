@@ -35,6 +35,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace
 {
 
@@ -118,6 +121,8 @@ const QVariantList& TransportMessage::fieldsPropertiesImpl() const
     static const auto Props = createFieldsProperties();
     return Props;
 }
+
+} // namespace v311
 
 }  // namespace protocol
 

@@ -31,15 +31,18 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 class Protocol : public
     comms_champion::ProtocolBase<
-        cc_plugin::protocol::Stack,
-        cc_plugin::protocol::TransportMessage
+        cc_plugin::protocol::v311::Stack,
+        cc_plugin::protocol::v311::TransportMessage
     >
 {
     typedef comms_champion::ProtocolBase<
-        cc_plugin::protocol::Stack,
-        cc_plugin::protocol::TransportMessage
+        cc_plugin::protocol::v311::Stack,
+        cc_plugin::protocol::v311::TransportMessage
     > Base;
 public:
     Protocol() = default;
@@ -48,6 +51,8 @@ public:
 protected:
     virtual const QString& nameImpl() const override;
 };
+
+} // namespace v311
 
 }  // namespace protocol
 

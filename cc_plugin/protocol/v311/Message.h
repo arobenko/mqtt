@@ -31,6 +31,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 template <typename... TOptions>
 class MessageT : public
     comms_champion::MessageBase<
@@ -59,6 +62,8 @@ protected:
 };
 
 typedef MessageT<> Message;
+
+} // namespace v311
 
 }  // namespace protocol
 

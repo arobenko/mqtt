@@ -28,6 +28,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 Protocol::~Protocol() = default;
 
 const QString& Protocol::nameImpl() const
@@ -35,6 +38,8 @@ const QString& Protocol::nameImpl() const
     static const QString Str("MQTT");
     return Str;
 }
+
+} // namespace v311
 
 }  // namespace protocol
 

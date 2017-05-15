@@ -32,6 +32,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
@@ -49,6 +52,8 @@ const QVariantList& Disconnect::fieldsPropertiesImpl() const
 
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

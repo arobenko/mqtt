@@ -35,6 +35,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace field
 {
 
@@ -45,6 +48,8 @@ const QVariantMap& optionalPacketIdProperties();
 void updateQosPropertiesMap(comms_champion::property::field::EnumValue& props);
 
 }  // namespace field
+
+} // namespace v311
 
 }  // namespace protocol
 

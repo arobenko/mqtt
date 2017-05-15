@@ -34,6 +34,9 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
@@ -88,6 +91,8 @@ const QVariantList& Suback::fieldsPropertiesImpl() const
 }
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 

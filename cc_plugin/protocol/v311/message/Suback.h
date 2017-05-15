@@ -31,12 +31,15 @@ namespace cc_plugin
 namespace protocol
 {
 
+namespace v311
+{
+
 namespace message
 {
 
 class Suback : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Suback<mqtt::cc_plugin::protocol::Message>,
+        mqtt::protocol::v311::message::Suback<mqtt::cc_plugin::protocol::v311::Message>,
         Suback>
 {
 public:
@@ -54,6 +57,8 @@ protected:
 };
 
 }  // namespace message
+
+} // namespace v311
 
 }  // namespace protocol
 
