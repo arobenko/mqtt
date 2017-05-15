@@ -19,9 +19,9 @@
 #include <functional>
 #include <cassert>
 
-#include "Subscribe.h"
+#include "Pubrel.h"
 
-#include "cc_plugin/protocol/field.h"
+#include "cc_plugin/protocol/v311/field.h"
 
 namespace cc = comms_champion;
 
@@ -40,57 +40,24 @@ namespace message
 namespace
 {
 
-QVariantMap createTopicFilterMemberData()
-{
-    return cc::property::field::String().name("Topic").serialisedHidden().asMap();
-}
-
-QVariantMap createRequestQosMemberData()
-{
-    cc::property::field::EnumValue props;
-    props.name("Req. QoS").serialisedHidden();
-    field::updateQosPropertiesMap(props);
-    return props.asMap();
-}
-
-QVariantMap createPayloadBundleData()
-{
-    return
-        cc::property::field::Bundle()
-            .add(createTopicFilterMemberData())
-            .add(createRequestQosMemberData())
-            .asMap();
-
-}
-
-QVariantMap createPayloadProperties()
-{
-    return
-        cc::property::field::ArrayList()
-            .name("Payload")
-            .add(createPayloadBundleData())
-            .asMap();
-}
-
 QVariantList createFieldsProperties()
 {
     QVariantList props;
     props.append(field::packetIdProperties());
-    props.append(createPayloadProperties());
 
-    assert(props.size() == Subscribe::FieldIdx_numOfValues);
+    assert(props.size() == Pubrel::FieldIdx_numOfValues);
     return props;
 }
 
 }  // namespace
 
-const char* Subscribe::nameImpl() const
+const char* Pubrel::nameImpl() const
 {
-    static const char* Str = "SUBSCRIBE";
+    static const char* Str = "PUBREL";
     return Str;
 }
 
-const QVariantList& Subscribe::fieldsPropertiesImpl() const
+const QVariantList& Pubrel::fieldsPropertiesImpl() const
 {
     static const auto Props = createFieldsProperties();
     return Props;

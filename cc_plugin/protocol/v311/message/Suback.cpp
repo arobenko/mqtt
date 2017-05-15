@@ -19,9 +19,9 @@
 #include <functional>
 #include <cassert>
 
-#include "Pubrel.h"
+#include "Suback.h"
 
-#include "cc_plugin/protocol/field.h"
+#include "cc_plugin/protocol/v311/field.h"
 
 namespace cc = comms_champion;
 
@@ -40,24 +40,48 @@ namespace message
 namespace
 {
 
+QVariantMap createReturnCodeProperties()
+{
+    cc::property::field::EnumValue props;
+
+    props.name("Return Code");
+    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::protocol::v311::field::SubackReturnCode::SuccessQos2); ++idx) {
+        static const QString Prefix("Success QoS ");
+        auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
+        props.add(str, idx);
+    }
+    props.add("Failure", (int)mqtt::protocol::v311::field::SubackReturnCode::Failure);
+    return props.asMap();
+}
+
+QVariantMap createPayloadProperties()
+{
+    return
+        cc::property::field::ArrayList()
+            .name("Payload")
+            .add(createReturnCodeProperties())
+            .asMap();
+}
+
 QVariantList createFieldsProperties()
 {
     QVariantList props;
     props.append(field::packetIdProperties());
+    props.append(createPayloadProperties());
 
-    assert(props.size() == Pubrel::FieldIdx_numOfValues);
+    assert(props.size() == Suback::FieldIdx_numOfValues);
     return props;
 }
 
 }  // namespace
 
-const char* Pubrel::nameImpl() const
+const char* Suback::nameImpl() const
 {
-    static const char* Str = "PUBREL";
+    static const char* Str = "SUBACK";
     return Str;
 }
 
-const QVariantList& Pubrel::fieldsPropertiesImpl() const
+const QVariantList& Suback::fieldsPropertiesImpl() const
 {
     static const auto Props = createFieldsProperties();
     return Props;

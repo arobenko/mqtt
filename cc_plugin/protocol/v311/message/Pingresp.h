@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "cc_plugin/protocol/Stack.h"
-#include "cc_plugin/protocol/TransportMessage.h"
+#include "mqtt/protocol/v311/message/Pingresp.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -31,23 +31,29 @@ namespace cc_plugin
 namespace protocol
 {
 
-class Protocol : public
-    comms_champion::ProtocolBase<
-        cc_plugin::protocol::Stack,
-        cc_plugin::protocol::TransportMessage
-    >
+namespace message
 {
-    typedef comms_champion::ProtocolBase<
-        cc_plugin::protocol::Stack,
-        cc_plugin::protocol::TransportMessage
-    > Base;
+
+class Pingresp : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::protocol::v311::message::Pingresp<mqtt::cc_plugin::protocol::Message>,
+        Pingresp>
+{
 public:
-    Protocol() = default;
-    virtual ~Protocol();
+    Pingresp() = default;
+    Pingresp(const Pingresp&) = default;
+    Pingresp(Pingresp&&) = default;
+    virtual ~Pingresp() = default;
+
+    Pingresp& operator=(const Pingresp&) = default;
+    Pingresp& operator=(Pingresp&&) = default;
 
 protected:
-    virtual const QString& nameImpl() const override;
+    virtual const char* nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
+
+}  // namespace message
 
 }  // namespace protocol
 

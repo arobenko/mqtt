@@ -15,15 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <type_traits>
-#include <functional>
-#include <cassert>
 
-#include "Unsuback.h"
+#pragma once
 
-#include "cc_plugin/protocol/field.h"
-
-namespace cc = comms_champion;
+#include "comms_champion/comms_champion.h"
+#include "mqtt/protocol/v311/message/Pingreq.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -37,31 +34,24 @@ namespace protocol
 namespace message
 {
 
-namespace
+class Pingreq : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::protocol::v311::message::Pingreq<mqtt::cc_plugin::protocol::Message>,
+        Pingreq>
 {
+public:
+    Pingreq() = default;
+    Pingreq(const Pingreq&) = default;
+    Pingreq(Pingreq&&) = default;
+    virtual ~Pingreq() = default;
 
-QVariantList createFieldsProperties()
-{
-    QVariantList props;
-    props.append(field::packetIdProperties());
+    Pingreq& operator=(const Pingreq&) = default;
+    Pingreq& operator=(Pingreq&&) = default;
 
-    assert(props.size() == Unsuback::FieldIdx_numOfValues);
-    return props;
-}
-
-}  // namespace
-
-const char* Unsuback::nameImpl() const
-{
-    static const char* Str = "UNSUBACK";
-    return Str;
-}
-
-const QVariantList& Unsuback::fieldsPropertiesImpl() const
-{
-    static const auto Props = createFieldsProperties();
-    return Props;
-}
+protected:
+    virtual const char* nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
+};
 
 }  // namespace message
 
@@ -70,4 +60,5 @@ const QVariantList& Unsuback::fieldsPropertiesImpl() const
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
 

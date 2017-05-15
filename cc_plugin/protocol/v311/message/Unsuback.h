@@ -20,7 +20,7 @@
 
 #include "comms_champion/comms_champion.h"
 #include "mqtt/protocol/v311/message/Unsuback.h"
-#include "cc_plugin/protocol/Message.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {

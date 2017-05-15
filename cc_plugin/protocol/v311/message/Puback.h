@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Suback.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Puback.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Suback : public
+class Puback : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Suback<mqtt::cc_plugin::protocol::Message>,
-        Suback>
+        mqtt::protocol::v311::message::Puback<mqtt::cc_plugin::protocol::Message>,
+        Puback>
 {
 public:
-    Suback() = default;
-    Suback(const Suback&) = default;
-    Suback(Suback&&) = default;
-    virtual ~Suback() = default;
+    Puback() = default;
+    Puback(const Puback&) = default;
+    Puback(Puback&&) = default;
+    virtual ~Puback() = default;
 
-    Suback& operator=(const Suback&) = default;
-    Suback& operator=(Suback&&) = default;
+    Puback& operator=(const Puback&) = default;
+    Puback& operator=(Puback&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

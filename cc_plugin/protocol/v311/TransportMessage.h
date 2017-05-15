@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Publish.h"
-#include "cc_plugin/protocol/Message.h"
+#include "cc_plugin/protocol/v311/Message.h"
+#include "cc_plugin/protocol/v311/Stack.h"
 
 namespace mqtt
 {
@@ -31,29 +31,23 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace message
-{
-
-class Publish : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Publish<mqtt::cc_plugin::protocol::Message>,
-        Publish>
+class TransportMessage : public
+    comms_champion::TransportMessageBase<
+        cc_plugin::protocol::Stack::Message,
+        cc_plugin::protocol::Stack::AllFields>
 {
 public:
-    Publish();
-    Publish(const Publish&) = default;
-    Publish(Publish&&) = default;
-    virtual ~Publish() = default;
+    TransportMessage() = default;
+    TransportMessage(const TransportMessage&) = default;
+    TransportMessage(TransportMessage&&) = default;
+    virtual ~TransportMessage() = default;
 
-    Publish& operator=(const Publish&) = default;
-    Publish& operator=(Publish&&) = default;
+    TransportMessage& operator=(const TransportMessage&) = default;
+    TransportMessage& operator=(TransportMessage&&) = default;
 
 protected:
-    virtual const char* nameImpl() const override;
     virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
-
-}  // namespace message
 
 }  // namespace protocol
 

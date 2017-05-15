@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016(C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -15,12 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <type_traits>
+#include <functional>
+#include <cassert>
 
-#pragma once
+#include "Pubrec.h"
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Pubrec.h"
-#include "cc_plugin/protocol/Message.h"
+#include "cc_plugin/protocol/v311/field.h"
+
+namespace cc = comms_champion;
 
 namespace mqtt
 {
@@ -34,24 +37,32 @@ namespace protocol
 namespace message
 {
 
-class Pubrec : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Pubrec<mqtt::cc_plugin::protocol::Message>,
-        Pubrec>
+namespace
 {
-public:
-    Pubrec() = default;
-    Pubrec(const Pubrec&) = default;
-    Pubrec(Pubrec&&) = default;
-    virtual ~Pubrec() = default;
 
-    Pubrec& operator=(const Pubrec&) = default;
-    Pubrec& operator=(Pubrec&&) = default;
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(field::packetIdProperties());
 
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
-};
+    assert(props.size() == Pubrec::FieldIdx_numOfValues);
+    return props;
+}
+
+}  // namespace
+
+const char* Pubrec::nameImpl() const
+{
+    static const char* Str = "PUBREC";
+    return Str;
+}
+
+const QVariantList& Pubrec::fieldsPropertiesImpl() const
+{
+    static const auto Props = createFieldsProperties();
+    return Props;
+}
+
 
 }  // namespace message
 
@@ -60,5 +71,4 @@ protected:
 }  // namespace cc_plugin
 
 }  // namespace mqtt
-
 

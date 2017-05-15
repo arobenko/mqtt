@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Unsubscribe.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Publish.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Unsubscribe : public
+class Publish : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Unsubscribe<mqtt::cc_plugin::protocol::Message>,
-        Unsubscribe>
+        mqtt::protocol::v311::message::Publish<mqtt::cc_plugin::protocol::Message>,
+        Publish>
 {
 public:
-    Unsubscribe() = default;
-    Unsubscribe(const Unsubscribe&) = default;
-    Unsubscribe(Unsubscribe&&) = default;
-    virtual ~Unsubscribe() = default;
+    Publish();
+    Publish(const Publish&) = default;
+    Publish(Publish&&) = default;
+    virtual ~Publish() = default;
 
-    Unsubscribe& operator=(const Unsubscribe&) = default;
-    Unsubscribe& operator=(Unsubscribe&&) = default;
+    Publish& operator=(const Publish&) = default;
+    Publish& operator=(Publish&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

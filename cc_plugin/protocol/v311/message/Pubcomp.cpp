@@ -15,12 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <type_traits>
+#include <functional>
+#include <cassert>
 
-#pragma once
+#include "Pubcomp.h"
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Pubcomp.h"
-#include "cc_plugin/protocol/Message.h"
+#include "cc_plugin/protocol/v311/field.h"
+
+namespace cc = comms_champion;
 
 namespace mqtt
 {
@@ -34,24 +37,32 @@ namespace protocol
 namespace message
 {
 
-class Pubcomp : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Pubcomp<mqtt::cc_plugin::protocol::Message>,
-        Pubcomp>
+namespace
 {
-public:
-    Pubcomp() = default;
-    Pubcomp(const Pubcomp&) = default;
-    Pubcomp(Pubcomp&&) = default;
-    virtual ~Pubcomp() = default;
 
-    Pubcomp& operator=(const Pubcomp&) = default;
-    Pubcomp& operator=(Pubcomp&&) = default;
+QVariantList createFieldsProperties()
+{
+    QVariantList props;
+    props.append(field::packetIdProperties());
 
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
-};
+    assert(props.size() == Pubcomp::FieldIdx_numOfValues);
+    return props;
+}
+
+}  // namespace
+
+const char* Pubcomp::nameImpl() const
+{
+    static const char* Str = "PUBCOMP";
+    return Str;
+}
+
+const QVariantList& Pubcomp::fieldsPropertiesImpl() const
+{
+    static const auto Props = createFieldsProperties();
+    return Props;
+}
+
 
 }  // namespace message
 
@@ -60,5 +71,4 @@ protected:
 }  // namespace cc_plugin
 
 }  // namespace mqtt
-
 

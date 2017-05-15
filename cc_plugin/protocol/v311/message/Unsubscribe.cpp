@@ -21,7 +21,7 @@
 
 #include "Unsubscribe.h"
 
-#include "cc_plugin/protocol/field.h"
+#include "cc_plugin/protocol/v311/field.h"
 
 namespace cc = comms_champion;
 

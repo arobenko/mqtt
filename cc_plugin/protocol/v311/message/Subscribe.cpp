@@ -19,9 +19,9 @@
 #include <functional>
 #include <cassert>
 
-#include "Puback.h"
+#include "Subscribe.h"
 
-#include "cc_plugin/protocol/field.h"
+#include "cc_plugin/protocol/v311/field.h"
 
 namespace cc = comms_champion;
 
@@ -40,29 +40,61 @@ namespace message
 namespace
 {
 
+QVariantMap createTopicFilterMemberData()
+{
+    return cc::property::field::String().name("Topic").serialisedHidden().asMap();
+}
+
+QVariantMap createRequestQosMemberData()
+{
+    cc::property::field::EnumValue props;
+    props.name("Req. QoS").serialisedHidden();
+    field::updateQosPropertiesMap(props);
+    return props.asMap();
+}
+
+QVariantMap createPayloadBundleData()
+{
+    return
+        cc::property::field::Bundle()
+            .add(createTopicFilterMemberData())
+            .add(createRequestQosMemberData())
+            .asMap();
+
+}
+
+QVariantMap createPayloadProperties()
+{
+    return
+        cc::property::field::ArrayList()
+            .name("Payload")
+            .add(createPayloadBundleData())
+            .asMap();
+}
+
 QVariantList createFieldsProperties()
 {
     QVariantList props;
     props.append(field::packetIdProperties());
+    props.append(createPayloadProperties());
 
-    assert(props.size() == Puback::FieldIdx_numOfValues);
+    assert(props.size() == Subscribe::FieldIdx_numOfValues);
     return props;
 }
 
 }  // namespace
 
-const char* Puback::nameImpl() const
+const char* Subscribe::nameImpl() const
 {
-    static const char* Str = "PUBACK";
+    static const char* Str = "SUBSCRIBE";
     return Str;
 }
 
-const QVariantList& Puback::fieldsPropertiesImpl() const
+const QVariantList& Subscribe::fieldsPropertiesImpl() const
 {
     static const auto Props = createFieldsProperties();
     return Props;
 }
-
 
 }  // namespace message
 

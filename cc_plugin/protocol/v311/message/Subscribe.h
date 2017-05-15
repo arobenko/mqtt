@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Connect.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Subscribe.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Connect : public
+class Subscribe : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Connect<mqtt::cc_plugin::protocol::Message>,
-        Connect>
+        mqtt::protocol::v311::message::Subscribe<mqtt::cc_plugin::protocol::Message>,
+        Subscribe>
 {
 public:
-    Connect() = default;
-    Connect(const Connect&) = default;
-    Connect(Connect&&) = default;
-    virtual ~Connect() = default;
+    Subscribe() = default;
+    Subscribe(const Subscribe&) = default;
+    Subscribe(Subscribe&&) = default;
+    virtual ~Subscribe() = default;
 
-    Connect& operator=(const Connect&) = default;
-    Connect& operator=(Connect&&) = default;
+    Subscribe& operator=(const Subscribe&) = default;
+    Subscribe& operator=(Subscribe&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Disconnect.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Pubrel.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Disconnect : public
+class Pubrel : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Disconnect<mqtt::cc_plugin::protocol::Message>,
-        Disconnect>
+        mqtt::protocol::v311::message::Pubrel<mqtt::cc_plugin::protocol::Message>,
+        Pubrel>
 {
 public:
-    Disconnect() = default;
-    Disconnect(const Disconnect&) = default;
-    Disconnect(Disconnect&&) = default;
-    virtual ~Disconnect() = default;
+    Pubrel() = default;
+    Pubrel(const Pubrel&) = default;
+    Pubrel(Pubrel&&) = default;
+    virtual ~Pubrel() = default;
 
-    Disconnect& operator=(const Disconnect&) = default;
-    Disconnect& operator=(Disconnect&&) = default;
+    Pubrel& operator=(const Pubrel&) = default;
+    Pubrel& operator=(Pubrel&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

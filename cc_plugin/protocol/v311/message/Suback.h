@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Pingreq.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Suback.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Pingreq : public
+class Suback : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Pingreq<mqtt::cc_plugin::protocol::Message>,
-        Pingreq>
+        mqtt::protocol::v311::message::Suback<mqtt::cc_plugin::protocol::Message>,
+        Suback>
 {
 public:
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&&) = default;
-    virtual ~Pingreq() = default;
+    Suback() = default;
+    Suback(const Suback&) = default;
+    Suback(Suback&&) = default;
+    virtual ~Suback() = default;
 
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
+    Suback& operator=(const Suback&) = default;
+    Suback& operator=(Suback&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

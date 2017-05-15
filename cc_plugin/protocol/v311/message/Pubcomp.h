@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Subscribe.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Pubcomp.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Subscribe : public
+class Pubcomp : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Subscribe<mqtt::cc_plugin::protocol::Message>,
-        Subscribe>
+        mqtt::protocol::v311::message::Pubcomp<mqtt::cc_plugin::protocol::Message>,
+        Pubcomp>
 {
 public:
-    Subscribe() = default;
-    Subscribe(const Subscribe&) = default;
-    Subscribe(Subscribe&&) = default;
-    virtual ~Subscribe() = default;
+    Pubcomp() = default;
+    Pubcomp(const Pubcomp&) = default;
+    Pubcomp(Pubcomp&&) = default;
+    virtual ~Pubcomp() = default;
 
-    Subscribe& operator=(const Subscribe&) = default;
-    Subscribe& operator=(Subscribe&&) = default;
+    Pubcomp& operator=(const Pubcomp&) = default;
+    Pubcomp& operator=(Pubcomp&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

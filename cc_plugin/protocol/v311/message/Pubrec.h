@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016(C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Puback.h"
-#include "cc_plugin/protocol/Message.h"
+#include "mqtt/protocol/v311/message/Pubrec.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -34,19 +34,19 @@ namespace protocol
 namespace message
 {
 
-class Puback : public
+class Pubrec : public
     comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Puback<mqtt::cc_plugin::protocol::Message>,
-        Puback>
+        mqtt::protocol::v311::message::Pubrec<mqtt::cc_plugin::protocol::Message>,
+        Pubrec>
 {
 public:
-    Puback() = default;
-    Puback(const Puback&) = default;
-    Puback(Puback&&) = default;
-    virtual ~Puback() = default;
+    Pubrec() = default;
+    Pubrec(const Pubrec&) = default;
+    Pubrec(Pubrec&&) = default;
+    virtual ~Pubrec() = default;
 
-    Puback& operator=(const Puback&) = default;
-    Puback& operator=(Puback&&) = default;
+    Pubrec& operator=(const Pubrec&) = default;
+    Pubrec& operator=(Pubrec&&) = default;
 
 protected:
     virtual const char* nameImpl() const override;

@@ -15,15 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <type_traits>
-#include <functional>
-#include <cassert>
 
-#include "Pubrec.h"
+#pragma once
 
-#include "cc_plugin/protocol/field.h"
-
-namespace cc = comms_champion;
+#include "comms_champion/comms_champion.h"
+#include "cc_plugin/protocol/v311/Stack.h"
+#include "cc_plugin/protocol/v311/TransportMessage.h"
 
 namespace mqtt
 {
@@ -34,41 +31,28 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace message
+class Protocol : public
+    comms_champion::ProtocolBase<
+        cc_plugin::protocol::Stack,
+        cc_plugin::protocol::TransportMessage
+    >
 {
+    typedef comms_champion::ProtocolBase<
+        cc_plugin::protocol::Stack,
+        cc_plugin::protocol::TransportMessage
+    > Base;
+public:
+    Protocol() = default;
+    virtual ~Protocol();
 
-namespace
-{
-
-QVariantList createFieldsProperties()
-{
-    QVariantList props;
-    props.append(field::packetIdProperties());
-
-    assert(props.size() == Pubrec::FieldIdx_numOfValues);
-    return props;
-}
-
-}  // namespace
-
-const char* Pubrec::nameImpl() const
-{
-    static const char* Str = "PUBREC";
-    return Str;
-}
-
-const QVariantList& Pubrec::fieldsPropertiesImpl() const
-{
-    static const auto Props = createFieldsProperties();
-    return Props;
-}
-
-
-}  // namespace message
+protected:
+    virtual const QString& nameImpl() const override;
+};
 
 }  // namespace protocol
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
+
 

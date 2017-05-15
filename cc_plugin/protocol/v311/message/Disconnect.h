@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "cc_plugin/protocol/Message.h"
-#include "cc_plugin/protocol/Stack.h"
+#include "mqtt/protocol/v311/message/Disconnect.h"
+#include "cc_plugin/protocol/v311/Message.h"
 
 namespace mqtt
 {
@@ -31,23 +31,29 @@ namespace cc_plugin
 namespace protocol
 {
 
-class TransportMessage : public
-    comms_champion::TransportMessageBase<
-        cc_plugin::protocol::Stack::Message,
-        cc_plugin::protocol::Stack::AllFields>
+namespace message
+{
+
+class Disconnect : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::protocol::v311::message::Disconnect<mqtt::cc_plugin::protocol::Message>,
+        Disconnect>
 {
 public:
-    TransportMessage() = default;
-    TransportMessage(const TransportMessage&) = default;
-    TransportMessage(TransportMessage&&) = default;
-    virtual ~TransportMessage() = default;
+    Disconnect() = default;
+    Disconnect(const Disconnect&) = default;
+    Disconnect(Disconnect&&) = default;
+    virtual ~Disconnect() = default;
 
-    TransportMessage& operator=(const TransportMessage&) = default;
-    TransportMessage& operator=(TransportMessage&&) = default;
+    Disconnect& operator=(const Disconnect&) = default;
+    Disconnect& operator=(Disconnect&&) = default;
 
 protected:
+    virtual const char* nameImpl() const override;
     virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
+
+}  // namespace message
 
 }  // namespace protocol
 
