@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -15,35 +15,44 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Protocol.h"
 
-namespace cc = comms_champion;
+#pragma once
+
+#include <cstdint>
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
 {
 
-namespace v311
+namespace common
 {
 
-Protocol::~Protocol() = default;
-
-const QString& Protocol::nameImpl() const
+enum MsgId : std::uint8_t
 {
-    static const QString Str("MQTT v3.1.1");
-    return Str;
-}
+    MsgId_Reserved,
+    MsgId_CONNECT,
+    MsgId_CONNACK,
+    MsgId_PUBLISH,
+    MsgId_PUBACK,
+    MsgId_PUBREC,
+    MsgId_PUBREL,
+    MsgId_PUBCOMP,
+    MsgId_SUBSCRIBE,
+    MsgId_SUBACK,
+    MsgId_UNSUBSCRIBE,
+    MsgId_UNSUBACK,
+    MsgId_PINGREQ,
+    MsgId_PINGRESP,
+    MsgId_DISCONNECT,
+    MsgId_AUTH,
+    MsgId_NumOfValues // Must be last
+};
 
-} // namespace v311
+} // namespace common
 
 }  // namespace protocol
-
-}  // namespace cc_plugin
 
 }  // namespace mqtt
 

@@ -15,9 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Protocol.h"
 
-namespace cc = comms_champion;
+#pragma once
+
+#include "cc_plugin/protocol/common/Message.h"
+#include "mqtt/protocol/v5/Message.h"
 
 namespace mqtt
 {
@@ -28,23 +30,15 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace v311
+namespace v5
 {
 
-Protocol::~Protocol() = default;
+using Message = cc_plugin::protocol::common::Message<mqtt::protocol::v5::Message>;
 
-const QString& Protocol::nameImpl() const
-{
-    static const QString Str("MQTT v3.1.1");
-    return Str;
-}
-
-} // namespace v311
+} // namespace v5
 
 }  // namespace protocol
 
 }  // namespace cc_plugin
 
 }  // namespace mqtt
-
-

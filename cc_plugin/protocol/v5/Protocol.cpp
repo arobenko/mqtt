@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -28,18 +28,18 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace v311
+namespace v5
 {
 
 Protocol::~Protocol() = default;
 
 const QString& Protocol::nameImpl() const
 {
-    static const QString Str("MQTT v3.1.1");
+    static const QString Str("MQTT v5");
     return Str;
 }
 
-} // namespace v311
+} // namespace v5
 
 }  // namespace protocol
 

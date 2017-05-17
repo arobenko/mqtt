@@ -19,8 +19,8 @@
 #pragma once
 
 #include "comms_champion/comms_champion.h"
-#include "cc_plugin/protocol/v311/Stack.h"
-#include "cc_plugin/protocol/v311/TransportMessage.h"
+#include "mqtt/protocol/common/field.h"
+#include "cc_plugin/protocol/common/field.h"
 
 namespace mqtt
 {
@@ -31,24 +31,34 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace v311
+namespace common
 {
 
-class Protocol : public
-    comms_champion::ProtocolBase<
-        cc_plugin::protocol::v311::Stack,
-        cc_plugin::protocol::v311::TransportMessage
-    >
+template <
+    mqtt::protocol::common::field::ProtocolVersionVal TVer,
+    typename TMessage,
+    typename TAllFields>
+class TransportMessage : public
+    comms_champion::TransportMessageBase<TMessage, TAllFields>
 {
 public:
-    Protocol() = default;
-    virtual ~Protocol();
+    TransportMessage() = default;
+    TransportMessage(const TransportMessage&) = default;
+    TransportMessage(TransportMessage&&) = default;
+    virtual ~TransportMessage() = default;
+
+    TransportMessage& operator=(const TransportMessage&) = default;
+    TransportMessage& operator=(TransportMessage&&) = default;
 
 protected:
-    virtual const QString& nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override
+    {
+        static const QVariantList Props = field::createProps_transportFields(TVer);
+        return Props;
+    }
 };
 
-} // namespace v311
+} // namespace common
 
 }  // namespace protocol
 

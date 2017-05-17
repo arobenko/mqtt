@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
 #include "comms_champion/comms_champion.h"
 
 namespace mqtt
@@ -31,25 +29,32 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace v311
+namespace common
 {
 
-class Plugin : public comms_champion::Plugin
+template <template<typename...> class TMsgBase>
+class Message : public
+    comms_champion::MessageBase<TMsgBase>
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "MQTT.Protocol.v311" FILE "mqtt.json")
-    Q_INTERFACES(comms_champion::Plugin)
-
+    using Base = comms_champion::MessageBase<TMsgBase>;
 public:
-    Plugin();
-    ~Plugin();
-
+    Message() = default;
+    Message(const Message&) = default;
+    Message(Message&&) = default;
+    virtual ~Message() = default;
+    Message& operator=(const Message&) = default;
+    Message& operator=(Message&&) = default;
+protected:
+    virtual QString idAsStringImpl() const override
+    {
+        return QString("%1").arg(Base::getId(), 1, 10, QChar('0'));
+    }
 };
 
-} // namespace v311
+} // namespace common
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt

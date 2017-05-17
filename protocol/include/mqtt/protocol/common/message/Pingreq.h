@@ -1,5 +1,5 @@
 //
-// Copyright 2014 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,38 +18,44 @@
 
 #pragma once
 
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include "comms_champion/comms_champion.h"
+#include "comms/MessageBase.h"
+#include "mqtt/protocol/common/MsgId.h"
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
 {
 
-namespace v311
+namespace common
 {
 
-class Plugin : public comms_champion::Plugin
+namespace message
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "MQTT.Protocol.v311" FILE "mqtt.json")
-    Q_INTERFACES(comms_champion::Plugin)
 
+template <typename TMsgBase>
+class Pingreq : public
+        comms::MessageBase<
+            TMsgBase,
+            comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
+            comms::option::ZeroFieldsImpl,
+            comms::option::MsgType<Pingreq<TMsgBase> >
+        >
+{
 public:
-    Plugin();
-    ~Plugin();
+    Pingreq() = default;
+    Pingreq(const Pingreq&) = default;
+    Pingreq(Pingreq&& other) = default;
+    virtual ~Pingreq() = default;
 
+    Pingreq& operator=(const Pingreq&) = default;
+    Pingreq& operator=(Pingreq&&) = default;
 };
 
-} // namespace v311
+}  // namespace message
+
+} // namespace common
 
 }  // namespace protocol
-
-}  // namespace cc_plugin
 
 }  // namespace mqtt

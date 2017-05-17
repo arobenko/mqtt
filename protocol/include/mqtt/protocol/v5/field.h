@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -15,36 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Protocol.h"
+#pragma once
 
-namespace cc = comms_champion;
+#include "mqtt/protocol/common/field.h"
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
 {
 
-namespace v311
+namespace v5
 {
 
-Protocol::~Protocol() = default;
-
-const QString& Protocol::nameImpl() const
-{
-    static const QString Str("MQTT v3.1.1");
-    return Str;
-}
-
-} // namespace v311
+} // namespace v5
 
 }  // namespace protocol
 
-}  // namespace cc_plugin
-
 }  // namespace mqtt
-
-

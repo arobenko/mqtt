@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -15,36 +15,44 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Protocol.h"
 
-namespace cc = comms_champion;
+#pragma once
+
+#include <tuple>
+
+#include "comms/protocols.h"
+#include "mqtt/protocol/common/MsgIdFlagsLayer.h"
+#include "mqtt/protocol/common/field.h"
+
 
 namespace mqtt
-{
-
-namespace cc_plugin
 {
 
 namespace protocol
 {
 
-namespace v311
+namespace common
 {
 
-Protocol::~Protocol() = default;
+template <
+    typename TMsgBase,
+    typename TInputMessages,
+    field::ProtocolVersionVal TVer,
+    typename TMsgAllocOptions = std::tuple<> >
+using Stack =
+    MsgIdFlagsLayer<
+        TMsgBase,
+        TInputMessages,
+        comms::protocol::MsgSizeLayer<
+            field::RemSize,
+            comms::protocol::MsgDataLayer<>
+        >,
+        TVer,
+        TMsgAllocOptions
+    >;
 
-const QString& Protocol::nameImpl() const
-{
-    static const QString Str("MQTT v3.1.1");
-    return Str;
-}
-
-} // namespace v311
+} // namespace common
 
 }  // namespace protocol
 
-}  // namespace cc_plugin
-
 }  // namespace mqtt
-
-

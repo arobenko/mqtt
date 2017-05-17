@@ -1,8 +1,8 @@
-set (THIS_PLUGIN_NAME "mqtt_v311_protocol")
+set (THIS_PLUGIN_NAME "mqtt_v5_protocol")
 
 ######################################################################
 
-function (cc_plugin_mqtt)
+function (cc_plugin_mqtt_v5)
     set (name "${THIS_PLUGIN_NAME}")
     
     set (meta_file "${CMAKE_CURRENT_SOURCE_DIR}/mqtt.json")
@@ -20,22 +20,22 @@ function (cc_plugin_mqtt)
     set (src
         Plugin.cpp
         Protocol.cpp
-        TransportMessage.cpp
-        message/Connect.cpp
-        message/Connack.cpp
-        message/Publish.cpp
-        message/Puback.cpp
-        message/Pubrec.cpp
-        message/Pubrel.cpp
-        message/Pubcomp.cpp
-        message/Subscribe.cpp
-        message/Suback.cpp
-        message/Unsubscribe.cpp
-        message/Unsuback.cpp
-        message/Pingreq.cpp
-        message/Pingresp.cpp
-        message/Disconnect.cpp
-        field.cpp
+#        TransportMessage.cpp
+#        message/Connect.cpp
+#        message/Connack.cpp
+#        message/Publish.cpp
+#        message/Puback.cpp
+#        message/Pubrec.cpp
+#        message/Pubrel.cpp
+#        message/Pubcomp.cpp
+#        message/Subscribe.cpp
+#        message/Suback.cpp
+#        message/Unsubscribe.cpp
+#        message/Unsuback.cpp
+#        message/Pingreq.cpp
+#        message/Pingresp.cpp
+#        message/Disconnect.cpp
+#        field.cpp
     )
     
     set (hdr
@@ -49,7 +49,7 @@ function (cc_plugin_mqtt)
     )
     
     add_library (${name} SHARED ${src} ${moc})
-    target_link_libraries (${name} ${CC_PLUGIN_LIBRARIES})
+    target_link_libraries (${name} ${MQTT_PROTOCOL_PLUGIN_COMMON_LIB} ${CC_PLUGIN_LIBRARIES})
     qt5_use_modules(${name} Core)
     
     install (
@@ -60,7 +60,7 @@ endfunction()
 
 ######################################################################
 
-cc_plugin_mqtt ()
+cc_plugin_mqtt_v5 ()
 
 if (CC_MQTT_FULL_SOLUTION)
     add_dependencies(${THIS_PLUGIN_NAME} ${CC_EXTERNAL_TGT})
