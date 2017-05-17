@@ -57,8 +57,8 @@ using AllMessages = std::tuple<
 //    message::Suback<TMsgBase>,
 //    message::Unsubscribe<TMsgBase>,
 //    message::Unsuback<TMsgBase>,
-    message::Pingreq<TMsgBase>//,
-//    message::Pingresp<TMsgBase>,
+    message::Pingreq<TMsgBase>,
+    message::Pingresp<TMsgBase>//,
 //    message::Disconnect<TMsgBase>
 >;
 
