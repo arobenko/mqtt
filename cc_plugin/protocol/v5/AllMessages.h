@@ -21,7 +21,7 @@
 #include <tuple>
 #include "cc_plugin/protocol/v5/Message.h"
 
-//#include "cc_plugin/protocol/v5/message/Connect.h"
+#include "cc_plugin/protocol/v5/message/Connect.h"
 //#include "cc_plugin/protocol/v5/message/Connack.h"
 //#include "cc_plugin/protocol/v5/message/Publish.h"
 //#include "cc_plugin/protocol/v5/message/Puback.h"
@@ -49,7 +49,7 @@ namespace v5
 {
 
 typedef std::tuple<
-//    cc_plugin::protocol::v5::message::Connect,
+    cc_plugin::protocol::v5::message::Connect,
 //    cc_plugin::protocol::v5::message::Connack,
 //    cc_plugin::protocol::v5::message::Publish,
 //    cc_plugin::protocol::v5::message::Puback,

@@ -18,10 +18,8 @@
 
 #pragma once
 
-#include <QtCore/QVariantList>
-#include <QtCore/QVariantMap>
-
-#include "mqtt/protocol/common/field.h"
+#include "comms_champion/comms_champion.h"
+#include "cc_plugin/protocol/common/field.h"
 
 namespace mqtt
 {
@@ -35,14 +33,40 @@ namespace protocol
 namespace common
 {
 
-namespace field
+namespace message
 {
 
-QVariantList createProps_transportFields(mqtt::protocol::common::field::ProtocolVersionVal version);
-const QVariantList& emptyList();
-QVariantList createProps_connect(mqtt::protocol::common::field::ProtocolVersionVal version);
+template <
+    mqtt::protocol::common::field::ProtocolVersionVal TVer,
+    typename TMsgBase,
+    typename TActual>
+class Connect : public
+    comms_champion::ProtocolMessageBase<TMsgBase, TActual>
+{
+public:
+    Connect() = default;
+    Connect(const Connect&) = default;
+    Connect(Connect&&) = default;
+    virtual ~Connect() = default;
 
-} // namespace field
+    Connect& operator=(const Connect&) = default;
+    Connect& operator=(Connect&&) = default;
+
+protected:
+    virtual const char* nameImpl() const override
+    {
+        return "CONNECT";
+    }
+
+    virtual const QVariantList& fieldsPropertiesImpl() const override
+    {
+        static const QVariantList Props =
+                cc_plugin::protocol::common::field::createProps_connect(TVer);
+        return Props;
+    }
+};
+
+} // namespace message
 
 } // namespace common
 
@@ -51,3 +75,5 @@ QVariantList createProps_connect(mqtt::protocol::common::field::ProtocolVersionV
 } // namespace cc_plugin
 
 } // namespace mqtt
+
+

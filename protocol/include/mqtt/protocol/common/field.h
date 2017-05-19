@@ -38,6 +38,41 @@ namespace field
 
 using FieldBase = comms::Field<comms::option::BigEndian>;
 
+using VarByteInt =
+    comms::field::IntValue<
+        comms::Field<comms::option::LittleEndian>,
+        std::uint32_t,
+        comms::option::VarLength<1, 4>
+    >;
+
+template <typename... TOpts>
+using String =
+    comms::field::String<
+        FieldBase,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                FieldBase,
+                std::uint16_t
+            >
+        >,
+        TOpts...
+    >;
+
+template <typename... TOpts>
+using BinData =
+    comms::field::ArrayList<
+        FieldBase,
+        std::uint8_t,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<
+                FieldBase,
+                std::uint16_t
+            >
+        >,
+        TOpts...
+    >;
+
+
 enum class ProtocolVersionVal : std::uint8_t
 {
     v311 = 4,
@@ -86,12 +121,129 @@ struct MsgIdFlagsBundle : public
     COMMS_FIELD_MEMBERS_ACCESS(flags, id);
 };
 
-using RemSize =
-    comms::field::IntValue<
-        comms::Field<comms::option::LittleEndian>,
-        std::uint32_t,
-        comms::option::VarLength<1, 4>
+using RemSize = VarByteInt;
+
+template <typename... TOpts>
+struct ProtocolName : public
+    comms::field::String<
+        FieldBase,
+        comms::option::SequenceSizeFieldPrefix<
+            comms::field::IntValue<FieldBase, std::uint16_t>
+        >,
+        TOpts...
+    >
+{
+    ProtocolName()
+    {
+        comms::field::toFieldBase(*this).value() = "MQTT";
+    }
+
+    bool valid() const
+    {
+        auto& asBase = comms::field::toFieldBase(*this);
+        return asBase.valid() && (asBase.value() == "MQTT");
+    }
+};
+
+template <ProtocolVersionVal TVer>
+using ProtocolVersion =
+    comms::field::EnumValue<
+        FieldBase,
+        ProtocolVersionVal,
+        comms::option::DefaultNumValue<(int)TVer>,
+        comms::option::ValidNumValueRange<(int)TVer, (int)TVer>
     >;
+
+struct ConnectFlagsLow : public
+    comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedBitLength<3>,
+        comms::option::BitmaskReservedBits<0x1, 0>
+    >
+{
+    COMMS_BITMASK_BITS(cleanSession=1, willFlag);
+};
+
+struct ConnectFlagsHigh : public
+    comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedBitLength<3>,
+        comms::option::BitmaskReservedBits<0x1, 0>
+    >
+{
+    COMMS_BITMASK_BITS(willRetain, password, username);
+};
+
+enum class QosVal : std::uint8_t
+{
+    AtMostOnceDelivery,
+    AtLeastOnceDelivery,
+    ExactlyOnceDelivery,
+    NumOfValues
+};
+
+template <typename... TExtraOptions>
+using QoS = comms::field::EnumValue<
+        FieldBase,
+        QosVal,
+        comms::option::ValidNumValueRange<0, (int)QosVal::NumOfValues - 1>,
+        TExtraOptions...
+    >;
+
+class ConnectFlags : public
+    comms::field::Bitfield<
+        FieldBase,
+        std::tuple<
+            field::ConnectFlagsLow,
+            field::QoS<comms::option::FixedBitLength<2> >,
+            field::ConnectFlagsHigh
+        >
+    >
+{
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(flagsLow, willQos, flagsHigh);
+
+    bool valid() const
+    {
+        typedef typename std::decay<decltype(field_flagsLow())>::type LowFlagsFieldType;
+        typedef typename std::decay<decltype(field_willQos())>::type QosFieldType;
+        typedef typename std::decay<decltype(field_flagsHigh())>::type HighFlagsFieldType;
+
+        if (!field_flagsLow().getBitValue(LowFlagsFieldType::BitIdx_willFlag)) {
+            if (field_willQos().value() != QosFieldType::ValueType::AtMostOnceDelivery) {
+                return false;
+            }
+
+            if (field_flagsHigh().getBitValue(HighFlagsFieldType::BitIdx_willRetain)) {
+                return false;
+            }
+        }
+
+        if ((!field_flagsHigh().getBitValue(HighFlagsFieldType::BitIdx_username)) &&
+            (field_flagsHigh().getBitValue(HighFlagsFieldType::BitIdx_password))) {
+            return false;
+        }
+
+        return true;
+    }
+};
+
+using KeepAlive = comms::field::IntValue<FieldBase, std::uint16_t, comms::option::UnitsSeconds>;
+
+template <typename... TOpts>
+using ClientId = String<TOpts...>;
+
+template <typename... TOpts>
+using WillTopic = comms::field::Optional<String<TOpts...> >;
+
+template <typename... TOpts>
+using WillMessage = comms::field::Optional<BinData<TOpts...> >;
+
+template <typename... TOpts>
+using UserName = comms::field::Optional<String<TOpts...> >;
+
+template <typename... TOpts>
+using Password = comms::field::Optional<BinData<TOpts...> >;
 
 } // namespace field
 

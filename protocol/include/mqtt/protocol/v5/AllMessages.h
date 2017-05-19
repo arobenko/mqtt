@@ -19,8 +19,7 @@
 #pragma once
 
 #include <tuple>
-//#include "mqtt/protocol/v5/Message.h"
-//#include "mqtt/protocol/v5/message/Connect.h"
+#include "mqtt/protocol/v5/message/Connect.h"
 //#include "mqtt/protocol/v5/message/Connack.h"
 //#include "mqtt/protocol/v5/message/Publish.h"
 //#include "mqtt/protocol/v5/message/Puback.h"
@@ -46,7 +45,7 @@ namespace v5
 
 template <typename TMsgBase>
 using AllMessages = std::tuple<
-//    message::Connect<TMsgBase>,
+    message::Connect<TMsgBase>,
 //    message::Connack<TMsgBase>,
 //    message::Publish<TMsgBase>,
 //    message::Puback<TMsgBase>,
