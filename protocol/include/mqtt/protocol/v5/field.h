@@ -48,7 +48,32 @@ using KeepAlive = mqtt::protocol::common::field::KeepAlive;
 enum class PropertyIdVal : std::uint8_t
 {
     PayloadFormatIndicator = 1,
-    PublishExpiryInterval = 2
+    PublishExpiryInterval = 2,
+    ContentType = 3,
+    ResponseTopic = 8,
+    CorrelationData = 9,
+    SubscriptionIdentifier = 11,
+    SessionExpiryInterval = 17,
+    AssignedClientIdentifier = 18,
+    ServerKeepAlive = 19,
+    AuthMethod = 21,
+    AuthData = 22,
+    RequestProblemInformation = 23,
+    WillDelayInterval = 24,
+    RequestResponseInformation = 25,
+    ResponseInformation = 26,
+    ServerReference = 28,
+    ReasonString = 31,
+    ReceiveMaximum = 33,
+    TopicAliasMaximum = 34,
+    TopicAlias = 35,
+    MaximumQoS = 36,
+    RetainAvailable = 37,
+    UserProperty = 38,
+    MaximumPacketSize = 39,
+    WildcardSubscriptionAvailable = 40,
+    SubscriptionIdentifierAvailable = 41,
+    SharedSubscriptionAvailable = 42
 };
 
 template <PropertyIdVal TVal>
@@ -102,18 +127,274 @@ using PublishExpiryInterval =
 using PublishExpiryIntervalProp =
     Property<PropertyIdVal::PublishExpiryInterval, PublishExpiryInterval>;
 
+template <typename... TOpts>
+using ContentType = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using ContentTypeProp =
+    Property<PropertyIdVal::ContentType, ContentType<TOpts...> >;
+
+template <typename... TOpts>
+using ResponseTopic = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using ResponseTopicProp =
+    Property<PropertyIdVal::ResponseTopic, ResponseTopic<TOpts...> >;
+
+template <typename... TOpts>
+using CorrelationData = common::field::BinData<TOpts...>;
+
+template <typename... TOpts>
+using CorrelationDataProp =
+    Property<PropertyIdVal::CorrelationData, CorrelationData<TOpts...> >;
+
+using SubscriptionIdentifier = common::field::VarByteInt;
+
+using SubscriptionIdentifierProp =
+    Property<PropertyIdVal::SubscriptionIdentifier, SubscriptionIdentifier >;
+
+using SessionExpiryInterval =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint32_t,
+        comms::option::UnitsSeconds
+    >;
+
+using SessionExpiryIntervalProp =
+    Property<PropertyIdVal::SessionExpiryInterval, SessionExpiryInterval>;
+
+template <typename... TOpts>
+using AssignedClientIdentifier = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using AssignedClientIdentifierProp =
+    Property<PropertyIdVal::AssignedClientIdentifier, AssignedClientIdentifier<TOpts...> >;
+
+using ServerKeepAlive =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint16_t,
+        comms::option::UnitsSeconds
+    >;
+
+using ServerKeepAliveProp =
+    Property<PropertyIdVal::ServerKeepAlive, ServerKeepAlive>;
+
+template <typename... TOpts>
+using AuthMethod = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using AuthMethodProp =
+    Property<PropertyIdVal::AuthMethod, AuthMethod<TOpts...> >;
+
+template <typename... TOpts>
+using AuthData = common::field::BinData<TOpts...>;
+
+template <typename... TOpts>
+using AuthDataProp =
+    Property<PropertyIdVal::AuthData, AuthData<TOpts...> >;
+
+enum class BoolPropVal : std::uint8_t
+{
+    False,
+    True,
+    NumOfValues
+};
+
+using BoolPropValue =
+    comms::field::EnumValue<
+        FieldBase,
+        BoolPropVal,
+        comms::option::ValidNumValueRange<0, (int)BoolPropVal::NumOfValues - 1>
+    >;
+
+using RequestProblemInformation = BoolPropValue;
+
+using RequestProblemInformationProp =
+    Property<PropertyIdVal::RequestProblemInformation, RequestProblemInformation>;
+
+using WillDelayInterval =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint32_t,
+        comms::option::UnitsSeconds
+    >;
+
+using WillDelayIntervalProp =
+    Property<PropertyIdVal::WillDelayInterval, WillDelayInterval>;
+
+using RequestResponseInformation = BoolPropValue;
+
+using RequestResponseInformationProp =
+    Property<PropertyIdVal::RequestResponseInformation, RequestResponseInformation>;
+
+template <typename... TOpts>
+using ResponseInformation = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using ResponseInformationProp =
+    Property<PropertyIdVal::ResponseInformation, ResponseInformation<TOpts...> >;
+
+template <typename... TOpts>
+using ServerReference = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using ServerReferenceProp =
+    Property<PropertyIdVal::ServerReference, ServerReference<TOpts...> >;
+
+template <typename... TOpts>
+using ReasonString = common::field::String<TOpts...>;
+
+template <typename... TOpts>
+using ReasonStringProp =
+    Property<PropertyIdVal::ReasonString, ReasonString<TOpts...> >;
+
+using ReceiveMaximum =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint16_t
+    >;
+
+using ReceiveMaximumProp =
+    Property<PropertyIdVal::ReceiveMaximum, ReceiveMaximum>;
+
+using TopicAliasMaximum =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint16_t
+    >;
+
+using TopicAliasMaximumProp =
+    Property<PropertyIdVal::TopicAliasMaximum, TopicAliasMaximum>;
+
+using TopicAlias =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint16_t
+    >;
+
+using TopicAliasProp =
+    Property<PropertyIdVal::TopicAlias, TopicAlias>;
+
+using MaximumQoS =
+    comms::field::EnumValue<
+        FieldBase,
+        common::field::QosVal,
+        comms::option::ValidNumValueRange<0, (int)common::field::QosVal::AtLeastOnceDelivery>,
+        comms::option::FailOnInvalid<>
+    >;
+
+using MaximumQosProp =
+    Property<PropertyIdVal::MaximumQoS, MaximumQoS>;
+
+using RetainAvailable = BoolPropValue;
+
+using RetainAvailableProp =
+    Property<PropertyIdVal::RetainAvailable, RetainAvailable>;
+
+template <typename... TOpt>
+struct UserProperty : public
+        comms::field::Bundle<
+            FieldBase,
+            std::tuple<
+                common::field::String<TOpt...>,
+                common::field::String<TOpt...>
+            >
+        >
+{
+    COMMS_FIELD_MEMBERS_ACCESS(key, value);
+};
+
+template <typename... TOpt>
+using UserPropertyProp =
+    Property<PropertyIdVal::UserProperty, UserProperty<TOpt...> >;
+
+using MaximumPacketSize =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint32_t
+    >;
+
+using MaximumPacketSizeProp =
+    Property<PropertyIdVal::MaximumPacketSize, MaximumPacketSize>;
+
+using WildcardSubscriptionAvailable = BoolPropValue;
+
+using WildcardSubscriptionAvailableProp =
+    Property<PropertyIdVal::WildcardSubscriptionAvailable, WildcardSubscriptionAvailable>;
+
+using SubscriptionIdentifierAvailable = BoolPropValue;
+
+using SubscriptionIdentifierAvailableProp =
+    Property<PropertyIdVal::SubscriptionIdentifierAvailable, SubscriptionIdentifierAvailable>;
+
+using SharedSubscriptionAvailable = BoolPropValue;
+
+using SharedSubscriptionAvailableProp =
+    Property<PropertyIdVal::SharedSubscriptionAvailable, SharedSubscriptionAvailable>;
+
 struct PropertyVar : public
     comms::field::Variant<
         FieldBase,
         std::tuple<
             PayloadFormatIndicatorProp,
-            PublishExpiryIntervalProp
+            PublishExpiryIntervalProp,
+            ContentTypeProp<>, // TODO options
+            ResponseTopicProp<>, // TODO options
+            CorrelationDataProp<>, // TODO options
+            SubscriptionIdentifierProp,
+            SessionExpiryIntervalProp,
+            AssignedClientIdentifierProp<>, // TODO options
+            ServerKeepAliveProp,
+            AuthMethodProp<>, // TODO options
+            AuthDataProp<>, // TODO options
+            RequestProblemInformationProp,
+            WillDelayIntervalProp,
+            RequestResponseInformationProp,
+            ResponseInformationProp<>, // TODO options
+            ServerReferenceProp<>, // TODO options
+            ReasonStringProp<>, // TODO options
+            ReceiveMaximumProp,
+            TopicAliasMaximumProp,
+            TopicAliasProp,
+            MaximumQosProp,
+            RetainAvailableProp,
+            UserPropertyProp<>, // TODO options
+            MaximumPacketSizeProp,
+            WildcardSubscriptionAvailableProp,
+            SubscriptionIdentifierAvailableProp,
+            SharedSubscriptionAvailableProp
         >
     >
 {
     COMMS_VARIANT_MEMBERS_ACCESS(
         payloadFormatIndicator,
-        publishExpiryInterval
+        publishExpiryInterval,
+        contentType,
+        responseTopic,
+        correlationData,
+        subscriptionIdentifier,
+        sessionExpiryInterval,
+        assignedClientIdentifier,
+        serverKeepAlive,
+        authMethod,
+        authData,
+        requestProblemInformation,
+        willDelayInterval,
+        requestResponseInformation,
+        responseInformation,
+        serverReference,
+        reasonString,
+        receiveMaximum,
+        topicAliasMaximum,
+        topicAlias,
+        maximumQoS,
+        retainAvailable,
+        userProperty,
+        maximumPacketSize,
+        wildcardSubscriptionAvailable,
+        subscriptionIdentifierAvailable,
+        sharedSubscriptionAvailable
     );
 };
 

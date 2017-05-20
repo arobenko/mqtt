@@ -17,6 +17,8 @@
 
 #include "cc_plugin/protocol/common/field.h"
 
+#include <cassert>
+
 #include "comms_champion/comms_champion.h"
 #include "mqtt/protocol/common/MsgId.h"
 #include "mqtt/protocol/v5/field.h"
@@ -308,11 +310,36 @@ QVariantMap createProps_propId(PropertyIdVal val)
     static const std::map<PropertyIdVal, QString> Map = {
         std::make_pair(PropertyIdVal::PayloadFormatIndicator, "Payload Format Indicator"),
         std::make_pair(PropertyIdVal::PublishExpiryInterval, "Publish Expiry Interval"),
+        std::make_pair(PropertyIdVal::ContentType, "Content Type"),
+        std::make_pair(PropertyIdVal::ResponseTopic, "Response Topic"),
+        std::make_pair(PropertyIdVal::CorrelationData, "Correlation Data"),
+        std::make_pair(PropertyIdVal::SubscriptionIdentifier, "Subscription Identifier"),
+        std::make_pair(PropertyIdVal::SessionExpiryInterval, "Session Expiry Interval"),
+        std::make_pair(PropertyIdVal::AssignedClientIdentifier, "Assigned Client Identifier"),
+        std::make_pair(PropertyIdVal::ServerKeepAlive, "Server Keep Alive"),
+        std::make_pair(PropertyIdVal::AuthMethod, "Auth Method"),
+        std::make_pair(PropertyIdVal::AuthData, "Auth Data"),
+        std::make_pair(PropertyIdVal::RequestProblemInformation, "Request Problem Information"),
+        std::make_pair(PropertyIdVal::WillDelayInterval, "Will Delay Interval"),
+        std::make_pair(PropertyIdVal::RequestResponseInformation, "Request Response Information"),
+        std::make_pair(PropertyIdVal::ResponseInformation, "Response Information"),
+        std::make_pair(PropertyIdVal::ServerReference, "Server Reference"),
+        std::make_pair(PropertyIdVal::ReasonString, "Reason String"),
+        std::make_pair(PropertyIdVal::ReceiveMaximum, "Receive Maximum"),
+        std::make_pair(PropertyIdVal::TopicAliasMaximum, "Topic Alias Maximum"),
+        std::make_pair(PropertyIdVal::TopicAlias, "Topic Alias"),
+        std::make_pair(PropertyIdVal::MaximumQoS, "Maximum QoS"),
+        std::make_pair(PropertyIdVal::RetainAvailable, "Retain Available"),
+        std::make_pair(PropertyIdVal::UserProperty, "User Property"),
+        std::make_pair(PropertyIdVal::MaximumPacketSize, "Maximum Packet Size"),
+        std::make_pair(PropertyIdVal::WildcardSubscriptionAvailable, "Wildcard Subscription Available"),
+        std::make_pair(PropertyIdVal::SubscriptionIdentifierAvailable, "Subscription Identifier Available"),
+        std::make_pair(PropertyIdVal::SharedSubscriptionAvailable, "Shared Subscription Available")
     };
 
     auto iter = Map.find(val);
     if (iter == Map.end()) {
-        assert("Invalid value");
+        assert(!"Invalid value");
         return QVariantMap();
     }
 
@@ -347,11 +374,306 @@ QVariantMap createProps_payloadFromatIndicatorProp()
 
 QVariantMap createProps_publishExpiryIntervalProp()
 {
-    using Field = mqtt::protocol::v5::field::PayloadFormatIndicatorProp;
+    using Field = mqtt::protocol::v5::field::PublishExpiryIntervalProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::PublishExpiryInterval))
             .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_contentTypeProp()
+{
+    using Field = mqtt::protocol::v5::field::ContentTypeProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ContentType))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_responseTopicProp()
+{
+    using Field = mqtt::protocol::v5::field::ContentTypeProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ResponseTopic))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_correlationDataProp()
+{
+    using Field = mqtt::protocol::v5::field::ContentTypeProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::CorrelationData))
+            .add(cc::property::field::ArrayList().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_subscriptionIdentifierProp()
+{
+    using Field = mqtt::protocol::v5::field::SubscriptionIdentifierProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::SubscriptionIdentifier))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_sessionExpiryIntervalProp()
+{
+    using Field = mqtt::protocol::v5::field::SessionExpiryIntervalProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::SessionExpiryInterval))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_assignedClientIdentifierProp()
+{
+    using Field = mqtt::protocol::v5::field::AssignedClientIdentifierProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::AssignedClientIdentifier))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_serverKeepAliveProp()
+{
+    using Field = mqtt::protocol::v5::field::SubscriptionIdentifierProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ServerKeepAlive))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_authMethodProp()
+{
+    using Field = mqtt::protocol::v5::field::AuthMethodProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::AuthMethod))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_authDataProp()
+{
+    using Field = mqtt::protocol::v5::field::AuthMethodProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::AuthData))
+            .add(cc::property::field::ArrayList().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_boolPropValue(const QString& name = QString())
+{
+    using Field = mqtt::protocol::v5::field::BoolPropValue;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .name(name)
+            .add("False")
+            .add("True");
+    assert(props.values().size() == (int)Field::ValueType::NumOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_requestProblemInformationProp()
+{
+    using Field = mqtt::protocol::v5::field::RequestProblemInformationProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::RequestProblemInformation))
+            .add(createProps_boolPropValue());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_willDelayIntervalProp()
+{
+    using Field = mqtt::protocol::v5::field::WillDelayIntervalProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::WillDelayInterval))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_requestResponseInformationProp()
+{
+    using Field = mqtt::protocol::v5::field::RequestResponseInformationProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::RequestResponseInformation))
+            .add(createProps_boolPropValue());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_responseInformationProp()
+{
+    using Field = mqtt::protocol::v5::field::ResponseInformationProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ResponseInformation))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_serverReferenceProp()
+{
+    using Field = mqtt::protocol::v5::field::ServerReferenceProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ServerReference))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_reasonStringProp()
+{
+    using Field = mqtt::protocol::v5::field::ReasonStringProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ReasonString))
+            .add(cc::property::field::String().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_receiveMaximumProp()
+{
+    using Field = mqtt::protocol::v5::field::ReceiveMaximumProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::ReceiveMaximum))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_topicAliasMaximumProp()
+{
+    using Field = mqtt::protocol::v5::field::TopicAliasMaximumProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::TopicAliasMaximum))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_topicAliasProp()
+{
+    using Field = mqtt::protocol::v5::field::TopicAliasProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::TopicAlias))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_maximumQosProp()
+{
+    using Field = mqtt::protocol::v5::field::MaximumQosProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::MaximumQoS))
+            .add(createProps_qos(QString(), false));
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_retainAvailableProp()
+{
+    using Field = mqtt::protocol::v5::field::RetainAvailableProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::RetainAvailable))
+            .add(createProps_boolPropValue());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_userPropertyProp()
+{
+    using PairField = mqtt::protocol::v5::field::UserProperty<>;
+    auto pairProps =
+            cc::property::field::ForField<PairField>()
+                .add(cc::property::field::String().name("key").asMap())
+                .add(cc::property::field::String().name("value").asMap());
+
+    assert(pairProps.members().size() == PairField::FieldIdx_numOfValues);
+
+    using Field = mqtt::protocol::v5::field::UserPropertyProp<>;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::UserProperty))
+            .add(pairProps.asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_maximumPacketSizeProp()
+{
+    using Field = mqtt::protocol::v5::field::MaximumPacketSizeProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::MaximumPacketSize))
+            .add(cc::property::field::IntValue().asMap());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_wildcardSubscriptionAvailableProp()
+{
+    using Field = mqtt::protocol::v5::field::WildcardSubscriptionAvailableProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::WildcardSubscriptionAvailable))
+            .add(createProps_boolPropValue());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_subscriptionIdentifierAvailableProp()
+{
+    using Field = mqtt::protocol::v5::field::SubscriptionIdentifierAvailableProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::SubscriptionIdentifierAvailable))
+            .add(createProps_boolPropValue());
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_sharedSubscriptionAvailableProp()
+{
+    using Field = mqtt::protocol::v5::field::SharedSubscriptionAvailableProp;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .add(createProps_propId(PropertyIdVal::SharedSubscriptionAvailable))
+            .add(createProps_boolPropValue());
     assert(props.members().size() == Field::FieldIdx_numOfValues);
     return props.asMap();
 }
@@ -365,6 +687,31 @@ QVariantMap createProps_propertyVar()
             .setIndexHidden()
             .add(createProps_payloadFromatIndicatorProp())
             .add(createProps_publishExpiryIntervalProp())
+            .add(createProps_contentTypeProp())
+            .add(createProps_responseTopicProp())
+            .add(createProps_correlationDataProp())
+            .add(createProps_subscriptionIdentifierProp())
+            .add(createProps_sessionExpiryIntervalProp())
+            .add(createProps_assignedClientIdentifierProp())
+            .add(createProps_serverKeepAliveProp())
+            .add(createProps_authMethodProp())
+            .add(createProps_authDataProp())
+            .add(createProps_requestProblemInformationProp())
+            .add(createProps_willDelayIntervalProp())
+            .add(createProps_requestResponseInformationProp())
+            .add(createProps_responseInformationProp())
+            .add(createProps_serverReferenceProp())
+            .add(createProps_reasonStringProp())
+            .add(createProps_receiveMaximumProp())
+            .add(createProps_topicAliasMaximumProp())
+            .add(createProps_topicAliasProp())
+            .add(createProps_maximumQosProp())
+            .add(createProps_retainAvailableProp())
+            .add(createProps_userPropertyProp())
+            .add(createProps_maximumPacketSizeProp())
+            .add(createProps_wildcardSubscriptionAvailableProp())
+            .add(createProps_subscriptionIdentifierAvailableProp())
+            .add(createProps_sharedSubscriptionAvailableProp())
         ;
     assert(props.members().size() == Field::FieldIdx_numOfValues);
     return props.asMap();
@@ -381,6 +728,7 @@ QVariantMap createProps_properties()
             .serialisedHidden()
             .asMap();
 }
+
 
 // TODO
 } // namespace
