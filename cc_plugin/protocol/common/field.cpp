@@ -281,6 +281,7 @@ QVariantMap createProps_protocolVersion()
             .name("Protocol Version")
             .add("v3.1.1", (int)mqtt::protocol::common::field::ProtocolVersionVal::v311)
             .add("v5", (int)mqtt::protocol::common::field::ProtocolVersionVal::v5)
+            .readOnly()
             .asMap();
 }
 
@@ -327,7 +328,6 @@ QVariantMap createProps_payloadFromatIndicator()
     using Field = mqtt::protocol::v5::field::PayloadFormatIndicator;
     auto props =
         cc::property::field::ForField<Field>()
-            .name("value")
             .add("Unspecified")
             .add("UTF-8 Char Data");
     assert(props.values().size() == (int)Field::ValueType::NumOfValues);
@@ -351,7 +351,7 @@ QVariantMap createProps_publishExpiryIntervalProp()
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::PublishExpiryInterval))
-            .add(cc::property::field::IntValue().name("value").asMap());
+            .add(cc::property::field::IntValue().asMap());
     assert(props.members().size() == Field::FieldIdx_numOfValues);
     return props.asMap();
 }
@@ -376,6 +376,9 @@ QVariantMap createProps_properties()
         cc::property::field::ArrayList()
             .name("Properties")
             .add(createProps_propertyVar())
+            .showPrefix()
+            .prefixName("Length")
+            .serialisedHidden()
             .asMap();
 }
 
