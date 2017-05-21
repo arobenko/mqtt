@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <cassert>
-
 #include "comms_champion/comms_champion.h"
 #include "cc_plugin/protocol/common/field.h"
 
@@ -42,28 +40,28 @@ template <
     mqtt::protocol::common::field::ProtocolVersionVal TVer,
     typename TMsgBase,
     typename TActual>
-class Connect : public
+class Connack : public
     comms_champion::ProtocolMessageBase<TMsgBase, TActual>
 {
 public:
-    Connect() = default;
-    Connect(const Connect&) = default;
-    Connect(Connect&&) = default;
-    virtual ~Connect() = default;
+    Connack() = default;
+    Connack(const Connack&) = default;
+    Connack(Connack&&) = default;
+    virtual ~Connack() = default;
 
-    Connect& operator=(const Connect&) = default;
-    Connect& operator=(Connect&&) = default;
+    Connack& operator=(const Connack&) = default;
+    Connack& operator=(Connack&&) = default;
 
 protected:
     virtual const char* nameImpl() const override
     {
-        return "CONNECT";
+        return "CONNACK";
     }
 
     virtual const QVariantList& fieldsPropertiesImpl() const override
     {
         static const QVariantList Props =
-                cc_plugin::protocol::common::field::createProps_connect(TVer);
+                cc_plugin::protocol::common::field::createProps_connack(TVer);
         assert(Props.size() == TMsgBase::FieldIdx_numOfValues);
         return Props;
     }

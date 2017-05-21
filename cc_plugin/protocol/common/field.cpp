@@ -22,6 +22,7 @@
 #include "comms_champion/comms_champion.h"
 #include "mqtt/protocol/common/MsgId.h"
 #include "mqtt/protocol/v5/field.h"
+#include "mqtt/protocol/v311/field.h"
 
 namespace cc = comms_champion;
 
@@ -729,6 +730,69 @@ QVariantMap createProps_properties()
             .asMap();
 }
 
+QVariantMap createProps_connectAcknowledgeFlags()
+{
+    using Field = mqtt::protocol::common::field::ConnackFlags;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .name("Connect Acknowledge Flags")
+            .add("Session Present");
+    assert(props.bits().size() == Field::BitIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_connackResponseCodeV311()
+{
+    using Field = mqtt::protocol::v311::field::ConnackResponseCode;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .name("Response Code")
+            .add("Accepted")
+            .add("Wrong Protocol Version")
+            .add("Identifier Rejected")
+            .add("Server Unavailable")
+            .add("Bad Username or Password")
+            .add("Not Authorized");
+    assert(props.values().size() == (int)Field::ValueType::NumOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_responseCodeV5(bool isSuback = false)
+{
+    using Field = mqtt::protocol::v5::field::ResponseCode;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .name("Response Code");
+    if (isSuback) {
+        props.add("GrantedQoS0", (int)Field::ValueType::GrantedQoS0);
+    }
+    else {
+        props.add("Success", (int)Field::ValueType::Success);
+    }
+    return props
+            .add("GrantedQoS1", (int)Field::ValueType::GrantedQoS1)
+            .add("GrantedQoS2", (int)Field::ValueType::GrantedQoS2)
+            .add("Unspecified Error", (int)Field::ValueType::UnspecifiedError)
+            .add("Malformed Packet", (int)Field::ValueType::MalformedPacket)
+            .add("Protocol Error", (int)Field::ValueType::ProtocolError)
+            .add("Implementation Specific Error", (int)Field::ValueType::ImplementationSpecificError)
+            .add("Unsupported Protocol Version", (int)Field::ValueType::UnsupportedProtocolVersion)
+            .add("Client Id Not Valid", (int)Field::ValueType::ClientIdNotValid)
+            .add("Bad Authentication", (int)Field::ValueType::BadAuth)
+            .add("Not Authorised", (int)Field::ValueType::NotAuthorised)
+            .add("Server Unavailable", (int)Field::ValueType::ServerUnavailable)
+            .add("Server Busy", (int)Field::ValueType::ServerBusy)
+            .add("Banned", (int)Field::ValueType::Banned)
+            .add("Bad Auth Method", (int)Field::ValueType::BadAuthMethod)
+            .add("Topic Name Invalid", (int)Field::ValueType::TopicNameInvalid)
+            .add("Packet Too Large", (int)Field::ValueType::PacketTooLarge)
+            .add("Quota Exceeded", (int)Field::ValueType::QuotaExceeded)
+            .add("Retain Not Supported", (int)Field::ValueType::RetainNotSupported)
+            .add("Use Another Server", (int)Field::ValueType::UseAnotherServer)
+            .add("Server Moved", (int)Field::ValueType::ServerMoved)
+            .add("Connection Rate Exceeded", (int)Field::ValueType::ConnectionRateExceeded)
+            .asMap();
+}
 
 // TODO
 } // namespace
@@ -764,6 +828,20 @@ QVariantList createProps_connect(ProtocolVersionVal version)
     props.append(createProps_willMessageOpt());
     props.append(createProps_userNameOpt());
     props.append(createProps_passwordOpt());
+    return props;
+}
+
+QVariantList createProps_connack(ProtocolVersionVal version)
+{
+    QVariantList props;
+    props.append(createProps_connectAcknowledgeFlags());
+    if (version < ProtocolVersionVal::v5) {
+        props.append(createProps_connackResponseCodeV311());
+        return props;
+    }
+
+    props.append(createProps_responseCodeV5());
+    props.append(createProps_properties());
     return props;
 }
 

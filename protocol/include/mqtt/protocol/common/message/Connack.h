@@ -33,23 +33,23 @@ namespace common
 namespace message
 {
 
-template <typename TMsgBase>
-class Pingreq : public
+template <typename TMsgBase, typename TAllFields, typename TActual>
+class Connack : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
-            comms::option::ZeroFieldsImpl,
-            comms::option::MsgType<Pingreq<TMsgBase> >
+            comms::option::StaticNumIdImpl<MsgId_CONNACK>,
+            comms::option::FieldsImpl<TAllFields>,
+            comms::option::MsgType<TActual>
         >
 {
-public:
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&& other) = default;
-    ~Pingreq() = default;
+protected:
+    Connack() = default;
+    Connack(const Connack&) = default;
+    Connack(Connack&& other) = default;
+    ~Connack() = default;
 
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
+    Connack& operator=(const Connack&) = default;
+    Connack& operator=(Connack&&) = default;
 };
 
 } // namespace message

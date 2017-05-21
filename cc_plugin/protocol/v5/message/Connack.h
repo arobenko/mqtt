@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,44 +18,42 @@
 
 #pragma once
 
-#include "comms/MessageBase.h"
-#include "mqtt/protocol/common/MsgId.h"
+#include "cc_plugin/protocol/common/message/Connack.h"
+#include "cc_plugin/protocol/v5/Message.h"
+#include "mqtt/protocol/v5/message/Connack.h"
 
 namespace mqtt
+{
+
+namespace cc_plugin
 {
 
 namespace protocol
 {
 
-namespace common
+namespace v5
 {
 
 namespace message
 {
 
-template <typename TMsgBase>
-class Pingreq : public
-        comms::MessageBase<
-            TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
-            comms::option::ZeroFieldsImpl,
-            comms::option::MsgType<Pingreq<TMsgBase> >
-        >
+struct Connack : public
+    cc_plugin::protocol::common::message::Connack<
+        mqtt::protocol::common::field::ProtocolVersionVal::v5,
+        mqtt::protocol::v5::message::Connack<cc_plugin::protocol::v5::Message>,
+        Connack
+    >
 {
-public:
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&& other) = default;
-    ~Pingreq() = default;
-
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
 };
 
 } // namespace message
 
-} // namespace common
+} // namespace v5
 
 } // namespace protocol
 
+} // namespace cc_plugin
+
 } // namespace mqtt
+
+

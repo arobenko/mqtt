@@ -17,6 +17,9 @@
 
 #pragma once
 
+#include <algorithm>
+#include <iterator>
+
 #include "mqtt/protocol/common/field.h"
 
 namespace mqtt
@@ -379,6 +382,78 @@ using Properties =
             mqtt::protocol::common::field::VarByteInt
         >
     >;
+
+enum class ResponseCodeVal : std::uint8_t
+{
+    Success = 0,
+    GrantedQoS0 = Success,
+    GrantedQoS1 = 1,
+    GrantedQoS2 = 2,
+    UnspecifiedError = 128,
+    MalformedPacket = 129,
+    ProtocolError = 130,
+    ImplementationSpecificError = 131,
+    UnsupportedProtocolVersion = 132,
+    ClientIdNotValid = 133,
+    BadAuth = 134,
+    NotAuthorised = 135,
+    ServerUnavailable = 136,
+    ServerBusy = 137,
+    Banned = 138,
+    BadAuthMethod = 140,
+    TopicNameInvalid = 144,
+    PacketTooLarge = 149,
+    QuotaExceeded = 151,
+    RetainNotSupported = 154,
+    UseAnotherServer = 156,
+    ServerMoved = 157,
+    ConnectionRateExceeded = 159
+};
+
+struct ResponseCode : public
+    comms::field::EnumValue<
+        FieldBase,
+        ResponseCodeVal
+    >
+{
+    bool valid() const
+    {
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+
+        static const ResponseCodeVal Values[] = {
+            ResponseCodeVal::Success,
+            ResponseCodeVal::GrantedQoS1,
+            ResponseCodeVal::GrantedQoS2,
+            ResponseCodeVal::UnspecifiedError,
+            ResponseCodeVal::MalformedPacket,
+            ResponseCodeVal::ProtocolError,
+            ResponseCodeVal::ImplementationSpecificError,
+            ResponseCodeVal::UnsupportedProtocolVersion,
+            ResponseCodeVal::ClientIdNotValid,
+            ResponseCodeVal::BadAuth,
+            ResponseCodeVal::NotAuthorised,
+            ResponseCodeVal::ServerUnavailable,
+            ResponseCodeVal::ServerBusy,
+            ResponseCodeVal::Banned,
+            ResponseCodeVal::BadAuthMethod,
+            ResponseCodeVal::TopicNameInvalid,
+            ResponseCodeVal::PacketTooLarge,
+            ResponseCodeVal::QuotaExceeded,
+            ResponseCodeVal::RetainNotSupported,
+            ResponseCodeVal::UseAnotherServer,
+            ResponseCodeVal::ServerMoved,
+            ResponseCodeVal::ConnectionRateExceeded
+        };
+
+        auto val = Base::value();
+        auto iter = std::lower_bound(std::begin(Values), std::end(Values), val);
+        if ((iter == std::end(Values)) || (*iter != val)) {
+            return false;
+        }
+
+        return Base::valid();
+    }
+};
 
 } // namespace field
 

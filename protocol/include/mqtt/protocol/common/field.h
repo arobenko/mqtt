@@ -232,6 +232,16 @@ using UserName = comms::field::Optional<String<> >;
 
 using Password = comms::field::Optional<BinData<> >;
 
+struct ConnackFlags : public
+    comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedLength<1>,
+        comms::option::BitmaskReservedBits<0xfe, 0x0>
+    >
+{
+    COMMS_BITMASK_BITS(sessionPresent);
+};
+
 } // namespace field
 
 } // namespace common

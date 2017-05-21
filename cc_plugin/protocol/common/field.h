@@ -41,6 +41,7 @@ namespace field
 QVariantList createProps_transportFields(mqtt::protocol::common::field::ProtocolVersionVal version);
 const QVariantList& emptyList();
 QVariantList createProps_connect(mqtt::protocol::common::field::ProtocolVersionVal version);
+QVariantList createProps_connack(mqtt::protocol::common::field::ProtocolVersionVal version);
 
 } // namespace field
 

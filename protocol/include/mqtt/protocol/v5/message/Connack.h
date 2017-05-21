@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include "comms/MessageBase.h"
-#include "mqtt/protocol/common/MsgId.h"
+#include <tuple>
+#include "mqtt/protocol/common/message/Connack.h"
+#include "mqtt/protocol/v5/field.h"
 
 namespace mqtt
 {
@@ -27,34 +28,43 @@ namespace mqtt
 namespace protocol
 {
 
-namespace common
+namespace v5
 {
 
 namespace message
 {
 
+using ConnackFields =
+    std::tuple<
+        common::field::ConnackFlags,
+        v5::field::ResponseCode,
+        v5::field::Properties
+    >;
+
+
 template <typename TMsgBase>
-class Pingreq : public
-        comms::MessageBase<
+class Connack : public
+        common::message::Connack<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
-            comms::option::ZeroFieldsImpl,
-            comms::option::MsgType<Pingreq<TMsgBase> >
+            ConnackFields,
+            Connack<TMsgBase>
         >
 {
 public:
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&& other) = default;
-    ~Pingreq() = default;
+    COMMS_MSG_FIELDS_ACCESS(flags, responseCode, properties);
 
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
+    Connack() = default;
+    Connack(const Connack&) = default;
+    Connack(Connack&& other) = default;
+    virtual ~Connack() = default;
+
+    Connack& operator=(const Connack&) = default;
+    Connack& operator=(Connack&&) = default;
 };
 
 } // namespace message
 
-} // namespace common
+} // namespace v5
 
 } // namespace protocol
 

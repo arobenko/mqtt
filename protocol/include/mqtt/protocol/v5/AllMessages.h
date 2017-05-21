@@ -20,7 +20,7 @@
 
 #include <tuple>
 #include "mqtt/protocol/v5/message/Connect.h"
-//#include "mqtt/protocol/v5/message/Connack.h"
+#include "mqtt/protocol/v5/message/Connack.h"
 //#include "mqtt/protocol/v5/message/Publish.h"
 //#include "mqtt/protocol/v5/message/Puback.h"
 //#include "mqtt/protocol/v5/message/Pubrec.h"
@@ -46,7 +46,7 @@ namespace v5
 template <typename TMsgBase>
 using AllMessages = std::tuple<
     message::Connect<TMsgBase>,
-//    message::Connack<TMsgBase>,
+    message::Connack<TMsgBase>,
 //    message::Publish<TMsgBase>,
 //    message::Puback<TMsgBase>,
 //    message::Pubrec<TMsgBase>,
