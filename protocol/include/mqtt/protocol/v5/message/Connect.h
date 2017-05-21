@@ -38,16 +38,16 @@ namespace message
 {
 
 using ConnectFields = std::tuple<
-    v5::field::ProtocolName<>,
+    common::field::ProtocolName,
     v5::field::ProtocolVersion,
-    v5::field::ConnectFlags,
-    v5::field::KeepAlive,
-    v5::field::Properties<>,
-    v5::field::ClientId<>,
-    v5::field::WillTopic<>,
-    v5::field::WillMessage<>,
-    v5::field::UserName<>,
-    v5::field::Password<>
+    common::field::ConnectFlags,
+    common::field::KeepAlive,
+    v5::field::Properties,
+    common::field::ClientId,
+    common::field::WillTopic,
+    common::field::WillMessage,
+    common::field::UserName,
+    common::field::Password
 >;
 
 template <typename TMsgBase>
@@ -63,7 +63,7 @@ class Connect : public
 public:
     COMMS_MSG_FIELDS_ACCESS(
         name,
-        level,
+        protVersion,
         flags,
         keepAlive,
         properties,

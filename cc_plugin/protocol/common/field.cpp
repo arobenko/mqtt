@@ -189,7 +189,7 @@ QVariantMap createProps_connectFlags()
 
 QVariantMap createProps_willTopic()
 {
-    using Field = mqtt::protocol::common::field::WillTopic<>::ValueType;
+    using Field = mqtt::protocol::common::field::WillTopic::ValueType;
     return
         cc::property::field::ForField<Field>()
             .name(name_willTopic())
@@ -198,7 +198,7 @@ QVariantMap createProps_willTopic()
 
 QVariantMap createProps_willTopicOpt()
 {
-    using Field = mqtt::protocol::common::field::WillTopic<>;
+    using Field = mqtt::protocol::common::field::WillTopic;
     return
         cc::property::field::ForField<Field>()
             .name(name_willTopic())
@@ -209,7 +209,7 @@ QVariantMap createProps_willTopicOpt()
 
 QVariantMap createProps_willMessage()
 {
-    using Field = mqtt::protocol::common::field::WillMessage<>::ValueType;
+    using Field = mqtt::protocol::common::field::WillMessage::ValueType;
     return
         cc::property::field::ForField<Field>()
             .name(name_willMessage())
@@ -218,7 +218,7 @@ QVariantMap createProps_willMessage()
 
 QVariantMap createProps_willMessageOpt()
 {
-    using Field = mqtt::protocol::common::field::WillMessage<>;
+    using Field = mqtt::protocol::common::field::WillMessage;
     return
         cc::property::field::ForField<Field>()
             .name(name_willMessage())
@@ -229,7 +229,7 @@ QVariantMap createProps_willMessageOpt()
 
 QVariantMap createProps_userName()
 {
-    using Field = mqtt::protocol::common::field::UserName<>::ValueType;
+    using Field = mqtt::protocol::common::field::UserName::ValueType;
     return
         cc::property::field::ForField<Field>()
             .name(name_userName())
@@ -238,7 +238,7 @@ QVariantMap createProps_userName()
 
 QVariantMap createProps_userNameOpt()
 {
-    using Field = mqtt::protocol::common::field::UserName<>;
+    using Field = mqtt::protocol::common::field::UserName;
     return
         cc::property::field::ForField<Field>()
             .name(name_userName())
@@ -249,7 +249,7 @@ QVariantMap createProps_userNameOpt()
 
 QVariantMap createProps_password()
 {
-    using Field = mqtt::protocol::common::field::Password<>::ValueType;
+    using Field = mqtt::protocol::common::field::Password::ValueType;
     return
         cc::property::field::ForField<Field>()
             .name(name_password())
@@ -258,7 +258,7 @@ QVariantMap createProps_password()
 
 QVariantMap createProps_passwordOpt()
 {
-    using Field = mqtt::protocol::common::field::Password<>;
+    using Field = mqtt::protocol::common::field::Password;
     return
         cc::property::field::ForField<Field>()
             .name(name_password())
@@ -269,7 +269,7 @@ QVariantMap createProps_passwordOpt()
 
 QVariantMap createProps_protocolName()
 {
-    using Field = mqtt::protocol::common::field::ProtocolName<>;
+    using Field = mqtt::protocol::common::field::ProtocolName;
     return
         cc::property::field::ForField<Field>()
             .name("Protocol Name")
@@ -298,7 +298,7 @@ QVariantMap createProps_keepAlive()
 
 QVariantMap createProps_clientId()
 {
-    using Field = mqtt::protocol::common::field::ClientId<>;
+    using Field = mqtt::protocol::common::field::ClientId;
     return
         cc::property::field::ForField<Field>()
             .name("Client ID")
@@ -385,7 +385,7 @@ QVariantMap createProps_publishExpiryIntervalProp()
 
 QVariantMap createProps_contentTypeProp()
 {
-    using Field = mqtt::protocol::v5::field::ContentTypeProp<>;
+    using Field = mqtt::protocol::v5::field::ContentTypeProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::ContentType))
@@ -396,7 +396,7 @@ QVariantMap createProps_contentTypeProp()
 
 QVariantMap createProps_responseTopicProp()
 {
-    using Field = mqtt::protocol::v5::field::ContentTypeProp<>;
+    using Field = mqtt::protocol::v5::field::ContentTypeProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::ResponseTopic))
@@ -407,7 +407,7 @@ QVariantMap createProps_responseTopicProp()
 
 QVariantMap createProps_correlationDataProp()
 {
-    using Field = mqtt::protocol::v5::field::ContentTypeProp<>;
+    using Field = mqtt::protocol::v5::field::ContentTypeProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::CorrelationData))
@@ -440,7 +440,7 @@ QVariantMap createProps_sessionExpiryIntervalProp()
 
 QVariantMap createProps_assignedClientIdentifierProp()
 {
-    using Field = mqtt::protocol::v5::field::AssignedClientIdentifierProp<>;
+    using Field = mqtt::protocol::v5::field::AssignedClientIdentifierProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::AssignedClientIdentifier))
@@ -462,7 +462,7 @@ QVariantMap createProps_serverKeepAliveProp()
 
 QVariantMap createProps_authMethodProp()
 {
-    using Field = mqtt::protocol::v5::field::AuthMethodProp<>;
+    using Field = mqtt::protocol::v5::field::AuthMethodProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::AuthMethod))
@@ -473,7 +473,7 @@ QVariantMap createProps_authMethodProp()
 
 QVariantMap createProps_authDataProp()
 {
-    using Field = mqtt::protocol::v5::field::AuthMethodProp<>;
+    using Field = mqtt::protocol::v5::field::AuthMethodProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::AuthData))
@@ -529,7 +529,7 @@ QVariantMap createProps_requestResponseInformationProp()
 
 QVariantMap createProps_responseInformationProp()
 {
-    using Field = mqtt::protocol::v5::field::ResponseInformationProp<>;
+    using Field = mqtt::protocol::v5::field::ResponseInformationProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::ResponseInformation))
@@ -540,7 +540,7 @@ QVariantMap createProps_responseInformationProp()
 
 QVariantMap createProps_serverReferenceProp()
 {
-    using Field = mqtt::protocol::v5::field::ServerReferenceProp<>;
+    using Field = mqtt::protocol::v5::field::ServerReferenceProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::ServerReference))
@@ -551,7 +551,7 @@ QVariantMap createProps_serverReferenceProp()
 
 QVariantMap createProps_reasonStringProp()
 {
-    using Field = mqtt::protocol::v5::field::ReasonStringProp<>;
+    using Field = mqtt::protocol::v5::field::ReasonStringProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::ReasonString))
@@ -617,7 +617,7 @@ QVariantMap createProps_retainAvailableProp()
 
 QVariantMap createProps_userPropertyProp()
 {
-    using PairField = mqtt::protocol::v5::field::UserProperty<>;
+    using PairField = mqtt::protocol::v5::field::UserProperty;
     auto pairProps =
             cc::property::field::ForField<PairField>()
                 .add(cc::property::field::String().name("key").asMap())
@@ -625,7 +625,7 @@ QVariantMap createProps_userPropertyProp()
 
     assert(pairProps.members().size() == PairField::FieldIdx_numOfValues);
 
-    using Field = mqtt::protocol::v5::field::UserPropertyProp<>;
+    using Field = mqtt::protocol::v5::field::UserPropertyProp;
     auto props =
         cc::property::field::ForField<Field>()
             .add(createProps_propId(PropertyIdVal::UserProperty))

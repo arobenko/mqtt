@@ -35,15 +35,8 @@ using FieldBase = mqtt::protocol::common::field::FieldBase;
 
 using ProtocolVersionVal = mqtt::protocol::common::field::ProtocolVersionVal;
 
-template <typename... TOpts>
-using ProtocolName = mqtt::protocol::common::field::ProtocolName<TOpts...>;
-
 using ProtocolVersion =
     mqtt::protocol::common::field::ProtocolVersion<ProtocolVersionVal::v5>;
-
-using ConnectFlags = mqtt::protocol::common::field::ConnectFlags;
-
-using KeepAlive = mqtt::protocol::common::field::KeepAlive;
 
 enum class PropertyIdVal : std::uint8_t
 {
@@ -127,31 +120,25 @@ using PublishExpiryInterval =
 using PublishExpiryIntervalProp =
     Property<PropertyIdVal::PublishExpiryInterval, PublishExpiryInterval>;
 
-template <typename... TOpts>
-using ContentType = common::field::String<TOpts...>;
+using ContentType = common::field::String<>;
 
-template <typename... TOpts>
 using ContentTypeProp =
-    Property<PropertyIdVal::ContentType, ContentType<TOpts...> >;
+    Property<PropertyIdVal::ContentType, ContentType>;
 
-template <typename... TOpts>
-using ResponseTopic = common::field::String<TOpts...>;
+using ResponseTopic = common::field::String<>;
 
-template <typename... TOpts>
 using ResponseTopicProp =
-    Property<PropertyIdVal::ResponseTopic, ResponseTopic<TOpts...> >;
+    Property<PropertyIdVal::ResponseTopic, ResponseTopic>;
 
-template <typename... TOpts>
-using CorrelationData = common::field::BinData<TOpts...>;
+using CorrelationData = common::field::BinData<>;
 
-template <typename... TOpts>
 using CorrelationDataProp =
-    Property<PropertyIdVal::CorrelationData, CorrelationData<TOpts...> >;
+    Property<PropertyIdVal::CorrelationData, CorrelationData>;
 
 using SubscriptionIdentifier = common::field::VarByteInt;
 
 using SubscriptionIdentifierProp =
-    Property<PropertyIdVal::SubscriptionIdentifier, SubscriptionIdentifier >;
+    Property<PropertyIdVal::SubscriptionIdentifier, SubscriptionIdentifier>;
 
 using SessionExpiryInterval =
     comms::field::IntValue<
@@ -163,12 +150,10 @@ using SessionExpiryInterval =
 using SessionExpiryIntervalProp =
     Property<PropertyIdVal::SessionExpiryInterval, SessionExpiryInterval>;
 
-template <typename... TOpts>
-using AssignedClientIdentifier = common::field::String<TOpts...>;
+using AssignedClientIdentifier = common::field::String<>;
 
-template <typename... TOpts>
 using AssignedClientIdentifierProp =
-    Property<PropertyIdVal::AssignedClientIdentifier, AssignedClientIdentifier<TOpts...> >;
+    Property<PropertyIdVal::AssignedClientIdentifier, AssignedClientIdentifier>;
 
 using ServerKeepAlive =
     comms::field::IntValue<
@@ -180,19 +165,15 @@ using ServerKeepAlive =
 using ServerKeepAliveProp =
     Property<PropertyIdVal::ServerKeepAlive, ServerKeepAlive>;
 
-template <typename... TOpts>
-using AuthMethod = common::field::String<TOpts...>;
+using AuthMethod = common::field::String<>;
 
-template <typename... TOpts>
 using AuthMethodProp =
-    Property<PropertyIdVal::AuthMethod, AuthMethod<TOpts...> >;
+    Property<PropertyIdVal::AuthMethod, AuthMethod>;
 
-template <typename... TOpts>
-using AuthData = common::field::BinData<TOpts...>;
+using AuthData = common::field::BinData<>;
 
-template <typename... TOpts>
 using AuthDataProp =
-    Property<PropertyIdVal::AuthData, AuthData<TOpts...> >;
+    Property<PropertyIdVal::AuthData, AuthData>;
 
 enum class BoolPropVal : std::uint8_t
 {
@@ -228,26 +209,20 @@ using RequestResponseInformation = BoolPropValue;
 using RequestResponseInformationProp =
     Property<PropertyIdVal::RequestResponseInformation, RequestResponseInformation>;
 
-template <typename... TOpts>
-using ResponseInformation = common::field::String<TOpts...>;
+using ResponseInformation = common::field::String<>;
 
-template <typename... TOpts>
 using ResponseInformationProp =
-    Property<PropertyIdVal::ResponseInformation, ResponseInformation<TOpts...> >;
+    Property<PropertyIdVal::ResponseInformation, ResponseInformation>;
 
-template <typename... TOpts>
-using ServerReference = common::field::String<TOpts...>;
+using ServerReference = common::field::String<>;
 
-template <typename... TOpts>
 using ServerReferenceProp =
-    Property<PropertyIdVal::ServerReference, ServerReference<TOpts...> >;
+    Property<PropertyIdVal::ServerReference, ServerReference>;
 
-template <typename... TOpts>
-using ReasonString = common::field::String<TOpts...>;
+using ReasonString = common::field::String<>;
 
-template <typename... TOpts>
 using ReasonStringProp =
-    Property<PropertyIdVal::ReasonString, ReasonString<TOpts...> >;
+    Property<PropertyIdVal::ReasonString, ReasonString>;
 
 using ReceiveMaximum =
     comms::field::IntValue<
@@ -292,22 +267,20 @@ using RetainAvailable = BoolPropValue;
 using RetainAvailableProp =
     Property<PropertyIdVal::RetainAvailable, RetainAvailable>;
 
-template <typename... TOpt>
 struct UserProperty : public
         comms::field::Bundle<
             FieldBase,
             std::tuple<
-                common::field::String<TOpt...>,
-                common::field::String<TOpt...>
+                common::field::String<>,
+                common::field::String<>
             >
         >
 {
     COMMS_FIELD_MEMBERS_ACCESS(key, value);
 };
 
-template <typename... TOpt>
 using UserPropertyProp =
-    Property<PropertyIdVal::UserProperty, UserProperty<TOpt...> >;
+    Property<PropertyIdVal::UserProperty, UserProperty>;
 
 using MaximumPacketSize =
     comms::field::IntValue<
@@ -339,27 +312,27 @@ struct PropertyVar : public
         std::tuple<
             PayloadFormatIndicatorProp,
             PublishExpiryIntervalProp,
-            ContentTypeProp<>, // TODO options
-            ResponseTopicProp<>, // TODO options
-            CorrelationDataProp<>, // TODO options
+            ContentTypeProp,
+            ResponseTopicProp,
+            CorrelationDataProp,
             SubscriptionIdentifierProp,
             SessionExpiryIntervalProp,
-            AssignedClientIdentifierProp<>, // TODO options
+            AssignedClientIdentifierProp,
             ServerKeepAliveProp,
-            AuthMethodProp<>, // TODO options
-            AuthDataProp<>, // TODO options
+            AuthMethodProp,
+            AuthDataProp,
             RequestProblemInformationProp,
             WillDelayIntervalProp,
             RequestResponseInformationProp,
-            ResponseInformationProp<>, // TODO options
-            ServerReferenceProp<>, // TODO options
-            ReasonStringProp<>, // TODO options
+            ResponseInformationProp,
+            ServerReferenceProp,
+            ReasonStringProp,
             ReceiveMaximumProp,
             TopicAliasMaximumProp,
             TopicAliasProp,
             MaximumQosProp,
             RetainAvailableProp,
-            UserPropertyProp<>, // TODO options
+            UserPropertyProp,
             MaximumPacketSizeProp,
             WildcardSubscriptionAvailableProp,
             SubscriptionIdentifierAvailableProp,
@@ -398,31 +371,14 @@ struct PropertyVar : public
     );
 };
 
-template <typename... TOpt>
 using Properties =
     comms::field::ArrayList<
         FieldBase,
         PropertyVar,
         comms::option::SequenceSerLengthFieldPrefix<
             mqtt::protocol::common::field::VarByteInt
-        >,
-        TOpt...
+        >
     >;
-
-template <typename... TOpts>
-using ClientId = mqtt::protocol::common::field::ClientId<TOpts...>;
-
-template <typename... TOpts>
-using WillTopic = mqtt::protocol::common::field::WillTopic<TOpts...>;
-
-template <typename... TOpts>
-using WillMessage = mqtt::protocol::common::field::WillMessage<TOpts...>;
-
-template <typename... TOpts>
-using UserName = mqtt::protocol::common::field::UserName<TOpts...>;
-
-template <typename... TOpts>
-using Password = mqtt::protocol::common::field::Password<TOpts...>;
 
 } // namespace field
 

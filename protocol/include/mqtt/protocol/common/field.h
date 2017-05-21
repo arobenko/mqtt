@@ -123,15 +123,7 @@ struct MsgIdFlagsBundle : public
 
 using RemSize = VarByteInt;
 
-template <typename... TOpts>
-struct ProtocolName : public
-    comms::field::String<
-        FieldBase,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<FieldBase, std::uint16_t>
-        >,
-        TOpts...
-    >
+struct ProtocolName : public String<>
 {
     ProtocolName()
     {
@@ -230,20 +222,15 @@ public:
 
 using KeepAlive = comms::field::IntValue<FieldBase, std::uint16_t, comms::option::UnitsSeconds>;
 
-template <typename... TOpts>
-using ClientId = String<TOpts...>;
+using ClientId = String<>;
 
-template <typename... TOpts>
-using WillTopic = comms::field::Optional<String<TOpts...> >;
+using WillTopic = comms::field::Optional<String<> >;
 
-template <typename... TOpts>
-using WillMessage = comms::field::Optional<BinData<TOpts...> >;
+using WillMessage = comms::field::Optional<BinData<> >;
 
-template <typename... TOpts>
-using UserName = comms::field::Optional<String<TOpts...> >;
+using UserName = comms::field::Optional<String<> >;
 
-template <typename... TOpts>
-using Password = comms::field::Optional<BinData<TOpts...> >;
+using Password = comms::field::Optional<BinData<> >;
 
 } // namespace field
 
