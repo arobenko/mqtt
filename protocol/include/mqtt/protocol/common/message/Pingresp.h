@@ -46,7 +46,7 @@ public:
     Pingresp() = default;
     Pingresp(const Pingresp&) = default;
     Pingresp(Pingresp&& other) = default;
-    virtual ~Pingresp() = default;
+    ~Pingresp() = default;
 
     Pingresp& operator=(const Pingresp&) = default;
     Pingresp& operator=(Pingresp&&) = default;
