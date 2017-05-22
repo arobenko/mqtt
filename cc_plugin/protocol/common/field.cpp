@@ -157,7 +157,7 @@ QVariantMap createProps_connectFlagsHigh()
     return props.asMap();
 }
 
-QVariantMap createProps_qos(const QString& name, bool serialisedHidden = true)
+QVariantMap createProps_qos(const QString& name = "qos", bool serialisedHidden = true)
 {
     using Field = mqtt::protocol::common::field::QoS<>;
     auto props =
@@ -770,8 +770,9 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
         props.add("Success", (int)Field::ValueType::Success);
     }
     return props
-            .add("GrantedQoS1", (int)Field::ValueType::GrantedQoS1)
-            .add("GrantedQoS2", (int)Field::ValueType::GrantedQoS2)
+            .add("Granted QoS1", (int)Field::ValueType::GrantedQoS1)
+            .add("Granted QoS2", (int)Field::ValueType::GrantedQoS2)
+            .add("No Matching Subscribers", (int)Field::ValueType::NoMatchingSubscribers)
             .add("Unspecified Error", (int)Field::ValueType::UnspecifiedError)
             .add("Malformed Packet", (int)Field::ValueType::MalformedPacket)
             .add("Protocol Error", (int)Field::ValueType::ProtocolError)
@@ -785,13 +786,82 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
             .add("Banned", (int)Field::ValueType::Banned)
             .add("Bad Auth Method", (int)Field::ValueType::BadAuthMethod)
             .add("Topic Name Invalid", (int)Field::ValueType::TopicNameInvalid)
+            .add("Packet ID in use", (int)Field::ValueType::PacketIdInUse)
             .add("Packet Too Large", (int)Field::ValueType::PacketTooLarge)
             .add("Quota Exceeded", (int)Field::ValueType::QuotaExceeded)
+            .add("Payload Format Invalid", (int)Field::ValueType::PayloadFormatInvalid)
             .add("Retain Not Supported", (int)Field::ValueType::RetainNotSupported)
             .add("Use Another Server", (int)Field::ValueType::UseAnotherServer)
             .add("Server Moved", (int)Field::ValueType::ServerMoved)
             .add("Connection Rate Exceeded", (int)Field::ValueType::ConnectionRateExceeded)
             .asMap();
+}
+
+QVariantMap createProps_retain()
+{
+    return
+        cc::property::field::BitmaskValue()
+            .name("Flags")
+            .add("RETAIN")
+            .serialisedHidden()
+            .asMap();
+}
+
+QVariantMap createProps_dup()
+{
+    return
+        cc::property::field::BitmaskValue()
+            .add("DUP")
+            .serialisedHidden()
+            .asMap();
+}
+
+QVariantMap createProps_reserved()
+{
+    return cc::property::field::IntValue().hidden().asMap();
+}
+
+QVariantMap createProps_publishFlags()
+{
+    return
+        cc::property::field::Bitfield()
+            .name("Flags")
+            .add(createProps_retain())
+            .add(createProps_qos())
+            .add(createProps_dup())
+            .add(createProps_reserved())
+            .serialisedHidden()
+            .asMap();
+}
+
+QVariantMap createProps_topic()
+{
+    return cc::property::field::String().name("Topic").asMap();
+}
+
+QVariantMap createProps_payload()
+{
+    return cc::property::field::ArrayList().name("Payload").asMap();
+}
+
+const QString& name_packetId()
+{
+    static const QString Str("Packet ID");
+    return Str;
+}
+
+QVariantMap createProps_packetId()
+{
+    return cc::property::field::IntValue().name(name_packetId()).asMap();
+}
+
+QVariantMap createProps_packetIdOpt()
+{
+    return cc::property::field::Optional()
+        .name(name_packetId())
+        .field(createProps_packetId())
+        .uncheckable()
+        .asMap();
 }
 
 // TODO
@@ -837,6 +907,33 @@ QVariantList createProps_connack(ProtocolVersionVal version)
     props.append(createProps_connectAcknowledgeFlags());
     if (version < ProtocolVersionVal::v5) {
         props.append(createProps_connackResponseCodeV311());
+        return props;
+    }
+
+    props.append(createProps_responseCodeV5());
+    props.append(createProps_properties());
+    return props;
+}
+
+QVariantList createProps_publish(ProtocolVersionVal version)
+{
+    QVariantList props;
+    props.append(createProps_publishFlags());
+    props.append(createProps_topic());
+    props.append(createProps_packetIdOpt());
+    if (ProtocolVersionVal::v5 <= version) {
+        props.append(createProps_properties());
+    }
+
+    props.append(createProps_payload());
+    return props;
+}
+
+QVariantList createProps_puback(ProtocolVersionVal version)
+{
+    QVariantList props;
+    props.append(createProps_packetId());
+    if (version < ProtocolVersionVal::v5) {
         return props;
     }
 

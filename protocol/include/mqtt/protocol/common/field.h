@@ -242,6 +242,65 @@ struct ConnackFlags : public
     COMMS_BITMASK_BITS(sessionPresent);
 };
 
+class SingleBitBitmask :
+    public comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedBitLength<1>
+    >
+{
+public:
+    COMMS_BITMASK_BITS(value);
+};
+
+class PublishFlags : public
+    comms::field::Bitfield<
+        FieldBase,
+        std::tuple<
+            SingleBitBitmask,
+            QoS<comms::option::FixedBitLength<2> >,
+            SingleBitBitmask,
+            comms::field::IntValue<FieldBase, std::uint8_t, comms::option::FixedBitLength<4> >
+        >
+    >
+{
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(retain, qos, dup, reserved);
+
+    bool valid() const
+    {
+        // Mustn't have dup flag set when qos=0
+        if (field_qos().value() != QosVal::AtMostOnceDelivery) {
+            return true;
+        }
+
+        typedef typename std::decay<decltype(field_dup())>::type DupFieldType;
+        if (field_dup().getBitValue(DupFieldType::BitIdx_value)) {
+            return false;
+        }
+
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        return Base::valid();
+    }
+};
+
+using PacketId =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint16_t,
+        comms::option::DefaultNumValue<1>,
+        comms::option::ValidNumValueRange<1, 0xffff>
+    >;
+
+using OptionalPacketId =
+    comms::field::Optional<
+        PacketId,
+        comms::option::DefaultOptionalMode<comms::field::OptionalMode::Missing>
+    >;
+
+using Topic = String<>;
+
+using Payload = BinData<>;
+
 } // namespace field
 
 } // namespace common

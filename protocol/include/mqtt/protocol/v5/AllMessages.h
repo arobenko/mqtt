@@ -21,8 +21,8 @@
 #include <tuple>
 #include "mqtt/protocol/v5/message/Connect.h"
 #include "mqtt/protocol/v5/message/Connack.h"
-//#include "mqtt/protocol/v5/message/Publish.h"
-//#include "mqtt/protocol/v5/message/Puback.h"
+#include "mqtt/protocol/v5/message/Publish.h"
+#include "mqtt/protocol/v5/message/Puback.h"
 //#include "mqtt/protocol/v5/message/Pubrec.h"
 //#include "mqtt/protocol/v5/message/Pubrel.h"
 //#include "mqtt/protocol/v5/message/Pubcomp.h"
@@ -31,7 +31,7 @@
 //#include "mqtt/protocol/v5/message/Unsubscribe.h"
 //#include "mqtt/protocol/v5/message/Unsuback.h"
 #include "mqtt/protocol/v5/message/Pingreq.h"
-//#include "mqtt/protocol/v5/message/Pingresp.h"
+#include "mqtt/protocol/v5/message/Pingresp.h"
 //#include "mqtt/protocol/v5/message/Disconnect.h"
 
 namespace mqtt
@@ -47,8 +47,8 @@ template <typename TMsgBase>
 using AllMessages = std::tuple<
     message::Connect<TMsgBase>,
     message::Connack<TMsgBase>,
-//    message::Publish<TMsgBase>,
-//    message::Puback<TMsgBase>,
+    message::Publish<TMsgBase>,
+    message::Puback<TMsgBase>,
 //    message::Pubrec<TMsgBase>,
 //    message::Pubrel<TMsgBase>,
 //    message::Pubcomp<TMsgBase>,
