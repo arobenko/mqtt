@@ -72,6 +72,14 @@ using BinData =
         TOpts...
     >;
 
+template <typename... TOpt>
+using ReservedBits =
+    comms::field::IntValue<
+        FieldBase,
+        std::uint8_t,
+        comms::option::ValidNumValueRange<0, 0>,
+        TOpt...
+    >;
 
 enum class ProtocolVersionVal : std::uint8_t
 {
@@ -259,7 +267,7 @@ class PublishFlags : public
             SingleBitBitmask,
             QoS<comms::option::FixedBitLength<2> >,
             SingleBitBitmask,
-            comms::field::IntValue<FieldBase, std::uint8_t, comms::option::FixedBitLength<4> >
+            ReservedBits<comms::option::FixedBitLength<4> >
         >
     >
 {

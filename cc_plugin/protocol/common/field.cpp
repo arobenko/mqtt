@@ -865,7 +865,86 @@ QVariantMap createProps_packetIdOpt()
         .asMap();
 }
 
-// TODO
+QVariantMap createProps_subPayloadV311()
+{
+    auto elemProps =
+         cc::property::field::Bundle()
+            .add(createProps_topic())
+            .add(createProps_qos("QoS", false));
+
+    return
+        cc::property::field::ArrayList()
+            .name("Payload")
+            .serialisedHidden()
+            .add(elemProps.asMap())
+            .asMap();
+}
+
+QVariantMap createProps_nl()
+{
+    return
+        cc::property::field::BitmaskValue()
+            .add("NL")
+            .serialisedHidden()
+            .asMap();
+}
+
+QVariantMap createProps_rap()
+{
+    return
+        cc::property::field::BitmaskValue()
+            .add("RAP")
+            .serialisedHidden()
+            .asMap();
+}
+
+QVariantMap createProps_retainHandling()
+{
+    using Field = mqtt::protocol::v5::field::RetainHandling;
+    auto props =
+        cc::property::field::ForField<Field>()
+            .name("Retain Handling")
+            .add("Send")
+            .add("Send New")
+            .add("Don't Send")
+            .serialisedHidden();
+    assert(props.values().size() == (int)Field::ValueType::NumOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_subOptions()
+{
+    using Field = mqtt::protocol::v5::field::SubOptions;
+    auto props =
+         cc::property::field::ForField<Field>()
+            .add(createProps_qos("QoS"))
+            .add(createProps_nl())
+            .add(createProps_rap())
+            .add(createProps_retainHandling())
+            .add(createProps_reserved());
+
+    assert(props.members().size() == Field::FieldIdx_numOfValues);
+    return props.asMap();
+}
+
+QVariantMap createProps_subPayloadV5()
+{
+    using ElemField = mqtt::protocol::v5::field::SubElem;
+    auto elemProps =
+        cc::property::field::ForField<ElemField>()
+            .add(createProps_topic())
+            .add(createProps_subOptions());
+    assert(elemProps.members().size() == ElemField::FieldIdx_numOfValues);
+
+    using Field = mqtt::protocol::v5::field::SubscribePayload;
+    return
+        cc::property::field::ForField<Field>()
+            .name("Payload")
+            .serialisedHidden()
+            .add(elemProps.asMap())
+            .asMap();
+}
+
 } // namespace
 
 QVariantList createProps_transportFields(ProtocolVersionVal version)
@@ -960,7 +1039,20 @@ QVariantList createProps_pubcomp(ProtocolVersionVal version)
     // The same fields as with PUBACK
     return createProps_puback(version);
 }
-// TODO
+
+QVariantList createProps_subscribe(ProtocolVersionVal version)
+{
+    QVariantList props;
+    props.append(createProps_packetId());
+    if (version < ProtocolVersionVal::v5) {
+        props.append(createProps_subPayloadV311());
+        return props;
+    }
+
+    props.append(createProps_properties());
+    props.append(createProps_subPayloadV5());
+    return props;
+}
 
 
 

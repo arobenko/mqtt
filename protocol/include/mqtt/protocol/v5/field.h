@@ -463,6 +463,65 @@ struct ResponseCode : public
     }
 };
 
+enum class RetainHandlingVal : std::uint8_t
+{
+    Send,
+    SendNew,
+    DontSend,
+    NumOfValues
+};
+
+using RetainHandling =
+    comms::field::EnumValue<
+        common::field::FieldBase,
+        RetainHandlingVal,
+        comms::option::ValidNumValueRange<0, (int)RetainHandlingVal::NumOfValues - 1>,
+        comms::option::FixedBitLength<2>
+    >;
+
+class SubOptions : public
+    comms::field::Bitfield<
+        FieldBase,
+        std::tuple<
+            common::field::QoS<comms::option::FixedBitLength<2> >,
+            common::field::SingleBitBitmask,
+            common::field::SingleBitBitmask,
+            RetainHandling,
+            common::field::ReservedBits<comms::option::FixedBitLength<2> >
+        >
+    >
+{
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(qos, nl, rap, retainHandling, reserved);
+};
+
+class SubElem : public
+    comms::field::Bundle<
+        FieldBase,
+        std::tuple<
+            common::field::Topic,
+            SubOptions
+        >
+    >
+{
+public:
+    COMMS_FIELD_MEMBERS_ACCESS(topic, options);
+};
+
+struct SubscribePayload : public
+    comms::field::ArrayList<
+        FieldBase,
+        SubElem
+    >
+{
+    bool valid() const
+    {
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        return (!Base::value().empty()) && Base::valid();
+    }
+};
+
+
 } // namespace field
 
 } // namespace v5
