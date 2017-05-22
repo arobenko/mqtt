@@ -785,6 +785,7 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
             .add("Server Busy", (int)Field::ValueType::ServerBusy)
             .add("Banned", (int)Field::ValueType::Banned)
             .add("Bad Auth Method", (int)Field::ValueType::BadAuthMethod)
+            .add("Topic Filter Invalid", (int)Field::ValueType::TopicFilterInvalid)
             .add("Topic Name Invalid", (int)Field::ValueType::TopicNameInvalid)
             .add("Packet ID In Use", (int)Field::ValueType::PacketIdInUse)
             .add("Packet ID Not Found", (int)Field::ValueType::PacketIdNotFound)
@@ -794,7 +795,10 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
             .add("Retain Not Supported", (int)Field::ValueType::RetainNotSupported)
             .add("Use Another Server", (int)Field::ValueType::UseAnotherServer)
             .add("Server Moved", (int)Field::ValueType::ServerMoved)
+            .add("Shared Sub Not Supported", (int)Field::ValueType::SharedSubNotSupported)
             .add("Connection Rate Exceeded", (int)Field::ValueType::ConnectionRateExceeded)
+            .add("Sub ID Not Supported", (int)Field::ValueType::SubIdNotSupported)
+            .add("Wildcard Sub Not Supported", (int)Field::ValueType::WildcardSubNotSupported)
             .asMap();
 }
 
@@ -938,6 +942,43 @@ QVariantMap createProps_subPayloadV5()
             .asMap();
 }
 
+QVariantMap createProps_subackReturnCodeV311()
+{
+    cc::property::field::EnumValue props;
+
+    props.name("Return Code");
+    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::protocol::v311::field::SubackReturnCode::SuccessQos2); ++idx) {
+        static const QString Prefix("Success QoS ");
+        auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
+        props.add(str, idx);
+    }
+    props.add("Failure", (int)mqtt::protocol::v311::field::SubackReturnCode::Failure);
+    return props.asMap();
+}
+
+QVariantMap createProps_subackPayloadV311()
+{
+    using Field = mqtt::protocol::v311::field::SubackPayload;
+    return
+        cc::property::field::ForField<Field>()
+            .name("Payload")
+            .serialisedHidden()
+            .add(createProps_subackReturnCodeV311())
+            .asMap();
+}
+
+QVariantMap createProps_subackPayloadV5()
+{
+    using Field = mqtt::protocol::v5::field::SubackPayload;
+    return
+        cc::property::field::ForField<Field>()
+            .name("Payload")
+            .serialisedHidden()
+            .add(createProps_responseCodeV5(true))
+            .asMap();
+}
+
+
 } // namespace
 
 QVariantList createProps_transportFields(ProtocolVersionVal version)
@@ -1047,6 +1088,19 @@ QVariantList createProps_subscribe(ProtocolVersionVal version)
     return props;
 }
 
+QVariantList createProps_suback(ProtocolVersionVal version)
+{
+    QVariantList props;
+    props.append(createProps_packetId());
+    if (version < ProtocolVersionVal::v5) {
+        props.append(createProps_subackPayloadV311());
+        return props;
+    }
+
+    props.append(createProps_properties());
+    props.append(createProps_subackPayloadV5());
+    return props;
+}
 
 
 } // namespace field

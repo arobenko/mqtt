@@ -402,6 +402,7 @@ enum class ResponseCodeVal : std::uint8_t
     ServerBusy = 137,
     Banned = 138,
     BadAuthMethod = 140,
+    TopicFilterInvalid = 143,
     TopicNameInvalid = 144,
     PacketIdInUse = 145,
     PacketIdNotFound = 146,
@@ -411,7 +412,10 @@ enum class ResponseCodeVal : std::uint8_t
     RetainNotSupported = 154,
     UseAnotherServer = 156,
     ServerMoved = 157,
-    ConnectionRateExceeded = 159
+    SharedSubNotSupported = 158,
+    ConnectionRateExceeded = 159,
+    SubIdNotSupported = 161,
+    WildcardSubNotSupported = 162,
 };
 
 struct ResponseCode : public
@@ -441,6 +445,7 @@ struct ResponseCode : public
             ResponseCodeVal::ServerBusy,
             ResponseCodeVal::Banned,
             ResponseCodeVal::BadAuthMethod,
+            ResponseCodeVal::TopicFilterInvalid,
             ResponseCodeVal::TopicNameInvalid,
             ResponseCodeVal::PacketIdInUse,
             ResponseCodeVal::PacketIdNotFound,
@@ -450,7 +455,10 @@ struct ResponseCode : public
             ResponseCodeVal::RetainNotSupported,
             ResponseCodeVal::UseAnotherServer,
             ResponseCodeVal::ServerMoved,
-            ResponseCodeVal::ConnectionRateExceeded
+            ResponseCodeVal::SharedSubNotSupported,
+            ResponseCodeVal::ConnectionRateExceeded,
+            ResponseCodeVal::SubIdNotSupported,
+            ResponseCodeVal::WildcardSubNotSupported
         };
 
         auto val = Base::value();
@@ -530,6 +538,18 @@ struct SubscribePayload : public
     }
 };
 
+struct SubackPayload : public
+    comms::field::ArrayList<
+        FieldBase,
+        ResponseCode
+    >
+{
+    bool valid() const
+    {
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        return (!Base::value().empty()) && Base::valid();
+    }
+};
 
 } // namespace field
 

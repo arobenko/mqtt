@@ -48,6 +48,7 @@ QVariantList createProps_pubrec(mqtt::protocol::common::field::ProtocolVersionVa
 QVariantList createProps_pubrel(mqtt::protocol::common::field::ProtocolVersionVal version);
 QVariantList createProps_pubcomp(mqtt::protocol::common::field::ProtocolVersionVal version);
 QVariantList createProps_subscribe(mqtt::protocol::common::field::ProtocolVersionVal version);
+QVariantList createProps_suback(mqtt::protocol::common::field::ProtocolVersionVal version);
 
 } // namespace field
 
