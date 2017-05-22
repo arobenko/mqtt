@@ -23,8 +23,8 @@
 #include "mqtt/protocol/v5/message/Connack.h"
 #include "mqtt/protocol/v5/message/Publish.h"
 #include "mqtt/protocol/v5/message/Puback.h"
-//#include "mqtt/protocol/v5/message/Pubrec.h"
-//#include "mqtt/protocol/v5/message/Pubrel.h"
+#include "mqtt/protocol/v5/message/Pubrec.h"
+#include "mqtt/protocol/v5/message/Pubrel.h"
 //#include "mqtt/protocol/v5/message/Pubcomp.h"
 //#include "mqtt/protocol/v5/message/Subscribe.h"
 //#include "mqtt/protocol/v5/message/Suback.h"
@@ -49,8 +49,8 @@ using AllMessages = std::tuple<
     message::Connack<TMsgBase>,
     message::Publish<TMsgBase>,
     message::Puback<TMsgBase>,
-//    message::Pubrec<TMsgBase>,
-//    message::Pubrel<TMsgBase>,
+    message::Pubrec<TMsgBase>,
+    message::Pubrel<TMsgBase>,
 //    message::Pubcomp<TMsgBase>,
 //    message::Subscribe<TMsgBase>,
 //    message::Suback<TMsgBase>,

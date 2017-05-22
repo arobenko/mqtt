@@ -942,6 +942,19 @@ QVariantList createProps_puback(ProtocolVersionVal version)
     return props;
 }
 
+QVariantList createProps_pubrec(ProtocolVersionVal version)
+{
+    // The same fields as with PUBACK
+    return createProps_puback(version);
+}
+
+QVariantList createProps_pubrel(ProtocolVersionVal version)
+{
+    // The same fields as with PUBACK
+    return createProps_puback(version);
+}
+
+
 // TODO
 
 

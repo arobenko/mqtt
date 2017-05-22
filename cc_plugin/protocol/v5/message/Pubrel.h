@@ -18,10 +18,9 @@
 
 #pragma once
 
-#include <QtCore/QVariantList>
-#include <QtCore/QVariantMap>
-
-#include "mqtt/protocol/common/field.h"
+#include "cc_plugin/protocol/common/message/Pubrel.h"
+#include "cc_plugin/protocol/v5/Message.h"
+#include "mqtt/protocol/v5/message/Pubrel.h"
 
 namespace mqtt
 {
@@ -32,27 +31,29 @@ namespace cc_plugin
 namespace protocol
 {
 
-namespace common
+namespace v5
 {
 
-namespace field
+namespace message
 {
 
-QVariantList createProps_transportFields(mqtt::protocol::common::field::ProtocolVersionVal version);
-const QVariantList& emptyList();
-QVariantList createProps_connect(mqtt::protocol::common::field::ProtocolVersionVal version);
-QVariantList createProps_connack(mqtt::protocol::common::field::ProtocolVersionVal version);
-QVariantList createProps_publish(mqtt::protocol::common::field::ProtocolVersionVal version);
-QVariantList createProps_puback(mqtt::protocol::common::field::ProtocolVersionVal version);
-QVariantList createProps_pubrec(mqtt::protocol::common::field::ProtocolVersionVal version);
-QVariantList createProps_pubrel(mqtt::protocol::common::field::ProtocolVersionVal version);
+struct Pubrel : public
+    cc_plugin::protocol::common::message::Pubrel<
+        mqtt::protocol::common::field::ProtocolVersionVal::v5,
+        mqtt::protocol::v5::message::Pubrel<cc_plugin::protocol::v5::Message>,
+        Pubrel
+    >
+{
+};
 
-} // namespace field
+} // namespace message
 
-} // namespace common
+} // namespace v5
 
 } // namespace protocol
 
 } // namespace cc_plugin
 
 } // namespace mqtt
+
+

@@ -25,8 +25,8 @@
 #include "cc_plugin/protocol/v5/message/Connack.h"
 #include "cc_plugin/protocol/v5/message/Publish.h"
 #include "cc_plugin/protocol/v5/message/Puback.h"
-//#include "cc_plugin/protocol/v5/message/Pubrec.h"
-//#include "cc_plugin/protocol/v5/message/Pubrel.h"
+#include "cc_plugin/protocol/v5/message/Pubrec.h"
+#include "cc_plugin/protocol/v5/message/Pubrel.h"
 //#include "cc_plugin/protocol/v5/message/Pubcomp.h"
 //#include "cc_plugin/protocol/v5/message/Subscribe.h"
 //#include "cc_plugin/protocol/v5/message/Suback.h"
@@ -34,7 +34,7 @@
 //#include "cc_plugin/protocol/v5/message/Unsuback.h"
 #include "cc_plugin/protocol/v5/message/Pingreq.h"
 #include "cc_plugin/protocol/v5/message/Pingresp.h"
-//#include "cc_plugin/protocol/v5/message/Disconnect.h"
+//#include "cc_plugin/protocols/v5/message/Disconnect.h"
 
 namespace mqtt
 {
@@ -53,7 +53,7 @@ typedef std::tuple<
     cc_plugin::protocol::v5::message::Connack,
     cc_plugin::protocol::v5::message::Publish,
     cc_plugin::protocol::v5::message::Puback,
-//    cc_plugin::protocol::v5::message::Pubrec,
+    cc_plugin::protocol::v5::message::Pubrec,
 //    cc_plugin::protocol::v5::message::Pubrel,
 //    cc_plugin::protocol::v5::message::Pubcomp,
 //    cc_plugin::protocol::v5::message::Subscribe,
