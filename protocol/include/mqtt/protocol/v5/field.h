@@ -473,26 +473,35 @@ enum class RetainHandlingVal : std::uint8_t
 
 using RetainHandling =
     comms::field::EnumValue<
-        common::field::FieldBase,
+        FieldBase,
         RetainHandlingVal,
         comms::option::ValidNumValueRange<0, (int)RetainHandlingVal::NumOfValues - 1>,
         comms::option::FixedBitLength<2>
     >;
+
+struct SubOptionsFlags : public
+    comms::field::BitmaskValue<
+        FieldBase,
+        comms::option::FixedBitLength<2>,
+        comms::option::BitmaskReservedBits<0xfc, 0>
+    >
+{
+    COMMS_BITMASK_BITS(nl, rap);
+};
 
 class SubOptions : public
     comms::field::Bitfield<
         FieldBase,
         std::tuple<
             common::field::QoS<comms::option::FixedBitLength<2> >,
-            common::field::SingleBitBitmask,
-            common::field::SingleBitBitmask,
+            SubOptionsFlags,
             RetainHandling,
             common::field::ReservedBits<comms::option::FixedBitLength<2> >
         >
     >
 {
 public:
-    COMMS_FIELD_MEMBERS_ACCESS(qos, nl, rap, retainHandling, reserved);
+    COMMS_FIELD_MEMBERS_ACCESS(qos, flags, retainHandling, reserved);
 };
 
 class SubElem : public

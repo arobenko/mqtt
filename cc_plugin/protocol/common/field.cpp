@@ -880,22 +880,16 @@ QVariantMap createProps_subPayloadV311()
             .asMap();
 }
 
-QVariantMap createProps_nl()
+QVariantMap createProps_subOptionsFlags()
 {
-    return
-        cc::property::field::BitmaskValue()
+    using Field = mqtt::protocol::v5::field::SubOptionsFlags;
+    auto props =
+        cc::property::field::ForField<Field>()
             .add("NL")
-            .serialisedHidden()
-            .asMap();
-}
-
-QVariantMap createProps_rap()
-{
-    return
-        cc::property::field::BitmaskValue()
             .add("RAP")
-            .serialisedHidden()
-            .asMap();
+            .serialisedHidden();
+    assert(props.bits().size() == Field::BitIdx_numOfValues);
+    return props.asMap();
 }
 
 QVariantMap createProps_retainHandling()
@@ -918,8 +912,7 @@ QVariantMap createProps_subOptions()
     auto props =
          cc::property::field::ForField<Field>()
             .add(createProps_qos("QoS"))
-            .add(createProps_nl())
-            .add(createProps_rap())
+            .add(createProps_subOptionsFlags())
             .add(createProps_retainHandling())
             .add(createProps_reserved());
 
