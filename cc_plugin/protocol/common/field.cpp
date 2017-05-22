@@ -786,7 +786,8 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
             .add("Banned", (int)Field::ValueType::Banned)
             .add("Bad Auth Method", (int)Field::ValueType::BadAuthMethod)
             .add("Topic Name Invalid", (int)Field::ValueType::TopicNameInvalid)
-            .add("Packet ID in use", (int)Field::ValueType::PacketIdInUse)
+            .add("Packet ID In Use", (int)Field::ValueType::PacketIdInUse)
+            .add("Packet ID Not Found", (int)Field::ValueType::PacketIdNotFound)
             .add("Packet Too Large", (int)Field::ValueType::PacketTooLarge)
             .add("Quota Exceeded", (int)Field::ValueType::QuotaExceeded)
             .add("Payload Format Invalid", (int)Field::ValueType::PayloadFormatInvalid)
@@ -954,7 +955,11 @@ QVariantList createProps_pubrel(ProtocolVersionVal version)
     return createProps_puback(version);
 }
 
-
+QVariantList createProps_pubcomp(ProtocolVersionVal version)
+{
+    // The same fields as with PUBACK
+    return createProps_puback(version);
+}
 // TODO
 
 

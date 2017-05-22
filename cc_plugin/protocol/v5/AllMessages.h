@@ -27,7 +27,7 @@
 #include "cc_plugin/protocol/v5/message/Puback.h"
 #include "cc_plugin/protocol/v5/message/Pubrec.h"
 #include "cc_plugin/protocol/v5/message/Pubrel.h"
-//#include "cc_plugin/protocol/v5/message/Pubcomp.h"
+#include "cc_plugin/protocol/v5/message/Pubcomp.h"
 //#include "cc_plugin/protocol/v5/message/Subscribe.h"
 //#include "cc_plugin/protocol/v5/message/Suback.h"
 //#include "cc_plugin/protocol/v5/message/Unsubscribe.h"
@@ -54,8 +54,8 @@ typedef std::tuple<
     cc_plugin::protocol::v5::message::Publish,
     cc_plugin::protocol::v5::message::Puback,
     cc_plugin::protocol::v5::message::Pubrec,
-//    cc_plugin::protocol::v5::message::Pubrel,
-//    cc_plugin::protocol::v5::message::Pubcomp,
+    cc_plugin::protocol::v5::message::Pubrel,
+    cc_plugin::protocol::v5::message::Pubcomp,
 //    cc_plugin::protocol::v5::message::Subscribe,
 //    cc_plugin::protocol::v5::message::Suback,
 //    cc_plugin::protocol::v5::message::Unsubscribe,

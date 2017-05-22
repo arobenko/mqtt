@@ -35,31 +35,31 @@ namespace v5
 namespace message
 {
 
-using PubrelFields = std::tuple<
+using PubcompFields = std::tuple<
     common::field::PacketId,
     v5::field::ResponseCode,
     v5::field::Properties
 >;
 
 template <typename TMsgBase>
-class Pubrel : public
+class Pubcomp : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<common::MsgId_PUBREL>,
-            comms::option::FieldsImpl<PubrelFields>,
-            comms::option::MsgType<Pubrel<TMsgBase> >
+            comms::option::StaticNumIdImpl<common::MsgId_PUBCOMP>,
+            comms::option::FieldsImpl<PubcompFields>,
+            comms::option::MsgType<Pubcomp<TMsgBase> >
         >
 {
 public:
     COMMS_MSG_FIELDS_ACCESS(packetId, responseCode, properties);
 
-    Pubrel() = default;
-    Pubrel(const Pubrel&) = default;
-    Pubrel(Pubrel&& other) = default;
-    virtual ~Pubrel() = default;
+    Pubcomp() = default;
+    Pubcomp(const Pubcomp&) = default;
+    Pubcomp(Pubcomp&& other) = default;
+    virtual ~Pubcomp() = default;
 
-    Pubrel& operator=(const Pubrel&) = default;
-    Pubrel& operator=(Pubrel&&) = default;
+    Pubcomp& operator=(const Pubcomp&) = default;
+    Pubcomp& operator=(Pubcomp&&) = default;
 };
 
 } // namespace message

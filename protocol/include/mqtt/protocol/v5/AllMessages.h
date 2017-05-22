@@ -25,7 +25,7 @@
 #include "mqtt/protocol/v5/message/Puback.h"
 #include "mqtt/protocol/v5/message/Pubrec.h"
 #include "mqtt/protocol/v5/message/Pubrel.h"
-//#include "mqtt/protocol/v5/message/Pubcomp.h"
+#include "mqtt/protocol/v5/message/Pubcomp.h"
 //#include "mqtt/protocol/v5/message/Subscribe.h"
 //#include "mqtt/protocol/v5/message/Suback.h"
 //#include "mqtt/protocol/v5/message/Unsubscribe.h"
@@ -51,7 +51,7 @@ using AllMessages = std::tuple<
     message::Puback<TMsgBase>,
     message::Pubrec<TMsgBase>,
     message::Pubrel<TMsgBase>,
-//    message::Pubcomp<TMsgBase>,
+    message::Pubcomp<TMsgBase>,
 //    message::Subscribe<TMsgBase>,
 //    message::Suback<TMsgBase>,
 //    message::Unsubscribe<TMsgBase>,
