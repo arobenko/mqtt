@@ -33,6 +33,7 @@
 #include "mqtt/protocol/v5/message/Pingreq.h"
 #include "mqtt/protocol/v5/message/Pingresp.h"
 #include "mqtt/protocol/v5/message/Disconnect.h"
+#include "mqtt/protocol/v5/message/Auth.h"
 
 namespace mqtt
 {
@@ -58,7 +59,8 @@ using AllMessages = std::tuple<
     message::Unsuback<TMsgBase>,
     message::Pingreq<TMsgBase>,
     message::Pingresp<TMsgBase>,
-    message::Disconnect<TMsgBase>
+    message::Disconnect<TMsgBase>,
+    message::Auth<TMsgBase>
 >;
 
 //static_assert(

@@ -15,17 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <type_traits>
+#include <functional>
+#include <cassert>
 
-#pragma once
+#include "cc_plugin/protocol/common/field.h"
+#include "Auth.h"
 
-#include <tuple>
-#include <algorithm>
-
-#include "comms/MessageBase.h"
-#include "mqtt/protocol/v5/field.h"
-#include "mqtt/protocol/common/message/Subscribe.h"
+namespace cc = comms_champion;
 
 namespace mqtt
+{
+
+namespace cc_plugin
 {
 
 namespace protocol
@@ -37,31 +39,21 @@ namespace v5
 namespace message
 {
 
-using SubscribeFields = std::tuple<
-    common::field::PacketId,
-    v5::field::Properties,
-    v5::field::SubscribePayload
->;
-
-template <typename TMsgBase>
-class Subscribe : public
-        common::message::Subscribe<
-            TMsgBase,
-            SubscribeFields,
-            Subscribe<TMsgBase>
-        >
+const char* Auth::nameImpl() const
 {
-public:
-    COMMS_MSG_FIELDS_ACCESS(packetId, properties, payload);
+    static const char* Str = "AUTH";
+    return Str;
+}
 
-    Subscribe() = default;
-    Subscribe(const Subscribe&) = default;
-    Subscribe(Subscribe&& other) = default;
-    ~Subscribe() = default;
+const QVariantList& Auth::fieldsPropertiesImpl() const
+{
+    // Same fields as with DISCONNECT message
+    static const QVariantList Props =
+        cc_plugin::protocol::common::field::createProps_disconnect(
+            mqtt::protocol::common::field::ProtocolVersionVal::v5);
+    return Props;
+}
 
-    Subscribe& operator=(const Subscribe&) = default;
-    Subscribe& operator=(Subscribe&&) = default;
-};
 
 }  // namespace message
 
@@ -69,4 +61,7 @@ public:
 
 }  // namespace protocol
 
+}  // namespace cc_plugin
+
 }  // namespace mqtt
+

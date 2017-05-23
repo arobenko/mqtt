@@ -20,22 +20,7 @@ function (cc_plugin_mqtt_v5)
     set (src
         Plugin.cpp
         Protocol.cpp
-#        TransportMessage.cpp
-#        message/Connect.cpp
-#        message/Connack.cpp
-#        message/Publish.cpp
-#        message/Puback.cpp
-#        message/Pubrec.cpp
-#        message/Pubrel.cpp
-#        message/Pubcomp.cpp
-#        message/Subscribe.cpp
-#        message/Suback.cpp
-#        message/Unsubscribe.cpp
-#        message/Unsuback.cpp
-#        message/Pingreq.cpp
-#        message/Pingresp.cpp
-#        message/Disconnect.cpp
-#        field.cpp
+        message/Auth.cpp
     )
     
     set (hdr

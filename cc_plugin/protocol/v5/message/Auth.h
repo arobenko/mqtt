@@ -18,14 +18,14 @@
 
 #pragma once
 
-#include <tuple>
-#include <algorithm>
-
-#include "comms/MessageBase.h"
-#include "mqtt/protocol/v5/field.h"
-#include "mqtt/protocol/common/message/Subscribe.h"
+#include "comms_champion/comms_champion.h"
+#include "mqtt/protocol/v5/message/Auth.h"
+#include "cc_plugin/protocol/v5/Message.h"
 
 namespace mqtt
+{
+
+namespace cc_plugin
 {
 
 namespace protocol
@@ -37,30 +37,23 @@ namespace v5
 namespace message
 {
 
-using SubscribeFields = std::tuple<
-    common::field::PacketId,
-    v5::field::Properties,
-    v5::field::SubscribePayload
->;
-
-template <typename TMsgBase>
-class Subscribe : public
-        common::message::Subscribe<
-            TMsgBase,
-            SubscribeFields,
-            Subscribe<TMsgBase>
-        >
+class Auth : public
+    comms_champion::ProtocolMessageBase<
+        mqtt::protocol::v5::message::Auth<mqtt::cc_plugin::protocol::v5::Message>,
+        Auth>
 {
 public:
-    COMMS_MSG_FIELDS_ACCESS(packetId, properties, payload);
+    Auth() = default;
+    Auth(const Auth&) = default;
+    Auth(Auth&&) = default;
+    virtual ~Auth() = default;
 
-    Subscribe() = default;
-    Subscribe(const Subscribe&) = default;
-    Subscribe(Subscribe&& other) = default;
-    ~Subscribe() = default;
+    Auth& operator=(const Auth&) = default;
+    Auth& operator=(Auth&&) = default;
 
-    Subscribe& operator=(const Subscribe&) = default;
-    Subscribe& operator=(Subscribe&&) = default;
+protected:
+    virtual const char* nameImpl() const override;
+    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
 }  // namespace message
@@ -69,4 +62,8 @@ public:
 
 }  // namespace protocol
 
+}  // namespace cc_plugin
+
 }  // namespace mqtt
+
+
