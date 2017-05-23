@@ -51,6 +51,7 @@ QVariantList createProps_subscribe(mqtt::protocol::common::field::ProtocolVersio
 QVariantList createProps_suback(mqtt::protocol::common::field::ProtocolVersionVal version);
 QVariantList createProps_unsubscribe();
 QVariantList createProps_unsuback(mqtt::protocol::common::field::ProtocolVersionVal version);
+QVariantList createProps_disconnect(mqtt::protocol::common::field::ProtocolVersionVal version);
 
 } // namespace field
 

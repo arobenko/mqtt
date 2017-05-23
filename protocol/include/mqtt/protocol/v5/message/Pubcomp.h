@@ -56,7 +56,7 @@ public:
     Pubcomp() = default;
     Pubcomp(const Pubcomp&) = default;
     Pubcomp(Pubcomp&& other) = default;
-    virtual ~Pubcomp() = default;
+    ~Pubcomp() = default;
 
     Pubcomp& operator=(const Pubcomp&) = default;
     Pubcomp& operator=(Pubcomp&&) = default;

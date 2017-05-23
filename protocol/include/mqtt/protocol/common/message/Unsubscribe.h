@@ -77,7 +77,7 @@ public:
 
     Unsubscribe(const Unsubscribe&) = default;
     Unsubscribe(Unsubscribe&& other) = default;
-    virtual ~Unsubscribe() = default;
+    ~Unsubscribe() = default;
 
     Unsubscribe& operator=(const Unsubscribe&) = default;
     Unsubscribe& operator=(Unsubscribe&&) = default;

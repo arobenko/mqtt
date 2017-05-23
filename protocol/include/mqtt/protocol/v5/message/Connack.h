@@ -56,7 +56,7 @@ public:
     Connack() = default;
     Connack(const Connack&) = default;
     Connack(Connack&& other) = default;
-    virtual ~Connack() = default;
+    ~Connack() = default;
 
     Connack& operator=(const Connack&) = default;
     Connack& operator=(Connack&&) = default;

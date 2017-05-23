@@ -772,6 +772,7 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
     return props
             .add("Granted QoS1", (int)Field::ValueType::GrantedQoS1)
             .add("Granted QoS2", (int)Field::ValueType::GrantedQoS2)
+            .add("Disconnect With Will", (int)Field::ValueType::DisconnectWithWill)
             .add("No Matching Subscribers", (int)Field::ValueType::NoMatchingSubscribers)
             .add("No Subscription Existed", (int)Field::ValueType::NoSubscriptionExisted)
             .add("Unspecified Error", (int)Field::ValueType::UnspecifiedError)
@@ -785,19 +786,28 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
             .add("Server Unavailable", (int)Field::ValueType::ServerUnavailable)
             .add("Server Busy", (int)Field::ValueType::ServerBusy)
             .add("Banned", (int)Field::ValueType::Banned)
+            .add("Server Shutting Down", (int)Field::ValueType::ServerShuttingDown)
             .add("Bad Auth Method", (int)Field::ValueType::BadAuthMethod)
+            .add("Keep Alive Timeout", (int)Field::ValueType::KeepAliveTimeout)
+            .add("Session Taken Over", (int)Field::ValueType::SessionTakenOver)
             .add("Topic Filter Invalid", (int)Field::ValueType::TopicFilterInvalid)
             .add("Topic Name Invalid", (int)Field::ValueType::TopicNameInvalid)
             .add("Packet ID In Use", (int)Field::ValueType::PacketIdInUse)
             .add("Packet ID Not Found", (int)Field::ValueType::PacketIdNotFound)
+            .add("Receive Max Exceeded", (int)Field::ValueType::ReceiveMaxExceeded)
+            .add("Topic Alias Invalid", (int)Field::ValueType::TopicAliasInvalid)
             .add("Packet Too Large", (int)Field::ValueType::PacketTooLarge)
+            .add("Message RateToo High", (int)Field::ValueType::MessageRateTooHigh)
             .add("Quota Exceeded", (int)Field::ValueType::QuotaExceeded)
+            .add("Administrative Action", (int)Field::ValueType::AdministrativeAction)
             .add("Payload Format Invalid", (int)Field::ValueType::PayloadFormatInvalid)
             .add("Retain Not Supported", (int)Field::ValueType::RetainNotSupported)
+            .add("QoS Not Supported", (int)Field::ValueType::QosNotSupported)
             .add("Use Another Server", (int)Field::ValueType::UseAnotherServer)
             .add("Server Moved", (int)Field::ValueType::ServerMoved)
             .add("Shared Sub Not Supported", (int)Field::ValueType::SharedSubNotSupported)
             .add("Connection Rate Exceeded", (int)Field::ValueType::ConnectionRateExceeded)
+            .add("Max Connect Time", (int)Field::ValueType::MaxConnectTime)
             .add("Sub ID Not Supported", (int)Field::ValueType::SubIdNotSupported)
             .add("Wildcard Sub Not Supported", (int)Field::ValueType::WildcardSubNotSupported)
             .asMap();
@@ -1134,6 +1144,17 @@ QVariantList createProps_unsuback(ProtocolVersionVal version)
     return props;
 }
 
+QVariantList createProps_disconnect(ProtocolVersionVal version)
+{
+    QVariantList props;
+    if (version < ProtocolVersionVal::v5) {
+        return props;
+    }
+
+    props.append(createProps_responseCodeV5());
+    props.append(createProps_properties());
+    return props;
+}
 
 } // namespace field
 

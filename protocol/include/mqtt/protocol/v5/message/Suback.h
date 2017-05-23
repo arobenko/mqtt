@@ -56,7 +56,7 @@ public:
     Suback() = default;
     Suback(const Suback&) = default;
     Suback(Suback&& other) = default;
-    virtual ~Suback() = default;
+    ~Suback() = default;
 
     Suback& operator=(const Suback&) = default;
     Suback& operator=(Suback&&) = default;

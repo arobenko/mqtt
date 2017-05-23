@@ -35,31 +35,30 @@ namespace v5
 namespace message
 {
 
-using UnsubackFields = std::tuple<
-    common::field::PacketId,
-    v5::field::Properties,
-    v5::field::ResponseCodeList
+using DisconnectFields = std::tuple<
+    v5::field::ResponseCode,
+    v5::field::Properties
 >;
 
 template <typename TMsgBase>
-class Unsuback : public
+class Disconnect : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<common::MsgId_UNSUBACK>,
-            comms::option::FieldsImpl<UnsubackFields>,
-            comms::option::MsgType<Unsuback<TMsgBase> >
+            comms::option::StaticNumIdImpl<common::MsgId_DISCONNECT>,
+            comms::option::FieldsImpl<DisconnectFields>,
+            comms::option::MsgType<Disconnect<TMsgBase> >
         >
 {
 public:
-    COMMS_MSG_FIELDS_ACCESS(packetId, properties, payload);
+    COMMS_MSG_FIELDS_ACCESS(responseCode, properties);
 
-    Unsuback() = default;
-    Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&& other) = default;
-    ~Unsuback() = default;
+    Disconnect() = default;
+    Disconnect(const Disconnect&) = default;
+    Disconnect(Disconnect&& other) = default;
+    ~Disconnect() = default;
 
-    Unsuback& operator=(const Unsuback&) = default;
-    Unsuback& operator=(Unsuback&&) = default;
+    Disconnect& operator=(const Disconnect&) = default;
+    Disconnect& operator=(Disconnect&&) = default;
 };
 
 } // namespace message

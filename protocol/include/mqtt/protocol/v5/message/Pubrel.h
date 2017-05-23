@@ -56,7 +56,7 @@ public:
     Pubrel() = default;
     Pubrel(const Pubrel&) = default;
     Pubrel(Pubrel&& other) = default;
-    virtual ~Pubrel() = default;
+    ~Pubrel() = default;
 
     Pubrel& operator=(const Pubrel&) = default;
     Pubrel& operator=(Pubrel&&) = default;

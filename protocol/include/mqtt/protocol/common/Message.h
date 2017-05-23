@@ -44,15 +44,9 @@ class Message : public
         TOptions...
     >
 {
-    using Base = comms::Message<
-        comms::option::BigEndian,
-        comms::option::MsgIdType<MsgId>,
-        TOptions...
-    >;
-
 public:
     using FlagsField = comms::field::IntValue<
-        comms::Field<comms::option::BigEndian>,
+        common::field::FieldBase,
         std::uint8_t,
         comms::option::ValidNumValueRange<0x0, 0xf>,
         comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
@@ -61,7 +55,7 @@ public:
     Message() = default;
     Message(const Message&) = default;
     Message(Message&&) = default;
-    virtual ~Message() = default;
+    ~Message() = default;
 
     Message& operator=(const Message&) = default;
     Message& operator=(Message&&) = default;

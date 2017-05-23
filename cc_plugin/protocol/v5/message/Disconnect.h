@@ -18,12 +18,14 @@
 
 #pragma once
 
-#include <tuple>
-#include "comms/MessageBase.h"
-#include "mqtt/protocol/common/MsgId.h"
-#include "mqtt/protocol/v5/field.h"
+#include "cc_plugin/protocol/common/message/Disconnect.h"
+#include "cc_plugin/protocol/v5/Message.h"
+#include "mqtt/protocol/v5/message/Disconnect.h"
 
 namespace mqtt
+{
+
+namespace cc_plugin
 {
 
 namespace protocol
@@ -35,31 +37,13 @@ namespace v5
 namespace message
 {
 
-using UnsubackFields = std::tuple<
-    common::field::PacketId,
-    v5::field::Properties,
-    v5::field::ResponseCodeList
->;
-
-template <typename TMsgBase>
-class Unsuback : public
-        comms::MessageBase<
-            TMsgBase,
-            comms::option::StaticNumIdImpl<common::MsgId_UNSUBACK>,
-            comms::option::FieldsImpl<UnsubackFields>,
-            comms::option::MsgType<Unsuback<TMsgBase> >
-        >
+struct Disconnect : public
+    cc_plugin::protocol::common::message::Disconnect<
+        mqtt::protocol::common::field::ProtocolVersionVal::v5,
+        mqtt::protocol::v5::message::Disconnect<cc_plugin::protocol::v5::Message>,
+        Disconnect
+    >
 {
-public:
-    COMMS_MSG_FIELDS_ACCESS(packetId, properties, payload);
-
-    Unsuback() = default;
-    Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&& other) = default;
-    ~Unsuback() = default;
-
-    Unsuback& operator=(const Unsuback&) = default;
-    Unsuback& operator=(Unsuback&&) = default;
 };
 
 } // namespace message
@@ -68,4 +52,8 @@ public:
 
 } // namespace protocol
 
+} // namespace cc_plugin
+
 } // namespace mqtt
+
+
