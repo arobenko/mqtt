@@ -390,6 +390,7 @@ enum class ResponseCodeVal : std::uint8_t
     GrantedQoS1 = 1,
     GrantedQoS2 = 2,
     NoMatchingSubscribers = 16,
+    NoSubscriptionExisted = 17,
     UnspecifiedError = 128,
     MalformedPacket = 129,
     ProtocolError = 130,
@@ -433,6 +434,7 @@ struct ResponseCode : public
             ResponseCodeVal::GrantedQoS1,
             ResponseCodeVal::GrantedQoS2,
             ResponseCodeVal::NoMatchingSubscribers,
+            ResponseCodeVal::NoSubscriptionExisted,
             ResponseCodeVal::UnspecifiedError,
             ResponseCodeVal::MalformedPacket,
             ResponseCodeVal::ProtocolError,
@@ -538,7 +540,7 @@ struct SubscribePayload : public
     }
 };
 
-struct SubackPayload : public
+struct ResponseCodeList : public
     comms::field::ArrayList<
         FieldBase,
         ResponseCode

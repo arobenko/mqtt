@@ -773,6 +773,7 @@ QVariantMap createProps_responseCodeV5(bool isSuback = false)
             .add("Granted QoS1", (int)Field::ValueType::GrantedQoS1)
             .add("Granted QoS2", (int)Field::ValueType::GrantedQoS2)
             .add("No Matching Subscribers", (int)Field::ValueType::NoMatchingSubscribers)
+            .add("No Subscription Existed", (int)Field::ValueType::NoSubscriptionExisted)
             .add("Unspecified Error", (int)Field::ValueType::UnspecifiedError)
             .add("Malformed Packet", (int)Field::ValueType::MalformedPacket)
             .add("Protocol Error", (int)Field::ValueType::ProtocolError)
@@ -967,14 +968,14 @@ QVariantMap createProps_subackPayloadV311()
             .asMap();
 }
 
-QVariantMap createProps_subackPayloadV5()
+QVariantMap createProps_responseCodeList(bool isSubscribe = true, const QString& name = "Payload")
 {
-    using Field = mqtt::protocol::v5::field::SubackPayload;
+    using Field = mqtt::protocol::v5::field::ResponseCodeList;
     return
         cc::property::field::ForField<Field>()
-            .name("Payload")
+            .name(name)
             .serialisedHidden()
-            .add(createProps_responseCodeV5(true))
+            .add(createProps_responseCodeV5(isSubscribe))
             .asMap();
 }
 
@@ -1108,7 +1109,7 @@ QVariantList createProps_suback(ProtocolVersionVal version)
     }
 
     props.append(createProps_properties());
-    props.append(createProps_subackPayloadV5());
+    props.append(createProps_responseCodeList());
     return props;
 }
 
@@ -1119,6 +1120,20 @@ QVariantList createProps_unsubscribe()
     props.append(createProps_unsubscribePayload());
     return props;
 }
+
+QVariantList createProps_unsuback(ProtocolVersionVal version)
+{
+    QVariantList props;
+    props.append(createProps_packetId());
+    if (version < ProtocolVersionVal::v5) {
+        return props;
+    }
+
+    props.append(createProps_properties());
+    props.append(createProps_responseCodeList(false));
+    return props;
+}
+
 
 } // namespace field
 

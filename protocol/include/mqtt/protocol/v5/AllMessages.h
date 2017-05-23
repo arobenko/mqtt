@@ -29,7 +29,7 @@
 #include "mqtt/protocol/v5/message/Subscribe.h"
 #include "mqtt/protocol/v5/message/Suback.h"
 #include "mqtt/protocol/v5/message/Unsubscribe.h"
-//#include "mqtt/protocol/v5/message/Unsuback.h"
+#include "mqtt/protocol/v5/message/Unsuback.h"
 #include "mqtt/protocol/v5/message/Pingreq.h"
 #include "mqtt/protocol/v5/message/Pingresp.h"
 //#include "mqtt/protocol/v5/message/Disconnect.h"
@@ -55,7 +55,7 @@ using AllMessages = std::tuple<
     message::Subscribe<TMsgBase>,
     message::Suback<TMsgBase>,
     message::Unsubscribe<TMsgBase>,
-//    message::Unsuback<TMsgBase>,
+    message::Unsuback<TMsgBase>,
     message::Pingreq<TMsgBase>,
     message::Pingresp<TMsgBase>//,
 //    message::Disconnect<TMsgBase>

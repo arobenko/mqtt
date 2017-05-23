@@ -35,31 +35,31 @@ namespace v5
 namespace message
 {
 
-using SubackFields = std::tuple<
+using UnsubackFields = std::tuple<
     common::field::PacketId,
     v5::field::Properties,
     v5::field::ResponseCodeList
 >;
 
 template <typename TMsgBase>
-class Suback : public
+class Unsuback : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<common::MsgId_SUBACK>,
-            comms::option::FieldsImpl<SubackFields>,
-            comms::option::MsgType<Suback<TMsgBase> >
+            comms::option::StaticNumIdImpl<common::MsgId_UNSUBACK>,
+            comms::option::FieldsImpl<UnsubackFields>,
+            comms::option::MsgType<Unsuback<TMsgBase> >
         >
 {
 public:
     COMMS_MSG_FIELDS_ACCESS(packetId, properties, payload);
 
-    Suback() = default;
-    Suback(const Suback&) = default;
-    Suback(Suback&& other) = default;
-    virtual ~Suback() = default;
+    Unsuback() = default;
+    Unsuback(const Unsuback&) = default;
+    Unsuback(Unsuback&& other) = default;
+    virtual ~Unsuback() = default;
 
-    Suback& operator=(const Suback&) = default;
-    Suback& operator=(Suback&&) = default;
+    Unsuback& operator=(const Unsuback&) = default;
+    Unsuback& operator=(Unsuback&&) = default;
 };
 
 } // namespace message

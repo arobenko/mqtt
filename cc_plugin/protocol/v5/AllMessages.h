@@ -31,7 +31,7 @@
 #include "cc_plugin/protocol/v5/message/Subscribe.h"
 #include "cc_plugin/protocol/v5/message/Suback.h"
 #include "cc_plugin/protocol/v5/message/Unsubscribe.h"
-//#include "cc_plugin/protocol/v5/message/Unsuback.h"
+#include "cc_plugin/protocol/v5/message/Unsuback.h"
 #include "cc_plugin/protocol/v5/message/Pingreq.h"
 #include "cc_plugin/protocol/v5/message/Pingresp.h"
 //#include "cc_plugin/protocols/v5/message/Disconnect.h"
@@ -59,7 +59,7 @@ typedef std::tuple<
     cc_plugin::protocol::v5::message::Subscribe,
     cc_plugin::protocol::v5::message::Suback,
     cc_plugin::protocol::v5::message::Unsubscribe,
-//    cc_plugin::protocol::v5::message::Unsuback,
+    cc_plugin::protocol::v5::message::Unsuback,
     cc_plugin::protocol::v5::message::Pingreq,
     cc_plugin::protocol::v5::message::Pingresp//,
 //    cc_plugin::protocol::v5::message::Disconnect
