@@ -978,6 +978,16 @@ QVariantMap createProps_subackPayloadV5()
             .asMap();
 }
 
+QVariantMap createProps_unsubscribePayload()
+{
+    using Field = mqtt::protocol::common::field::UnsubscribePayload;
+    return
+        cc::property::field::ForField<Field>()
+            .name("Payload")
+            .serialisedHidden()
+            .add(createProps_topic())
+            .asMap();
+}
 
 } // namespace
 
@@ -1102,6 +1112,13 @@ QVariantList createProps_suback(ProtocolVersionVal version)
     return props;
 }
 
+QVariantList createProps_unsubscribe()
+{
+    QVariantList props;
+    props.append(createProps_packetId());
+    props.append(createProps_unsubscribePayload());
+    return props;
+}
 
 } // namespace field
 

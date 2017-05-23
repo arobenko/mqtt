@@ -309,6 +309,20 @@ using Topic = String<>;
 
 using Payload = BinData<>;
 
+struct UnsubscribePayload : public
+    comms::field::ArrayList<
+        FieldBase,
+        Topic
+    >
+{
+    bool valid() const
+    {
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        return (!Base::value().empty()) && Base::valid();
+    }
+};
+
+
 } // namespace field
 
 } // namespace common

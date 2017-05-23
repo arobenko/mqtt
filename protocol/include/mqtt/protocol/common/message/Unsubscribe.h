@@ -37,57 +37,66 @@ namespace common
 namespace message
 {
 
-template <typename TMsgBase, typename TAllFields, typename TActual>
-class Subscribe : public
-        comms::MessageBase<
-            TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-            comms::option::FieldsImpl<TAllFields>,
-            comms::option::MsgType<TActual>
-        >
+using UnsubscribeFields = std::tuple<
+    common::field::PacketId,
+    common::field::UnsubscribePayload
+>;
+
+template <typename TMsgBase, template<class> class TActual>
+using UnsubscribeBase =
+    comms::MessageBase<
+        TMsgBase,
+        comms::option::StaticNumIdImpl<MsgId_UNSUBSCRIBE>,
+        comms::option::FieldsImpl<UnsubscribeFields>,
+        comms::option::MsgType<TActual<TMsgBase> >
+    >;
+
+template <typename TMsgBase>
+class Unsubscribe : public UnsubscribeBase<TMsgBase, Unsubscribe>
 {
-    using SubscribeFlagsField = comms::field::IntValue<
+    using UnsubscribeFlagsField = comms::field::IntValue<
         common::field::FieldBase,
         std::uint8_t,
         comms::option::DefaultNumValue<2>,
         comms::option::ValidNumValueRange<2, 2>,
         comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
-    >;
+    > ;
 
 public:
 
-    bool doValid() const
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        auto& flagsField = Base::getFlags();
-        SubscribeFlagsField actFlags(flagsField.value());
+    COMMS_MSG_FIELDS_ACCESS(packetId, payload);
 
-        return actFlags.valid() && Base::doValid();
-    }
-
-protected:
-
-    Subscribe()
+    Unsubscribe()
     {
         using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
         using FlagsField = typename Base::FlagsField;
 
-        FlagsField newFlags(SubscribeFlagsField().value());
+        FlagsField newFlags(UnsubscribeFlagsField().value());
         Base::setFlags(newFlags);
     }
 
-    Subscribe(const Subscribe&) = default;
-    Subscribe(Subscribe&& other) = default;
-    ~Subscribe() = default;
+    Unsubscribe(const Unsubscribe&) = default;
+    Unsubscribe(Unsubscribe&& other) = default;
+    virtual ~Unsubscribe() = default;
 
-    Subscribe& operator=(const Subscribe&) = default;
-    Subscribe& operator=(Subscribe&&) = default;
+    Unsubscribe& operator=(const Unsubscribe&) = default;
+    Unsubscribe& operator=(Unsubscribe&&) = default;
+
+    bool doValid() const
+    {
+        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
+
+        auto& flagsField = Base::getFlags();
+        UnsubscribeFlagsField actFlags(flagsField.value());
+
+        return actFlags.valid() && Base::doValid();
+    }
 };
 
-} // namespace message
+}  // namespace message
 
 } // namespace common
 
-} // namespace protocol
+}  // namespace protocol
 
-} // namespace mqtt
+}  // namespace mqtt
