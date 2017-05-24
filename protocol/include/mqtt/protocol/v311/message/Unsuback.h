@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 #pragma once
 
 #include <tuple>
-#include <algorithm>
-
-#include "mqtt/protocol/v311/Message.h"
+#include "comms/MessageBase.h"
+#include "mqtt/protocol/common/MsgId.h"
 #include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
@@ -37,35 +36,34 @@ namespace message
 {
 
 using UnsubackFields = std::tuple<
-    field::PacketId
+    common::field::PacketId
 >;
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Unsuback : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_UNSUBACK>,
+            comms::option::StaticNumIdImpl<common::MsgId_UNSUBACK>,
             comms::option::FieldsImpl<UnsubackFields>,
             comms::option::MsgType<Unsuback<TMsgBase> >
         >
 {
 public:
-
     COMMS_MSG_FIELDS_ACCESS(packetId);
 
     Unsuback() = default;
     Unsuback(const Unsuback&) = default;
     Unsuback(Unsuback&& other) = default;
-    virtual ~Unsuback() = default;
+    ~Unsuback() = default;
 
     Unsuback& operator=(const Unsuback&) = default;
     Unsuback& operator=(Unsuback&&) = default;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt
