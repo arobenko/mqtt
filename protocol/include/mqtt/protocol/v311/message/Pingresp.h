@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,8 +18,7 @@
 
 #pragma once
 
-#include <tuple>
-#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/common/message/Pingresp.h"
 
 namespace mqtt
 {
@@ -33,30 +32,13 @@ namespace v311
 namespace message
 {
 
+template <typename TMsgBase>
+using Pingresp = mqtt::protocol::common::message::Pingresp<TMsgBase>;
 
-template <typename TMsgBase = Message>
-class Pingresp : public
-        comms::MessageBase<
-            TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PINGRESP>,
-            comms::option::ZeroFieldsImpl,
-            comms::option::MsgType<Pingresp<TMsgBase> >
-        >
-{
-public:
-    Pingresp() = default;
-    Pingresp(const Pingresp&) = default;
-    Pingresp(Pingresp&& other) = default;
-    virtual ~Pingresp() = default;
-
-    Pingresp& operator=(const Pingresp&) = default;
-    Pingresp& operator=(Pingresp&&) = default;
-};
-
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt
