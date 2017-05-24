@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -19,9 +19,7 @@
 #pragma once
 
 #include <tuple>
-#include <algorithm>
-
-#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/common/message/Subscribe.h"
 #include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
@@ -37,63 +35,34 @@ namespace message
 {
 
 using SubscribeFields = std::tuple<
-    field::PacketId,
-    field::SubscribePayload
+    common::field::PacketId,
+    v311::field::SubscribePayload
 >;
 
-template <typename TMsgBase, template<class> class TActual>
-using SubscribeBase =
-    comms::MessageBase<
-        TMsgBase,
-        comms::option::StaticNumIdImpl<MsgId_SUBSCRIBE>,
-        comms::option::FieldsImpl<SubscribeFields>,
-        comms::option::MsgType<TActual<TMsgBase> >
-    >;
-
-template <typename TMsgBase = Message>
-class Subscribe : public SubscribeBase<TMsgBase, Subscribe>
+template <typename TMsgBase>
+class Subscribe : public
+        common::message::Subscribe<
+            TMsgBase,
+            SubscribeFields,
+            Subscribe<TMsgBase>
+        >
 {
-    using Base = SubscribeBase<TMsgBase, mqtt::protocol::v311::message::Subscribe>;
 public:
-
-    typedef typename Base::FlagsField FlagsField;
-
-    typedef comms::field::IntValue<
-        typename Base::Field,
-        std::uint8_t,
-        comms::option::DefaultNumValue<2>,
-        comms::option::ValidNumValueRange<2, 2>,
-        comms::option::FailOnInvalid<comms::ErrorStatus::ProtocolError>
-    > SubscribeFlagsField;
-
     COMMS_MSG_FIELDS_ACCESS(packetId, payload);
 
-    Subscribe()
-    {
-        FlagsField newFlags(SubscribeFlagsField().value());
-        Base::setFlags(newFlags);
-    }
-
+    Subscribe() = default;
     Subscribe(const Subscribe&) = default;
     Subscribe(Subscribe&& other) = default;
-    virtual ~Subscribe() = default;
+    ~Subscribe() = default;
 
     Subscribe& operator=(const Subscribe&) = default;
     Subscribe& operator=(Subscribe&&) = default;
-
-    bool doValid() const
-    {
-        auto& flagsField = Base::getFlags();
-        SubscribeFlagsField actFlags(flagsField.value());
-
-        return actFlags.valid() && Base::doValid();
-    }
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt
