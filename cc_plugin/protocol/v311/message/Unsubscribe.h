@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Unsubscribe.h"
+#include "cc_plugin/protocol/common/message/Unsubscribe.h"
 #include "cc_plugin/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/message/Unsubscribe.h"
 
 namespace mqtt
 {
@@ -37,33 +37,22 @@ namespace v311
 namespace message
 {
 
-class Unsubscribe : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Unsubscribe<mqtt::cc_plugin::protocol::v311::Message>,
-        Unsubscribe>
+struct Unsubscribe : public
+    cc_plugin::protocol::common::message::Unsubscribe<
+        mqtt::protocol::v311::message::Unsubscribe<cc_plugin::protocol::v311::Message>,
+        Unsubscribe
+    >
 {
-public:
-    Unsubscribe() = default;
-    Unsubscribe(const Unsubscribe&) = default;
-    Unsubscribe(Unsubscribe&&) = default;
-    virtual ~Unsubscribe() = default;
-
-    Unsubscribe& operator=(const Unsubscribe&) = default;
-    Unsubscribe& operator=(Unsubscribe&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt
 
 
