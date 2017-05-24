@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Pingreq.h"
+#include "cc_plugin/protocol/common/message/Pingreq.h"
 #include "cc_plugin/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/message/Pingreq.h"
 
 namespace mqtt
 {
@@ -37,33 +37,22 @@ namespace v311
 namespace message
 {
 
-class Pingreq : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Pingreq<mqtt::cc_plugin::protocol::v311::Message>,
-        Pingreq>
+struct Pingreq : public
+    cc_plugin::protocol::common::message::Pingreq<
+        mqtt::protocol::v311::message::Pingreq<cc_plugin::protocol::v311::Message>,
+        Pingreq
+    >
 {
-public:
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&&) = default;
-    virtual ~Pingreq() = default;
-
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt
 
 
