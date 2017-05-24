@@ -18,9 +18,7 @@
 
 #pragma once
 
-#include <tuple>
-#include "comms/MessageBase.h"
-#include "mqtt/protocol/common/MsgId.h"
+#include "mqtt/protocol/common/message/Pubrel.h"
 #include "mqtt/protocol/v5/field.h"
 
 namespace mqtt
@@ -43,11 +41,10 @@ using PubrelFields = std::tuple<
 
 template <typename TMsgBase>
 class Pubrel : public
-        comms::MessageBase<
+        common::message::Pubrel<
             TMsgBase,
-            comms::option::StaticNumIdImpl<common::MsgId_PUBREL>,
-            comms::option::FieldsImpl<PubrelFields>,
-            comms::option::MsgType<Pubrel<TMsgBase> >
+            PubrelFields,
+            Pubrel<TMsgBase>
         >
 {
 public:
