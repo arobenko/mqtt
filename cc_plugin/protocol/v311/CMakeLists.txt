@@ -22,7 +22,6 @@ function (cc_plugin_mqtt)
         Protocol.cpp
         TransportMessage.cpp
         message/Subscribe.cpp
-        message/Suback.cpp
         message/Unsubscribe.cpp
         message/Unsuback.cpp
         field.cpp
