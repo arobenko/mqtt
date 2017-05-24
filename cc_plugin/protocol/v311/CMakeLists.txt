@@ -21,7 +21,6 @@ function (cc_plugin_mqtt)
         Plugin.cpp
         Protocol.cpp
         TransportMessage.cpp
-        message/Connect.cpp
         message/Publish.cpp
         message/Puback.cpp
         message/Pubrec.cpp
@@ -48,7 +47,7 @@ function (cc_plugin_mqtt)
     )
     
     add_library (${name} SHARED ${src} ${moc})
-    target_link_libraries (${name} ${CC_PLUGIN_LIBRARIES})
+    target_link_libraries (${name} ${MQTT_PROTOCOL_PLUGIN_COMMON_LIB} ${CC_PLUGIN_LIBRARIES})
     qt5_use_modules(${name} Core)
     
     install (

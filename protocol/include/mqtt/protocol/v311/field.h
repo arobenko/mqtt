@@ -32,6 +32,14 @@ namespace v311
 namespace field
 {
 
+using FieldBase = common::field::FieldBase;
+
+using ProtocolVersionVal = mqtt::protocol::common::field::ProtocolVersionVal;
+
+using ProtocolVersion =
+    mqtt::protocol::common::field::ProtocolVersion<ProtocolVersionVal::v311>;
+
+
 enum class SubackReturnCode : std::uint8_t
 {
     SuccessQos0 = 0,
@@ -74,24 +82,6 @@ struct ConnectFlagsExtraValidator
         }
 
         return true;
-    }
-};
-
-struct ProtNameInitialiser
-{
-    template <typename TField>
-    void operator()(TField&& field)
-    {
-        field.value() = "MQTT";
-    }
-};
-
-struct ProtNameValidator
-{
-    template <typename TField>
-    bool operator()(TField&& field)
-    {
-        return field.value() == "MQTT";
     }
 };
 
@@ -198,7 +188,6 @@ struct UnsubscribePayloadValidator
 
 }  // namespace details
 
-using FieldBase = common::field::FieldBase;
 
 enum class ConnackResponseCodeVal : std::uint8_t
 {
@@ -267,93 +256,6 @@ class ConnectFlags : public
 public:
     COMMS_FIELD_MEMBERS_ACCESS(flagsLow, willQos, flagsHigh);
 };
-
-using ProtocolName =
-    comms::field::String<
-        FieldBase,
-        comms::option::DefaultValueInitialiser<details::ProtNameInitialiser>,
-        comms::option::ContentsValidator<details::ProtNameValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<FieldBase, std::uint16_t>
-        >
-    >;
-
-using ProtocolLevel =
-    comms::field::IntValue<
-        FieldBase,
-        std::uint8_t,
-        comms::option::DefaultNumValue<4>,
-        comms::option::ValidNumValueRange<4, 4>
-    >;
-
-using KeepAlive = comms::field::IntValue<FieldBase, std::uint16_t>;
-
-using ClientId =
-    comms::field::String<
-        FieldBase,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                FieldBase,
-                std::uint16_t,
-                comms::option::ValidNumValueRange<0, 23>
-            >
-        >
-    >;
-
-using WillTopic =
-    comms::field::Optional<
-        comms::field::String<
-            FieldBase,
-            comms::option::SequenceSizeFieldPrefix<
-                comms::field::IntValue<
-                    FieldBase,
-                    std::uint16_t
-                >
-            >
-        >
-    >;
-
-
-using WillMessage =
-    comms::field::Optional<
-        comms::field::ArrayList<
-            FieldBase,
-            std::uint8_t,
-            comms::option::SequenceSizeFieldPrefix<
-                comms::field::IntValue<
-                    FieldBase,
-                    std::uint16_t
-                >
-            >
-        >
-    >;
-
-using UserName =
-    comms::field::Optional<
-        comms::field::String<
-            FieldBase,
-            comms::option::SequenceSizeFieldPrefix<
-                comms::field::IntValue<
-                    FieldBase,
-                    std::uint16_t
-                >
-            >
-        >
-    >;
-
-using Password =
-    comms::field::Optional<
-        comms::field::ArrayList<
-            FieldBase,
-            std::uint8_t,
-            comms::option::SequenceSizeFieldPrefix<
-                comms::field::IntValue<
-                    FieldBase,
-                    std::uint16_t
-                >
-            >
-        >
-    >;
 
 using PacketId =
     comms::field::IntValue<
