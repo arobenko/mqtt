@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Disconnect.h"
+#include "cc_plugin/protocol/common/message/Disconnect.h"
 #include "cc_plugin/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/message/Disconnect.h"
 
 namespace mqtt
 {
@@ -37,33 +37,23 @@ namespace v311
 namespace message
 {
 
-class Disconnect : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Disconnect<mqtt::cc_plugin::protocol::v311::Message>,
-        Disconnect>
+struct Disconnect : public
+    cc_plugin::protocol::common::message::Disconnect<
+        mqtt::protocol::common::field::ProtocolVersionVal::v311,
+        mqtt::protocol::v311::message::Disconnect<cc_plugin::protocol::v311::Message>,
+        Disconnect
+    >
 {
-public:
-    Disconnect() = default;
-    Disconnect(const Disconnect&) = default;
-    Disconnect(Disconnect&&) = default;
-    virtual ~Disconnect() = default;
-
-    Disconnect& operator=(const Disconnect&) = default;
-    Disconnect& operator=(Disconnect&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt
 
 

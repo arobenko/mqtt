@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include "comms/MessageBase.h"
 #include "mqtt/protocol/v311/field.h"
 #include "mqtt/protocol/common/message/Connect.h"
 
