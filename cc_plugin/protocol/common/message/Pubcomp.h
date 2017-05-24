@@ -57,7 +57,7 @@ public:
 protected:
     virtual const char* nameImpl() const override
     {
-        return "PUBRECOMP";
+        return "PUBCOMP";
     }
 
     virtual const QVariantList& fieldsPropertiesImpl() const override
