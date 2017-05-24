@@ -53,7 +53,7 @@ public:
     Puback() = default;
     Puback(const Puback&) = default;
     Puback(Puback&& other) = default;
-    virtual ~Puback() = default;
+    ~Puback() = default;
 
     Puback& operator=(const Puback&) = default;
     Puback& operator=(Puback&&) = default;

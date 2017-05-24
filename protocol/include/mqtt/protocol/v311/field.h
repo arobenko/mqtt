@@ -51,79 +51,6 @@ enum class SubackReturnCode : std::uint8_t
 namespace details
 {
 
-struct ConnectFlagsExtraValidator
-{
-    template <typename TField>
-    bool operator()(TField&& field) const
-    {
-        auto& members = field.value();
-        auto& flagsLowField = std::get<0>(members);
-        auto& willQosField = std::get<1>(members);
-        auto& flagsHighField = std::get<2>(members);
-
-        typedef typename std::decay<decltype(flagsLowField)>::type LowFlagsFieldType;
-        typedef typename std::decay<decltype(willQosField)>::type QosFieldType;
-        typedef typename std::decay<decltype(flagsHighField)>::type HighFlagsFieldType;
-
-        if (!flagsLowField.getBitValue(LowFlagsFieldType::BitIdx_willFlag)) {
-            if (willQosField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
-                return false;
-            }
-
-            if (flagsHighField.getBitValue(HighFlagsFieldType::BitIdx_willRetain)) {
-                return false;
-            }
-        }
-
-        if (!flagsHighField.getBitValue(HighFlagsFieldType::BitIdx_username)) {
-            if (flagsHighField.getBitValue(HighFlagsFieldType::BitIdx_password)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-};
-
-struct PublishActualFlagsValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto& members = field.value();
-        auto& qosField = std::get<1>(members);
-        typedef typename std::decay<decltype(qosField)>::type QosFieldType;
-        if (qosField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
-            return true;
-        }
-
-        auto& dupField = std::get<2>(members);
-        typedef typename std::decay<decltype(dupField)>::type DupFieldType;
-        if (dupField.getBitValue(DupFieldType::BitIdx_value)) {
-            return false;
-        }
-        return true;
-    }
-};
-
-
-struct PublishTopicValidator
-{
-    template <typename TField>
-    bool operator()(TField&& field) const
-    {
-        auto& topic = field.value();
-        return
-            (!topic.empty()) &&
-            (std::none_of(
-                topic.begin(), topic.end(),
-                [](char ch) -> bool
-                {
-                    return (ch == '#') || (ch == '+');
-                }));
-    }
-};
-
 struct SubackPayloadValidator
 {
     template <typename TField>
@@ -206,26 +133,6 @@ using ConnackResponseCode = comms::field::EnumValue<
         comms::option::ValidNumValueRange<0, (int)(ConnackResponseCodeVal::NumOfValues) - 1>
     >;
 
-struct ConnectFlagsLow : public
-    comms::field::BitmaskValue<
-        FieldBase,
-        comms::option::FixedBitLength<3>,
-        comms::option::BitmaskReservedBits<0x1, 0>
-    >
-{
-    COMMS_BITMASK_BITS(cleanSession=1, willFlag);
-};
-
-struct ConnectFlagsHigh : public
-    comms::field::BitmaskValue<
-        FieldBase,
-        comms::option::FixedBitLength<3>,
-        comms::option::BitmaskReservedBits<0x1, 0>
-    >
-{
-    COMMS_BITMASK_BITS(willRetain, password, username);
-};
-
 enum class QosVal : std::uint8_t
 {
     AtMostOnceDelivery,
@@ -242,21 +149,6 @@ using QoS = comms::field::EnumValue<
         TExtraOptions...
     >;
 
-class ConnectFlags : public
-    comms::field::Bitfield<
-        FieldBase,
-        std::tuple<
-            field::ConnectFlagsLow,
-            field::QoS<comms::option::FixedBitLength<2> >,
-            field::ConnectFlagsHigh
-        >,
-        comms::option::ContentsValidator<details::ConnectFlagsExtraValidator>
-    >
-{
-public:
-    COMMS_FIELD_MEMBERS_ACCESS(flagsLow, willQos, flagsHigh);
-};
-
 using PacketId =
     comms::field::IntValue<
         FieldBase,
@@ -266,49 +158,6 @@ using PacketId =
     >;
 
 using OptionalPacketId = comms::field::Optional<PacketId>;
-
-class PubSingleBitFlag :
-    public comms::field::BitmaskValue<
-        FieldBase,
-        comms::option::FixedBitLength<1>
-    >
-{
-public:
-    COMMS_BITMASK_BITS(value);
-};
-
-class PublishFlags : public
-    comms::field::Bitfield<
-        FieldBase,
-        std::tuple<
-            PubSingleBitFlag,
-            QoS<comms::option::FixedBitLength<2> >,
-            field::PubSingleBitFlag,
-            comms::field::IntValue<FieldBase, std::uint8_t, comms::option::FixedBitLength<4> >
-        >,
-        comms::option::ContentsValidator<details::PublishActualFlagsValidator>
-    >
-{
-public:
-    COMMS_FIELD_MEMBERS_ACCESS(retain, qos, dup, reserved);
-};
-
-
-using PublishTopic =
-    comms::field::String<
-        FieldBase,
-        comms::option::ContentsValidator<details::PublishTopicValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                FieldBase,
-                std::uint16_t
-            >
-        >
-    >;
-
-using Payload =
-    comms::field::ArrayList<FieldBase, std::uint8_t>;
-
 
 using SubackPayload =
     comms::field::ArrayList<
