@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016(C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Pubrec.h"
+#include "cc_plugin/protocol/common/message/Pubrec.h"
 #include "cc_plugin/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/message/Pubrec.h"
 
 namespace mqtt
 {
@@ -37,33 +37,23 @@ namespace v311
 namespace message
 {
 
-class Pubrec : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Pubrec<mqtt::cc_plugin::protocol::v311::Message>,
-        Pubrec>
+struct Pubrec : public
+    cc_plugin::protocol::common::message::Pubrec<
+        mqtt::protocol::common::field::ProtocolVersionVal::v311,
+        mqtt::protocol::v311::message::Pubrec<cc_plugin::protocol::v311::Message>,
+        Pubrec
+    >
 {
-public:
-    Pubrec() = default;
-    Pubrec(const Pubrec&) = default;
-    Pubrec(Pubrec&&) = default;
-    virtual ~Pubrec() = default;
-
-    Pubrec& operator=(const Pubrec&) = default;
-    Pubrec& operator=(Pubrec&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt
 
 
