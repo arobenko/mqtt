@@ -1,5 +1,5 @@
 //
-// Copyright 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2016 - 217 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "comms/comms.h"
+#include "mqtt/protocol/common/field.h"
 
 namespace mqtt
 {
@@ -198,14 +198,7 @@ struct UnsubscribePayloadValidator
 
 }  // namespace details
 
-using FieldBase = comms::Field<comms::option::BigEndian>;
-
-using ConnackFlags =
-    comms::field::BitmaskValue<
-        FieldBase,
-        comms::option::FixedLength<1>,
-        comms::option::BitmaskReservedBits<0xfe, 0x0>
-    >;
+using FieldBase = common::field::FieldBase;
 
 enum class ConnackResponseCodeVal : std::uint8_t
 {

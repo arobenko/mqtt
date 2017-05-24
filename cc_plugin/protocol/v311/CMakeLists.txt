@@ -22,7 +22,6 @@ function (cc_plugin_mqtt)
         Protocol.cpp
         TransportMessage.cpp
         message/Connect.cpp
-        message/Connack.cpp
         message/Publish.cpp
         message/Puback.cpp
         message/Pubrec.cpp
