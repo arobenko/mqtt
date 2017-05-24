@@ -20,7 +20,6 @@ function (cc_plugin_mqtt)
     set (src
         Plugin.cpp
         Protocol.cpp
-        field.cpp
     )
     
     set (hdr

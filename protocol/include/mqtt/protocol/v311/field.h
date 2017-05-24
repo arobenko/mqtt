@@ -1,5 +1,5 @@
 //
-// Copyright 2016 - 217 (C). Alex Robenko. All rights reserved.
+// Copyright 2016 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -74,36 +74,7 @@ struct SubackReturnCodeValidator
     }
 };
 
-struct SubscribeTopicValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto& topic = field.value();
-        return (!topic.empty());
-    }
-};
-
 struct SubscribePayloadValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        return 0U < field.value().size();
-    }
-};
-
-struct UnsubscribeTopicValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto& topic = field.value();
-        return (!topic.empty());
-    }
-};
-
-struct UnsubscribePayloadValidator
 {
     template <typename TField>
     bool operator()(const TField& field) const
@@ -114,7 +85,6 @@ struct UnsubscribePayloadValidator
 
 
 }  // namespace details
-
 
 enum class ConnackResponseCodeVal : std::uint8_t
 {
@@ -133,32 +103,6 @@ using ConnackResponseCode = comms::field::EnumValue<
         comms::option::ValidNumValueRange<0, (int)(ConnackResponseCodeVal::NumOfValues) - 1>
     >;
 
-enum class QosVal : std::uint8_t
-{
-    AtMostOnceDelivery,
-    AtLeastOnceDelivery,
-    ExactlyOnceDelivery,
-    NumOfValues
-};
-
-template <typename... TExtraOptions>
-using QoS = comms::field::EnumValue<
-        FieldBase,
-        QosVal,
-        comms::option::ValidNumValueRange<0, (int)QosVal::NumOfValues - 1>,
-        TExtraOptions...
-    >;
-
-using PacketId =
-    comms::field::IntValue<
-        FieldBase,
-        std::uint16_t,
-        comms::option::DefaultNumValue<1>,
-        comms::option::ValidNumValueRange<1, 0xffff>
-    >;
-
-using OptionalPacketId = comms::field::Optional<PacketId>;
-
 using SubackPayload =
     comms::field::ArrayList<
         FieldBase,
@@ -170,33 +114,12 @@ using SubackPayload =
         comms::option::ContentsValidator<details::SubackPayloadValidator>
     >;
 
-using SubscribeTopic =
-    comms::field::String<
-        FieldBase,
-        comms::option::ContentsValidator<details::SubscribeTopicValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                FieldBase,
-                std::uint16_t
-            >
-        >
-    >;
-
-using SubElemBase =
-    comms::field::Bundle<
-        FieldBase,
-        std::tuple<
-            SubscribeTopic,
-            QoS<>
-        >
-    >;
-
 class SubElem : public
     comms::field::Bundle<
         FieldBase,
         std::tuple<
-            SubscribeTopic,
-            QoS<>
+            common::field::Topic,
+            common::field::QoS<>
         >
     >
 {
@@ -209,25 +132,6 @@ using SubscribePayload =
         FieldBase,
         SubElem,
         comms::option::ContentsValidator<details::SubscribePayloadValidator>
-    >;
-
-using UnsubscribeTopic =
-    comms::field::String<
-        FieldBase,
-        comms::option::ContentsValidator<details::UnsubscribeTopicValidator>,
-        comms::option::SequenceSizeFieldPrefix<
-            comms::field::IntValue<
-                FieldBase,
-                std::uint16_t
-            >
-        >
-    >;
-
-using UnsubscribePayload =
-    comms::field::ArrayList<
-        FieldBase,
-        UnsubscribeTopic,
-        comms::option::ContentsValidator<details::UnsubscribePayloadValidator>
     >;
 
 }  // namespace field
