@@ -40,7 +40,7 @@ using ProtocolVersion =
     mqtt::protocol::common::field::ProtocolVersion<ProtocolVersionVal::v311>;
 
 
-enum class SubackReturnCode : std::uint8_t
+enum class SubackReturnCodeVal : std::uint8_t
 {
     SuccessQos0 = 0,
     SuccessQos1 = 1,
@@ -48,43 +48,23 @@ enum class SubackReturnCode : std::uint8_t
     Failure = 0x80
 };
 
-namespace details
+struct SubackReturnCode : public
+    comms::field::EnumValue<
+        FieldBase,
+        SubackReturnCodeVal
+    >
 {
-
-struct SubackPayloadValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
+    bool valid() const
     {
-        return 0U < field.value().size();
-    }
-};
-
-struct SubackReturnCodeValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        auto value = field.value();
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        auto value = Base::value();
         return
-            (value == SubackReturnCode::SuccessQos0) ||
-            (value == SubackReturnCode::SuccessQos1) ||
-            (value == SubackReturnCode::SuccessQos2) ||
-            (value == SubackReturnCode::Failure);
+            (value == SubackReturnCodeVal::SuccessQos0) ||
+            (value == SubackReturnCodeVal::SuccessQos1) ||
+            (value == SubackReturnCodeVal::SuccessQos2) ||
+            (value == SubackReturnCodeVal::Failure);
     }
 };
-
-struct SubscribePayloadValidator
-{
-    template <typename TField>
-    bool operator()(const TField& field) const
-    {
-        return 0U < field.value().size();
-    }
-};
-
-
-}  // namespace details
 
 enum class ConnackResponseCodeVal : std::uint8_t
 {
@@ -103,16 +83,18 @@ using ConnackResponseCode = comms::field::EnumValue<
         comms::option::ValidNumValueRange<0, (int)(ConnackResponseCodeVal::NumOfValues) - 1>
     >;
 
-using SubackPayload =
+struct SubackPayload : public
     comms::field::ArrayList<
         FieldBase,
-        comms::field::EnumValue<
-            FieldBase,
-            SubackReturnCode,
-            comms::option::ContentsValidator<details::SubackReturnCodeValidator>
-        >,
-        comms::option::ContentsValidator<details::SubackPayloadValidator>
-    >;
+        SubackReturnCode
+    >
+{
+    bool valid() const
+    {
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        return (!Base::value().empty()) && Base::valid();
+    }
+};
 
 class SubElem : public
     comms::field::Bundle<
@@ -127,12 +109,18 @@ public:
     COMMS_FIELD_MEMBERS_ACCESS(topic, qos);
 };
 
-using SubscribePayload =
+struct SubscribePayload : public
     comms::field::ArrayList<
         FieldBase,
-        SubElem,
-        comms::option::ContentsValidator<details::SubscribePayloadValidator>
-    >;
+        SubElem
+    >
+{
+    bool valid() const
+    {
+        using Base = typename std::decay<decltype(comms::field::toFieldBase(*this))>::type;
+        return (!Base::value().empty()) && Base::valid();
+    }
+};
 
 }  // namespace field
 

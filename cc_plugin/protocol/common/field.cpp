@@ -960,12 +960,12 @@ QVariantMap createProps_subackReturnCodeV311()
     cc::property::field::EnumValue props;
 
     props.name("Return Code");
-    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::protocol::v311::field::SubackReturnCode::SuccessQos2); ++idx) {
+    for (auto idx = 0; idx <= static_cast<decltype(idx)>(mqtt::protocol::v311::field::SubackReturnCodeVal::SuccessQos2); ++idx) {
         static const QString Prefix("Success QoS ");
         auto str = Prefix + QString("%1").arg(idx, 1, 10, QChar('0'));
         props.add(str, idx);
     }
-    props.add("Failure", (int)mqtt::protocol::v311::field::SubackReturnCode::Failure);
+    props.add("Failure", (int)mqtt::protocol::v311::field::SubackReturnCodeVal::Failure);
     return props.asMap();
 }
 
