@@ -307,7 +307,12 @@ using OptionalPacketId =
 
 using Topic = String<>;
 
-using Payload = BinData<>;
+using Payload =
+    comms::field::ArrayList<
+        FieldBase,
+        std::uint8_t
+    >;
+
 
 struct UnsubscribePayload : public
     comms::field::ArrayList<
