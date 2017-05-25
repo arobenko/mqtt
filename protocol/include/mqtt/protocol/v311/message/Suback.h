@@ -19,9 +19,8 @@
 #pragma once
 
 #include <tuple>
-#include <algorithm>
-
-#include "mqtt/protocol/v311/Message.h"
+#include "comms/MessageBase.h"
+#include "mqtt/protocol/common/MsgId.h"
 #include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
@@ -37,15 +36,15 @@ namespace message
 {
 
 using SubackFields = std::tuple<
-    field::PacketId,
-    field::SubackPayload
+    common::field::PacketId,
+    v311::field::SubackPayload
 >;
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Suback : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_SUBACK>,
+            comms::option::StaticNumIdImpl<common::MsgId_SUBACK>,
             comms::option::FieldsImpl<SubackFields>,
             comms::option::MsgType<Suback<TMsgBase> >
         >
@@ -57,16 +56,16 @@ public:
     Suback() = default;
     Suback(const Suback&) = default;
     Suback(Suback&& other) = default;
-    virtual ~Suback() = default;
+    ~Suback() = default;
 
     Suback& operator=(const Suback&) = default;
     Suback& operator=(Suback&&) = default;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt

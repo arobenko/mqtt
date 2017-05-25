@@ -35,7 +35,7 @@ Protocol::~Protocol() = default;
 
 const QString& Protocol::nameImpl() const
 {
-    static const QString Str("MQTT");
+    static const QString Str("MQTT v3.1.1");
     return Str;
 }
 

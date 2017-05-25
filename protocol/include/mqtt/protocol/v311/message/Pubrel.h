@@ -18,8 +18,7 @@
 
 #pragma once
 
-#include <tuple>
-#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/common/message/Pubrel.h"
 #include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
@@ -35,33 +34,24 @@ namespace message
 {
 
 using PubrelFields = std::tuple<
-    field::PacketId
+    common::field::PacketId
 >;
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Pubrel : public
-        comms::MessageBase<
+        common::message::Pubrel<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PUBREL>,
-            comms::option::FieldsImpl<PubrelFields>,
-            comms::option::MsgType<Pubrel<TMsgBase> >
+            PubrelFields,
+            Pubrel<TMsgBase>
         >
 {
 public:
-
     COMMS_MSG_FIELDS_ACCESS(packetId);
 
-    Pubrel()
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        typename Base::FlagsField flags;
-        flags.value() = 2;
-        Base::setFlags(flags);
-    }
-
+    Pubrel() = default;
     Pubrel(const Pubrel&) = default;
     Pubrel(Pubrel&& other) = default;
-    virtual ~Pubrel() = default;
+    ~Pubrel() = default;
 
     Pubrel& operator=(const Pubrel&) = default;
     Pubrel& operator=(Pubrel&&) = default;

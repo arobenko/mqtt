@@ -18,10 +18,8 @@
 
 #pragma once
 
-#include <tuple>
-#include <algorithm>
-#include "mqtt/protocol/v311/Message.h"
 #include "mqtt/protocol/v311/field.h"
+#include "mqtt/protocol/common/message/Connect.h"
 
 namespace mqtt
 {
@@ -36,113 +34,44 @@ namespace message
 {
 
 using ConnectFields = std::tuple<
-    field::ProtocolName,
-    field::ProtocolLevel,
-    field::ConnectFlags,
-    field::KeepAlive,
-    field::ClientId,
-    field::WillTopic,
-    field::WillMessage,
-    field::UserName,
-    field::Password
+    common::field::ProtocolName,
+    v311::field::ProtocolVersion,
+    common::field::ConnectFlags,
+    common::field::KeepAlive,
+    common::field::ClientId,
+    common::field::WillTopic,
+    common::field::WillMessage,
+    common::field::UserName,
+    common::field::Password
 >;
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Connect : public
-        comms::MessageBase<
+        common::message::Connect<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_CONNECT>,
-            comms::option::FieldsImpl<ConnectFields>,
-            comms::option::MsgType<Connect<TMsgBase> >,
-            comms::option::HasDoRefresh
+            ConnectFields,
+            Connect<TMsgBase>
         >
 {
 public:
-    COMMS_MSG_FIELDS_ACCESS(name, level, flags, keepAlive, clientId, willTopic, willMessage, userName, password);
+    COMMS_MSG_FIELDS_ACCESS(
+        name,
+        propVersion,
+        flags,
+        keepAlive,
+        clientId,
+        willTopic,
+        willMessage,
+        userName,
+        password);
 
-    Connect()
-    {
-        field_willMessage().setMode(comms::field::OptionalMode::Missing);
-    }
-
+    Connect() = default;
     Connect(const Connect&) = default;
     Connect(Connect&& other) = default;
-    virtual ~Connect() = default;
+    ~Connect() = default;
 
     Connect& operator=(const Connect&) = default;
     Connect& operator=(Connect&&) = default;
-
-    template <typename TIter>
-    comms::ErrorStatus doRead(TIter& iter, std::size_t size)
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        auto status = Base::template readFieldsUntil<FieldIdx_willTopic>(iter, size);
-        if (status != comms::ErrorStatus::Success) {
-            return status;
-        }
-
-        auto& flagsLowField = field_flags().field_flagsLow();
-        auto& flagsHighField = field_flags().field_flagsHigh();
-        typedef typename std::decay<decltype(flagsLowField)>::type FlagsLowField;
-        typedef typename std::decay<decltype(flagsHighField)>::type FlagsHighField;
-        updateOptionalField(flagsLowField, FlagsLowField::BitIdx_willFlag, field_willTopic());
-        updateOptionalField(flagsLowField, FlagsLowField::BitIdx_willFlag, field_willMessage());
-        updateOptionalField(flagsHighField, FlagsHighField::BitIdx_username, field_userName());
-        updateOptionalField(flagsHighField, FlagsHighField::BitIdx_password, field_password());
-
-        return Base::template readFieldsFrom<FieldIdx_willTopic>(iter, size);
-    }
-
-    bool doRefresh()
-    {
-        auto& flagsLowField = field_flags().field_flagsLow();
-        auto& flagsHighField = field_flags().field_flagsHigh();
-        typedef typename std::decay<decltype(flagsLowField)>::type FlagsLowField;
-        typedef typename std::decay<decltype(flagsHighField)>::type FlagsHighField;
-
-        bool updated = false;
-        updated =
-            refreshOptionalField(
-                flagsLowField, FlagsLowField::BitIdx_willFlag, field_willTopic()) || updated;
-        updated =
-            refreshOptionalField(
-                flagsLowField, FlagsLowField::BitIdx_willFlag, field_willMessage()) || updated;
-        updated =
-            refreshOptionalField(
-                flagsHighField, FlagsHighField::BitIdx_username, field_userName()) || updated;
-        updated =
-            refreshOptionalField(
-                flagsHighField, FlagsHighField::BitIdx_password, field_password()) || updated;
-
-        return updated;
-    }
-
-private:
-    template <typename TFlagsField, typename TOptField>
-    static void updateOptionalField(const TFlagsField& flagsField, unsigned idx, TOptField& optField)
-    {
-        if (flagsField.getBitValue(idx)) {
-            optField.setExists();
-        }
-        else {
-            optField.setMissing();
-        }
-    }
-
-    template <typename TFlagsField, typename TOptField>
-    static bool refreshOptionalField(const TFlagsField& flagsField, unsigned idx, TOptField& optField)
-    {
-        bool updated = false;
-        if (flagsField.getBitValue(idx)) {
-            updated = !optField.doesExist();
-            optField.setExists();
-        }
-        else {
-            updated = !optField.isMissing();
-            optField.setMissing();
-        }
-        return updated;
-    }
 };
 
 }  // namespace message

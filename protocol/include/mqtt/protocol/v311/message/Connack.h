@@ -19,7 +19,7 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/common/message/Connack.h"
 #include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
@@ -36,36 +36,35 @@ namespace message
 
 using ConnackFields =
     std::tuple<
-        field::ConnackFlags,
-        field::ConnackResponseCode
+        common::field::ConnackFlags,
+        v311::field::ConnackResponseCode
     >;
 
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Connack : public
-        comms::MessageBase<
+        common::message::Connack<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_CONNACK>,
-            comms::option::FieldsImpl<ConnackFields>,
-            comms::option::MsgType<Connack<TMsgBase> >
+            ConnackFields,
+            Connack<TMsgBase>
         >
 {
 public:
-    COMMS_MSG_FIELDS_ACCESS(flags, response);
+    COMMS_MSG_FIELDS_ACCESS(flags, responseCode);
 
     Connack() = default;
     Connack(const Connack&) = default;
     Connack(Connack&& other) = default;
-    virtual ~Connack() = default;
+    ~Connack() = default;
 
     Connack& operator=(const Connack&) = default;
     Connack& operator=(Connack&&) = default;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt

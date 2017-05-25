@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,8 +18,7 @@
 
 #pragma once
 
-#include <tuple>
-#include "mqtt/protocol/v311/Message.h"
+#include "mqtt/protocol/common/message/Pingreq.h"
 
 namespace mqtt
 {
@@ -33,29 +32,13 @@ namespace v311
 namespace message
 {
 
-template <typename TMsgBase = Message>
-class Pingreq : public
-        comms::MessageBase<
-            TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PINGREQ>,
-            comms::option::ZeroFieldsImpl,
-            comms::option::MsgType<Pingreq<TMsgBase> >
-        >
-{
-public:
-    Pingreq() = default;
-    Pingreq(const Pingreq&) = default;
-    Pingreq(Pingreq&& other) = default;
-    virtual ~Pingreq() = default;
+template <typename TMsgBase>
+using Pingreq = mqtt::protocol::common::message::Pingreq<TMsgBase>;
 
-    Pingreq& operator=(const Pingreq&) = default;
-    Pingreq& operator=(Pingreq&&) = default;
-};
-
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt

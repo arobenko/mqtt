@@ -40,10 +40,6 @@ class Protocol : public
         cc_plugin::protocol::v311::TransportMessage
     >
 {
-    typedef comms_champion::ProtocolBase<
-        cc_plugin::protocol::v311::Stack,
-        cc_plugin::protocol::v311::TransportMessage
-    > Base;
 public:
     Protocol() = default;
     virtual ~Protocol();

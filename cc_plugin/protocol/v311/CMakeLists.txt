@@ -20,22 +20,6 @@ function (cc_plugin_mqtt)
     set (src
         Plugin.cpp
         Protocol.cpp
-        TransportMessage.cpp
-        message/Connect.cpp
-        message/Connack.cpp
-        message/Publish.cpp
-        message/Puback.cpp
-        message/Pubrec.cpp
-        message/Pubrel.cpp
-        message/Pubcomp.cpp
-        message/Subscribe.cpp
-        message/Suback.cpp
-        message/Unsubscribe.cpp
-        message/Unsuback.cpp
-        message/Pingreq.cpp
-        message/Pingresp.cpp
-        message/Disconnect.cpp
-        field.cpp
     )
     
     set (hdr
@@ -49,7 +33,7 @@ function (cc_plugin_mqtt)
     )
     
     add_library (${name} SHARED ${src} ${moc})
-    target_link_libraries (${name} ${CC_PLUGIN_LIBRARIES})
+    target_link_libraries (${name} ${MQTT_PROTOCOL_PLUGIN_COMMON_LIB} ${CC_PLUGIN_LIBRARIES})
     qt5_use_modules(${name} Core)
     
     install (
@@ -59,29 +43,6 @@ function (cc_plugin_mqtt)
 endfunction()
 
 ######################################################################
-
-if (NOT CC_COMMS_CHAMPION_FOUND)
-    message (WARNING "Can NOT compile mqtt protocol plugin due to missing CommsChampion library")
-    return ()
-endif ()
-
-if (NOT "${CC_MQTT_QT_DIR}" STREQUAL "")
-    list (APPEND CMAKE_PREFIX_PATH ${CC_MQTT_QT_DIR})
-endif ()
-
-find_package(Qt5Core)
-
-if (NOT Qt5Core_FOUND)
-    message (WARNING "Can NOT compile mqtt protocol plugin due to missing QT5 Core library")
-    return ()
-endif ()
-
-if (CMAKE_COMPILER_IS_GNUCC)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
-endif ()
-
-include_directories(${CC_INCLUDE_DIRS})
-link_directories(${CC_PLUGIN_LIBRARY_DIRS})
 
 cc_plugin_mqtt ()
 

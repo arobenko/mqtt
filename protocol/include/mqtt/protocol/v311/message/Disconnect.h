@@ -19,7 +19,8 @@
 #pragma once
 
 #include <tuple>
-#include "mqtt/protocol/v311/Message.h"
+#include "comms/MessageBase.h"
+#include "mqtt/protocol/common/MsgId.h"
 
 namespace mqtt
 {
@@ -33,30 +34,35 @@ namespace v311
 namespace message
 {
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Disconnect : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_DISCONNECT>,
+            comms::option::StaticNumIdImpl<common::MsgId_DISCONNECT>,
             comms::option::ZeroFieldsImpl,
             comms::option::MsgType<Disconnect<TMsgBase> >
         >
 {
 public:
 
+    enum FieldIdx
+    {
+        FieldIdx_numOfValues
+    };
+
     Disconnect() = default;
     Disconnect(const Disconnect&) = default;
     Disconnect(Disconnect&& other) = default;
-    virtual ~Disconnect() = default;
+    ~Disconnect() = default;
 
     Disconnect& operator=(const Disconnect&) = default;
     Disconnect& operator=(Disconnect&&) = default;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace mqtt
+} // namespace mqtt

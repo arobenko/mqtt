@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <tuple>
-#include "mqtt/protocol/v311/Message.h"
+#include "comms/MessageBase.h"
+#include "mqtt/protocol/common/MsgId.h"
 #include "mqtt/protocol/v311/field.h"
 
 namespace mqtt
@@ -35,14 +35,14 @@ namespace message
 {
 
 using PubcompFields = std::tuple<
-    field::PacketId
+    common::field::PacketId
 >;
 
 template <typename TMsgBase = Message>
 class Pubcomp : public
         comms::MessageBase<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PUBCOMP>,
+            comms::option::StaticNumIdImpl<common::MsgId_PUBCOMP>,
             comms::option::FieldsImpl<PubcompFields>,
             comms::option::MsgType<Pubcomp<TMsgBase> >
         >
@@ -53,7 +53,7 @@ public:
     Pubcomp() = default;
     Pubcomp(const Pubcomp&) = default;
     Pubcomp(Pubcomp&& other) = default;
-    virtual ~Pubcomp() = default;
+    ~Pubcomp() = default;
 
     Pubcomp& operator=(const Pubcomp&) = default;
     Pubcomp& operator=(Pubcomp&&) = default;

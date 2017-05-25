@@ -37,7 +37,7 @@ namespace v311
 class Plugin : public comms_champion::Plugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "MQTT.Protocol" FILE "mqtt.json")
+    Q_PLUGIN_METADATA(IID "MQTT.Protocol.v311" FILE "mqtt.json")
     Q_INTERFACES(comms_champion::Plugin)
 
 public:

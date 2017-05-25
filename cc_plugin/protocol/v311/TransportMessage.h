@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
+#include "cc_plugin/protocol/common/TransportMessage.h"
 #include "cc_plugin/protocol/v311/Message.h"
 #include "cc_plugin/protocol/v311/Stack.h"
 
@@ -34,30 +34,19 @@ namespace protocol
 namespace v311
 {
 
-class TransportMessage : public
-    comms_champion::TransportMessageBase<
-        cc_plugin::protocol::v311::Stack::Message,
-        cc_plugin::protocol::v311::Stack::AllFields>
-{
-public:
-    TransportMessage() = default;
-    TransportMessage(const TransportMessage&) = default;
-    TransportMessage(TransportMessage&&) = default;
-    virtual ~TransportMessage() = default;
-
-    TransportMessage& operator=(const TransportMessage&) = default;
-    TransportMessage& operator=(TransportMessage&&) = default;
-
-protected:
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
-};
+using TransportMessage =
+    cc_plugin::protocol::common::TransportMessage<
+        mqtt::protocol::common::field::ProtocolVersionVal::v311,
+        cc_plugin::protocol::v311::Message,
+        cc_plugin::protocol::v311::Stack::AllFields
+    >;
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt
 
 

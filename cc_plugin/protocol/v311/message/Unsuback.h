@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include "comms_champion/comms_champion.h"
-#include "mqtt/protocol/v311/message/Unsuback.h"
+#include "cc_plugin/protocol/common/message/Unsuback.h"
 #include "cc_plugin/protocol/v311/Message.h"
+#include "mqtt/protocol/v311/message/Unsuback.h"
 
 namespace mqtt
 {
@@ -37,33 +37,23 @@ namespace v311
 namespace message
 {
 
-class Unsuback : public
-    comms_champion::ProtocolMessageBase<
-        mqtt::protocol::v311::message::Unsuback<mqtt::cc_plugin::protocol::v311::Message>,
-        Unsuback>
+struct Unsuback : public
+    cc_plugin::protocol::common::message::Unsuback<
+        mqtt::protocol::common::field::ProtocolVersionVal::v311,
+        mqtt::protocol::v311::message::Unsuback<cc_plugin::protocol::v311::Message>,
+        Unsuback
+    >
 {
-public:
-    Unsuback() = default;
-    Unsuback(const Unsuback&) = default;
-    Unsuback(Unsuback&&) = default;
-    virtual ~Unsuback() = default;
-
-    Unsuback& operator=(const Unsuback&) = default;
-    Unsuback& operator=(Unsuback&&) = default;
-
-protected:
-    virtual const char* nameImpl() const override;
-    virtual const QVariantList& fieldsPropertiesImpl() const override;
 };
 
-}  // namespace message
+} // namespace message
 
 } // namespace v311
 
-}  // namespace protocol
+} // namespace protocol
 
-}  // namespace cc_plugin
+} // namespace cc_plugin
 
-}  // namespace mqtt
+} // namespace mqtt
 
 

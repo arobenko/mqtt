@@ -1,5 +1,5 @@
 //
-// Copyright 2015 - 2016 (C). Alex Robenko. All rights reserved.
+// Copyright 2015 - 2017 (C). Alex Robenko. All rights reserved.
 //
 
 // This file is free software: you can redistribute it and/or modify
@@ -18,11 +18,8 @@
 
 #pragma once
 
-#include <tuple>
-#include <algorithm>
-
-#include "mqtt/protocol/v311/Message.h"
-#include "mqtt/protocol/v311/field.h"
+#include "mqtt/protocol/v5/field.h"
+#include "mqtt/protocol/common/message/Publish.h"
 
 namespace mqtt
 {
@@ -37,111 +34,34 @@ namespace message
 {
 
 using PublishFields = std::tuple<
-    field::PublishFlags,
-    field::PublishTopic,
-    field::OptionalPacketId,
-    field::Payload
+    common::field::PublishFlags,
+    common::field::Topic,
+    common::field::OptionalPacketId,
+    common::field::Payload
 >;
 
-template <typename TMsgBase = Message>
+template <typename TMsgBase>
 class Publish : public
-        comms::MessageBase<
+        common::message::Publish<
             TMsgBase,
-            comms::option::StaticNumIdImpl<MsgId_PUBLISH>,
-            comms::option::FieldsImpl<PublishFields>,
-            comms::option::MsgType<Publish<TMsgBase> >,
-            comms::option::HasDoRefresh
+            PublishFields,
+            Publish<TMsgBase>
         >
 {
 public:
+    COMMS_MSG_FIELDS_ACCESS(
+        publishFlags,
+        topic,
+        packetId,
+        payload);
 
-    COMMS_MSG_FIELDS_ACCESS(publishFlags, topic, packetId, payload);
-
-    Publish()
-    {
-        field_packetId().setMissing();
-    }
-
+    Publish() = default;
     Publish(const Publish&) = default;
     Publish(Publish&& other) = default;
-    virtual ~Publish() = default;
+    ~Publish() = default;
 
     Publish& operator=(const Publish&) = default;
     Publish& operator=(Publish&&) = default;
-
-    template <typename TIter>
-    comms::ErrorStatus doRead(TIter& iter, std::size_t size)
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-
-        auto& flagsField = Base::getFlags();
-        auto& publishFlagsField = field_publishFlags();
-        publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
-        updatePacketId();
-        return Base::template readFieldsFrom<FieldIdx_topic>(iter, size);
-    }
-
-    template <typename TIter>
-    comms::ErrorStatus doWrite(TIter& iter, std::size_t size) const
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        return Base::template writeFieldsFrom<FieldIdx_topic>(iter, size);
-    }
-
-    std::size_t doLength() const
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        return Base::doLength() - field::PublishFlags::minLength();
-    }
-
-    bool doRefresh()
-    {
-        using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        bool result = false;
-        result = updatePacketId() || result;
-        result = updateDup() || result;
-
-        auto& publishFlagsField = field_publishFlags();
-        Base::setFlags(comms::field_cast<typename Base::FlagsField>(publishFlagsField));
-
-        return result;
-    }
-
-private:
-    bool updatePacketId()
-    {
-        auto& publishFlagsField = field_publishFlags();
-        auto& qosMemberField = publishFlagsField.field_qos();
-
-        typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
-        comms::field::OptionalMode packetIdMode = comms::field::OptionalMode::Exists;
-        if (qosMemberField.value() == QosFieldType::ValueType::AtMostOnceDelivery) {
-            packetIdMode = comms::field::OptionalMode::Missing;
-        }
-
-        auto& packetIdField = field_packetId();
-        bool updated = (packetIdField.getMode() != packetIdMode);
-        packetIdField.setMode(packetIdMode);
-        return updated;
-    }
-
-    bool updateDup()
-    {
-        auto& publishFlagsField = field_publishFlags();
-        auto& qosMemberField = publishFlagsField.field_qos();
-
-        typedef typename std::decay<decltype(qosMemberField)>::type QosFieldType;
-        if (qosMemberField.value() != QosFieldType::ValueType::AtMostOnceDelivery) {
-            return false;
-        }
-
-        if (publishFlagsField.field_dup().value() != 0) {
-            publishFlagsField.field_dup().value() = 0;
-            return true;
-        }
-
-        return false;
-    }
 };
 
 }  // namespace message
