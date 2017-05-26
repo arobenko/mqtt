@@ -13,3 +13,8 @@ endfunction()
 ######################################################################
 
 cc_protocol_plugin_common ()
+
+if (CC_MQTT_FULL_SOLUTION)
+    add_dependencies(${MQTT_PROTOCOL_PLUGIN_COMMON_LIB} ${CC_EXTERNAL_TGT})
+endif ()
+
