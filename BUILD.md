@@ -61,7 +61,8 @@ On Windows
 systems with Visual Studio compiler, the CMake utility generates Visual Studio
 solution files by default. Build "install" project. It is also possible to 
 generate Makefile-s on Windows by providing additional **-G "NMake Makefiles"** option
-to **cmake**. In this case use **nmake** utility instead of **make**.
+to **cmake**. In this case use **nmake** utility instead of **make**. Also don't
+forget to provide path to the QT5 libraries with **CC_MQTT_QT_DIR** option.
 
 Please review the examples below and use appropriate option that suites your
 needs. Remember to add **-DCMAKE_BUILD_TYPE=Release** option for release
