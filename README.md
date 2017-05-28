@@ -25,6 +25,14 @@ from the same [comms_champion](https://github.com/arobenko/comms_champion) proje
     exchange with MQTT broker. The socket plugin allows debugging and visual
     analysis of the custom binary protocol messages sent using MQTT transport
     protocol as if they were received/sent over normal I/O socket.
+    
+There are several wiki pages, that explain how to use the main [CommsChampion](https://github.com/arobenko/comms_champion#commschampion-tools) GUI app to:
+
+ - [analyse MQTT traffic between client and broker](https://github.com/arobenko/mqtt/wiki/Visual-Analysis-of-MQTT-Traffic-Between-Client-and-Broker)
+ - [to be a pretend client](https://github.com/arobenko/mqtt/wiki/Using-CommsChampion-GUI-Tool-as-Pretend-MQTT-Client)
+ - [to be a pretend broker](https://github.com/arobenko/mqtt/wiki/Using-CommsChampion-GUI-Tool-as-Pretend-MQTT-Broker)
+ 
+ It can provide a significant help when developing new client library or broker application.
 
 # Licence
 The [MQTT Protocol Library](#mqtt-protocol-library) as well as [CommsChampion Plugin](#commschampion-plugin) 
