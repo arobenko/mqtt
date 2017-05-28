@@ -34,18 +34,6 @@ There are several wiki pages, that explain how to use the main [CommsChampion](h
  
  It can provide a significant help when developing new client library or broker application.
 
-# Licence
-The [MQTT Protocol Library](#mqtt-protocol-library) as well as [CommsChampion Plugin](#commschampion-plugin) 
-from this repository are licensed under
-the classic **GPLv3 / Commercial** dual licensing scheme. The
-source code is available for anyone to use as long as the derivative work
-remains open source with compatible licence. **Download** and **try** it! If it works
-as expected and commercial closed source licence is required for the final
-product, please send me an e-mail. As the author and full copyright owner I 
-will be able to provide one. Please refer
-to [Contact Information](#contact-information) below and get in touch with
-me if you need one.
-
 # How to Build
 Detailed instructions on how to build and install all the components can be
 found in [BUILD.md](BUILD.md) file.
@@ -59,6 +47,18 @@ development is performed on **develop** branch. As the result it is safe
 to just clone the sources of this repository and use it without
 any extra manipulations of looking for the latest stable version among the tags and
 checking it out.
+
+# Licence
+The [MQTT Protocol Library](#mqtt-protocol-library) as well as [CommsChampion Plugin](#commschampion-plugin) 
+from this repository are licensed under
+the classic **GPLv3 / Commercial** dual licensing scheme. The
+source code is available for anyone to use as long as the derivative work
+remains open source with compatible licence. **Download** and **try** it! If it works
+as expected and commercial closed source licence is required for the final
+product, please send me an e-mail. As the author and full copyright owner I 
+will be able to provide one. Please refer
+to [Contact Information](#contact-information) below and get in touch with
+me if you need one.
 
 # Contact Information
 For bug reports, feature requests, or any other question you may open an issue
