@@ -1,7 +1,0 @@
-{
-    "name" : "MQTT Protocol",
-    "desc" : [
-        "MQTT Protocol."
-    ],
-    "type" : "protocol"
-}
