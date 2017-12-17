@@ -24,11 +24,11 @@ matrix:
     - os: linux
       env: _CC=gcc-6 _CXX=g++-6 _BUILD=-DCMAKE_BUILD_TYPE=MinSizeRel  
     - os: linux
-      env: _CC=gcc-6 _CXX=g++-6
+      env: _CC=gcc-6 _CXX=g++-6 _BUILD=-DCMAKE_CXX_STANDARD=14
     - os: linux
-      env: _CC=gcc-6 _CXX=g++-6 _BUILD=-DCMAKE_BUILD_TYPE=Release
+      env: _CC=gcc-6 _CXX=g++-6 _BUILD="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14"
     - os: linux
-      env: _CC=gcc-6 _CXX=g++-6 _BUILD=-DCMAKE_BUILD_TYPE=MinSizeRel        
+      env: _CC=gcc-6 _CXX=g++-6 _BUILD="-DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_CXX_STANDARD=14"
     - os: linux
       env: _CC=clang-3.9 _CXX=clang++-3.9 
     - os: linux
