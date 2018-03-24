@@ -21,6 +21,7 @@
 #include <tuple>
 
 #include "comms/protocols.h"
+#include "mqtt/protocol/common/version.h"
 #include "mqtt/protocol/common/MsgIdFlagsLayer.h"
 #include "mqtt/protocol/common/field.h"
 
