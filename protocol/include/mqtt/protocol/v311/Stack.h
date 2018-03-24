@@ -21,6 +21,7 @@
 #include <tuple>
 
 #include "comms/comms.h"
+#include "mqtt/protocol/common/version.h"
 
 #include "MsgIdFlagsLayer.h"
 
@@ -46,14 +47,15 @@ typedef comms::field::IntValue<
 template <
     typename TMsgBase = Message,
     typename TAllMessages = AllMessages<TMsgBase>,
-    typename TMsgAllocOptions = std::tuple<> >
+    typename TMsgAllocOptions = comms::option::EmptyOption,
+    typename TDataFieldStorageOptions = comms::option::EmptyOption>
 using Stack =
     mqtt::protocol::v311::MsgIdFlagsLayer<
         TMsgBase,
         TAllMessages,
         comms::protocol::MsgSizeLayer<
             RemSizeField,
-            comms::protocol::MsgDataLayer<>
+            comms::protocol::MsgDataLayer<TDataFieldStorageOptions>
         >,
         TMsgAllocOptions
     >;
