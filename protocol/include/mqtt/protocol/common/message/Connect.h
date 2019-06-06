@@ -51,7 +51,7 @@ public:
     comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
         using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        auto status = Base::template readFieldsUntil<TActual::FieldIdx_willTopic>(iter, size);
+        auto status = Base::template doReadUntil<TActual::FieldIdx_willTopic>(iter, size);
         if (status != comms::ErrorStatus::Success) {
             return status;
         }
@@ -67,7 +67,7 @@ public:
         updateOptionalField(flagsHighField, FlagsHighField::BitIdx_username, actual.field_userName());
         updateOptionalField(flagsHighField, FlagsHighField::BitIdx_password, actual.field_password());
 
-        return Base::template readFieldsFrom<TActual::FieldIdx_willTopic>(iter, size);
+        return Base::template doReadFrom<TActual::FieldIdx_willTopic>(iter, size);
     }
 
     bool doRefresh()

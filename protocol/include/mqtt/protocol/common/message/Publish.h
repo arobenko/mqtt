@@ -55,14 +55,14 @@ public:
         auto& publishFlagsField = actual.field_publishFlags();
         publishFlagsField = comms::field_cast<typename std::decay<decltype(publishFlagsField)>::type>(flagsField);
         updatePacketId();
-        return Base::template readFieldsFrom<TActual::FieldIdx_topic>(iter, size);
+        return Base::template doReadFrom<TActual::FieldIdx_topic>(iter, size);
     }
 
     template <typename TIter>
     comms::ErrorStatus doWrite(TIter& iter, std::size_t size) const
     {
         using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        return Base::template writeFieldsFrom<TActual::FieldIdx_topic>(iter, size);
+        return Base::template doWriteFrom<TActual::FieldIdx_topic>(iter, size);
     }
 
     std::size_t doLength() const
