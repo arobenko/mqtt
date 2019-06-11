@@ -4,6 +4,7 @@ project ("mqtt")
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
 option (CC_MQTT_FULL_SOLUTION "Build and install full solution, including CommsChampion sources." OFF)
 option (CC_MQTT_NO_WARN_AS_ERR "Do NOT treat warning as error" OFF)
+option (CC_NO_MOSQUITTO_SOCKET "Exclude build of mosquitto socket" OFF)
 
 if (NOT CMAKE_CXX_STANDARD)
     set (CMAKE_CXX_STANDARD 11)
@@ -83,7 +84,7 @@ if (CC_MQTT_FULL_SOLUTION)
         GIT_REPOSITORY "https://github.com/arobenko/comms_champion.git"
         GIT_TAG "${cc_branch}"
         SOURCE_DIR "${cc_src_dir}"
-        CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCC_INSTALL_DIR=${INSTALL_DIR} 
+        CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} 
             -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}  
             -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} 
             ${extra_cc_args}

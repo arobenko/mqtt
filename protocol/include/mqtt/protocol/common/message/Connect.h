@@ -51,7 +51,7 @@ public:
     comms::ErrorStatus doRead(TIter& iter, std::size_t size)
     {
         using Base = typename std::decay<decltype(comms::toMessageBase(*this))>::type;
-        auto status = Base::template doReadUntil<TActual::FieldIdx_willTopic>(iter, size);
+        auto status = Base::template doReadUntilAndUpdateLen<TActual::FieldIdx_willTopic>(iter, size);
         if (status != comms::ErrorStatus::Success) {
             return status;
         }
