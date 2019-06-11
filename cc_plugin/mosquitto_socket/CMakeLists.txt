@@ -1,3 +1,7 @@
+if (CC_NO_MOSQUITTO_SOCKET)
+    return ()
+endif ()
+
 set (THIS_PLUGIN_NAME "mosquitto_socket")
 
 ######################################################################

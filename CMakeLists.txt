@@ -4,6 +4,7 @@ project ("mqtt")
 option (CC_MQTT_LIB_ONLY "Install only MQTT protocol library, no other applications/plugings are built." OFF)
 option (CC_MQTT_FULL_SOLUTION "Build and install full solution, including CommsChampion sources." OFF)
 option (CC_MQTT_NO_WARN_AS_ERR "Do NOT treat warning as error" OFF)
+option (CC_NO_MOSQUITTO_SOCKET "Exclude build of mosquitto socket" OFF)
 
 if (NOT CMAKE_CXX_STANDARD)
     set (CMAKE_CXX_STANDARD 11)
